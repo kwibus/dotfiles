@@ -1,0 +1,25 @@
+global !p
+
+import subprocess
+def systemOrString (call,string):
+  try:
+    snip.rv=subprocess.check_output(call.split())
+  except CalledProcessError:
+    snip.tv=string
+
+endglobal
+
+snippet header "haddock header"
+{-|
+Module      :
+Description : ${1:Short description}
+Copyright   : (c) ${2:`!p systemOrString("git config user.name","user")`},${3:`date '+%Y'`}
+# License     : ${3:`!p systemOrString("grep license: $(findProjectRoot.sh)/*.cabal ")," " `}
+# Maintainer  : ${4:`!p systemOrString("git config user.name","email Maintainer") `}
+Stability   : experimental
+
+${5:Here is a longer description of this module, containing some
+commentary with @some markup@.}
+-}
+module W where
+endsnippet
