@@ -93,6 +93,12 @@ alias octave="octave -q"
 alias o="xdg-open"
 alias gdb="gdb -q"
 alias -r glog='git log --oneline --graph --decorate=short'
+if which HsColour > /dev/null
+then
+    alias ghci='ghci 2>&1 | HsColour -tty'
+fi
+
+
 
 man() {
 	env \
