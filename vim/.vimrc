@@ -63,22 +63,6 @@ Plug 'airblade/vim-gitgutter'
 " Plug 'chrisbra/Colorizer'
 call plug#end()
 
-syntax enable
-" incsearch
-map /  <Plug>(incsearch-forward)
-map ?  <Plug>(incsearch-backward)
-map g/ <Plug>(incsearch-stay)
-set hlsearch
-let g:incsearch#auto_nohlsearch = 1
-map n  <Plug>(incsearch-nohl-n)
-map N  <Plug>(incsearch-nohl-N)
-map *  <Plug>(incsearch-nohl-*)
-map #  <Plug>(incsearch-nohl-#)
-map g* <Plug>(incsearch-nohl-g*)
-map g# <Plug>(incsearch-nohl-g#)
-
-let g:languagetool_jar="/usr/share/java/languagetool/languagetool-commandline.jar"
-
 " allows cursor change in tmux mode
 if has('nvim')
   let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
@@ -90,6 +74,24 @@ else
     let &t_SI = "\<Esc>]50;CursorShape=1\x7"
     let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 endif
+
+syntax enable
+" incsearch
+    map /  <Plug>(incsearch-forward)
+    map ?  <Plug>(incsearch-backward)
+    map g/ <Plug>(incsearch-stay)
+    set hlsearch
+    let g:incsearch#auto_nohlsearch = 1
+    map n  <Plug>(incsearch-nohl-n)
+    map N  <Plug>(incsearch-nohl-N)
+    map *  <Plug>(incsearch-nohl-*)
+    map #  <Plug>(incsearch-nohl-#)
+    map g* <Plug>(incsearch-nohl-g*)
+    map g# <Plug>(incsearch-nohl-g#)
+
+" Languagetool install global
+    let g:languagetool_jar="/usr/share/java/languagetool/languagetool-commandline.jar"
+
 "
 " poweerline/airline
   set laststatus=2
@@ -420,3 +422,6 @@ augroup vimrc_todo
           \ containedin=.*Comment,vimCommentTitle
 augroup END
 highlight MyTodo ctermfg=red
+
+highlight ColorColumn ctermbg=lightgrey
+call matchadd('ColorColumn', '\%82v', 100)

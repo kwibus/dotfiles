@@ -7,9 +7,6 @@ runtime colors/solarized.vim
 
 let g:colors_name = "mycolors"
 
-highlight ColorColumn ctermbg=lightgrey
-call matchadd('ColorColumn', '\%81v', 100)
-
 highlight SignColumn ctermbg=8
 highlight Comment ctermfg=2
 
