@@ -1,8 +1,14 @@
-if empty(glob('~/.vim/autoload/plug.vim'))
-  " silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    " \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall
-endif
+
+function! Install()
+    if empty(glob('~/.vim/autoload/plug.vim'))
+      " silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+        " \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+      autocmd VimEnter * PlugInstall
+    endif
+    call mkdir($HOME.'/.vim/undo')
+endfunction
+command! Install call Install()
+
 call plug#begin()
 " Plug 'gelguy/Cmd2.vim'
 " Plug 'vim-scripts/vim-auto-save'
@@ -193,7 +199,7 @@ set encoding=utf-8
 "persistent undo 1
 
     set undofile                " Save undo's after file closes
-    set undodir=$HOME/.vim/undo " where to save undo histories
+    set undodir=$HOME/.vim/undo// " where to save undo histories
     set undolevels=1000         " How many undos
     set undoreload=10000        " number of lines to save for undo
 
@@ -333,6 +339,8 @@ set encoding=utf-8
     noremap <LEFT> <nop>
     noremap <RIGHt> <nop>
 
+    set confirm  " ask if you want to save
+
     set backspace=indent,eol,start "indent  allow backspacing over autoindent eol allow backspacing over line breaks (join lines)
     "start   allow backspacing over the start of insert; CTRL-W and CTRL-U stop once at the start of insert
     " set whichwrap=<,>,[,] " allow cursor key to move past end of aline to the next line
@@ -425,4 +433,5 @@ augroup END
 highlight MyTodo ctermfg=red
 
 highlight ColorColumn ctermbg=lightgrey
+
 call matchadd('ColorColumn', '\%82v', 100)
