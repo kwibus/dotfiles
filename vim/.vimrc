@@ -6,6 +6,7 @@ endif
 call plug#begin()
 " Plug 'gelguy/Cmd2.vim'
 " Plug 'vim-scripts/vim-auto-save'
+Plug 'christoomey/vim-tmux-navigator'
 Plug 'Matt-Deacalion/vim-systemd-syntax'
 Plug 'clever-f.vim'
 Plug 'haya14busa/incsearch.vim'
