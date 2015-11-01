@@ -6,6 +6,7 @@ function! Install()
       autocmd VimEnter * PlugInstall
     endif
     call mkdir($HOME.'/.vim/undo')
+    call mkdir($HOME.'/.vim/backup')
 endfunction
 command! Install call Install()
 
@@ -33,7 +34,7 @@ Plug 'peterhoeg/vim-qml' , {'for': 'qml'}
 
 Plug 'nelstrom/vim-markdown-folding' , {'for': 'markdown'}
 
-Plug 'xolox/vim-easytags' , {'do' : 'mkdir $HOME/.vim/easytags' } | Plug 'xolox/vim-misc'
+" Plug 'xolox/vim-easytags' , {'do' : 'mkdir $HOME/.vim/easytags' } | Plug 'xolox/vim-misc'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'bkad/CamelCaseMotion'
 Plug 'kien/ctrlp.vim'
@@ -83,6 +84,7 @@ else
 endif
 
 syntax enable
+
 " incsearch
     map /  <Plug>(incsearch-forward)
     map ?  <Plug>(incsearch-backward)
@@ -211,6 +213,9 @@ set encoding=utf-8
     " set ttymouse=xterm2
     syntax on
 
+
+    set  backupdir=$HOME/.vim/backup
+    set nobackup
     set hidden
     set showcmd
     set number
