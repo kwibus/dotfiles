@@ -1,3 +1,9 @@
+" TODO matbe add Cscope
+" TODO maybe fold quickfix
+" TODO forward and backward search markdown tex
+
+set encoding=utf-8
+scriptencoding utf-8
 
 function! Install()
     if empty(glob('~/.vim/autoload/plug.vim'))
@@ -7,84 +13,283 @@ function! Install()
     endif
     call mkdir($HOME.'/.vim/undo')
     call mkdir($HOME.'/.vim/backup')
+
 endfunction
 command! Install call Install()
 
 call plug#begin()
-" Plug 'gelguy/Cmd2.vim'
+
+" Plug 'takac/vim-hardtime'
+" Plug 'rickhowe/diffchar.vim' " this plugin uses deault mapping
 " Plug 'vim-scripts/vim-auto-save'
-Plug 'christoomey/vim-tmux-navigator'
-Plug 'Matt-Deacalion/vim-systemd-syntax'
-Plug 'clever-f.vim'
-Plug 'haya14busa/incsearch.vim'
-Plug 'keith/tmux.vim'
-Plug 'kana/vim-filetype-haskell'          , {'for': 'haskell'}
+" Plug 'gelguy/Cmd2.vim'
+" Plug 'jalvesaq/vimcmdline'
+" Plug 'jpalardy/vim-slime'
+" Plug 'Shougo/vimshell.vim'
+" Plug 'ujihisa/repl.vim'
+" Plug 'cazador481/fakeclip.neovim'
+
+Plug 'AssailantLF/vim-active-numbers' " only number in active window, is this useful?
+
+Plug 'kopischke/vim-stay'
+Plug 'kopischke/vim-fetch'
+Plug 'Konfekt/FastFold'
+
+Plug 'jceb/vim-editqf' " eddit quickfix is not realy stable consider remove
+
+if executable('editorconfig')
+    Plug 'editorconfig/editorconfig-vim'
+endif
+
+Plug 'zirrostig/vim-schlepp' " drag with visual cursor
+
+Plug 'tpope/vim-eunuch' " unix helpers sudowrite,..
+
+Plug 'vim-scripts/matchit.zip'
+" Plug 'arnar/vim-matchopen'
+
+Plug 'jamessan/vim-gnupg'
+
+Plug 'vim-scripts/argtextobj.vim'
+
+Plug 'michaeljsmith/vim-indent-object'
+Plug 'chrisdone/hindent' , {'for': 'haskell'}
+"
+Plug 'terryma/vim-smooth-scroll'
+
+if has('nvim')
+   Plug 'benekastah/neomake'
+else
+    Plug 'scrooloose/syntastic'
+endif
+
+if exists('$TMUX')
+    Plug 'benmills/vimux'
+    Plug 'keith/tmux.vim' " syntax  highlight tmuxconfig file
+    Plug 'wellle/tmux-complete.vim' " complete text from tmux buffers
+endif
+Plug 'christoomey/vim-tmux-navigator' " source even when not in tmux becauces it provides windo navigatio in vim
+
+
+Plug 'Matt-Deacalion/vim-systemd-syntax'     , {'for': 'systemd'}
+Plug 'clever-f.vim' " repeat last f with f
+Plug 'haya14busa/incsearch.vim' " incremental search
+
+Plug 'gilligan/vim-textobj-haskell'       , {'for': 'haskell'} | Plug 'kana/vim-textobj-user' " defined textobject haskell fucntion ih. maybe remove almost same as ip
+" Plug 'kana/vim-filetype-haskell'          , {'for': 'haskell'}
+
+" :let $PATH .= '~/.vim/plugged/lushtags/'
+" Plug 'mkasa/lushtags'                     , {'for': 'haskell', 'do': 'cabal sandbox init && cabal install'}
 " Plug 'dag/vim2hs'                         , {'for': 'haskell'}
-Plug 'eagletmt/neco-ghc'                  , {'for': 'haskell'}
-Plug 'eagletmt/ghcmod-vim'                , {'for': 'haskell'}
+Plug 'itchyny/vim-haskell-indent'         , {'for': 'haskell'}
+Plug 'eagletmt/ghcmod-vim'                , {'for': 'haskell'} |  Plug 'Shougo/vimproc.vim' , {'do':'make'}
 Plug 'Twinside/vim-haskellFold'           , {'for': 'haskell'}
 Plug 'Twinside/vim-syntax-haskell-cabal'  , {'for': 'haskell'}
 
 Plug 'vim-scripts/a.vim'      , {'for': ['c', 'cpp']}
 Plug 'Rip-Rip/clang_complete' , {'for': ['c', 'cpp']}
+Plug 'peterhoeg/vim-qml' , {'for': 'qml'}
 
 Plug 'LaTeX-Box-Team/LaTeX-Box'  , {'for': 'tex'}
 
-Plug 'peterhoeg/vim-qml' , {'for': 'qml'}
+Plug 'vim-pandoc/vim-pandoc', {'for': 'markdown'}
+Plug 'vim-pandoc/vim-pandoc-syntax', {'for': 'markdown'}
 
-Plug 'nelstrom/vim-markdown-folding' , {'for': 'markdown'}
+" Plug 'nelstrom/vim-markdown-folding' , {'for': 'markdown'}
+"     let g:markdown_fold_style = 'nested'
 
-" Plug 'xolox/vim-easytags' , {'do' : 'mkdir $HOME/.vim/easytags' } | Plug 'xolox/vim-misc'
-Plug 'nathanaelkane/vim-indent-guides'
-Plug 'bkad/CamelCaseMotion'
+Plug 'xolox/vim-easytags', {'do': 'mkdir ~/.vim/easytags' } | Plug 'xolox/vim-misc'
+"
+
+if &term =~ '^linux'
+else
+    " Plug 'nathanaelkane/vim-indent-guides' " show bars to hint indetation level
+    Plug 'Yggdroot/indentLine'
+endif
+
+Plug 'bkad/CamelCaseMotion' " make camel case motion , and <  not ,w ,b ,e ?
+
+if executable('fzf')
+    Plug 'junegunn/fzf',  " double install
+    Plug 'junegunn/fzf.vim'
+endif
+
 Plug 'kien/ctrlp.vim'
+
 Plug 'bling/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
+Plug 'tpope/vim-git'
 Plug 'tpope/vim-fugitive'
-Plug 'Firef0x/PKGBUILD.vim'
-" Plug 'Shougo/neocomplcache.vim'
-" Plug 'JazzCore/neocomplcache-ultisnips'
-Plug 'Shougo/neocomplete.vim'
-Plug 'kien/rainbow_parentheses.vim'
-Plug 'chrisbra/Recover.vim'
-Plug 'tpope/vim-repeat'
-Plug 'kshenoy/vim-signature'
-Plug 'sjl/badwolf'
-Plug 'altercation/vim-colors-solarized'
-Plug 'honza/vim-snippets'  "ultisnips
-Plug 'scrooloose/syntastic'
-Plug 'tpope/vim-surround'
-Plug 'godlygeek/tabular'
-Plug 'majutsushi/tagbar'
-Plug 'tomtom/tcomment_vim'
-Plug 'SirVer/ultisnips'
-Plug 'mbbill/undotree'
-Plug 'terryma/vim-multiple-cursors'
-Plug 'Shougo/vimproc.vim' , {'do':'make'}
-Plug 'benmills/vimux'
-Plug 'vim-scripts/YankRing.vim'
-Plug 'mileszs/ack.vim'
-Plug 'nelstrom/vim-qargs'
-Plug 'tommcdo/vim-exchange'
-Plug 'vim-scripts/restore_view.vim'
-Plug 'tpope/vim-abolish'
+Plug 'gregsexton/gitv'
 Plug 'airblade/vim-gitgutter'
+
+Plug 'Firef0x/PKGBUILD.vim'              , {'for': 'PKGBUILD'}
+
+Plug 'eagletmt/neco-ghc'                  , {'for': 'haskell'}
+if has('nvim')
+   Plug 'Shougo/deoplete.nvim'
+
+else
+    " Plug 'Shougo/neocomplcache.vim'
+    " Plug 'JazzCore/neocomplcache-ultisnips'
+
+    Plug 'Shougo/neocomplete.vim'|  Plug 'Shougo/vimproc.vim' , {'do':'make'}
+endif
+
+Plug 'kien/rainbow_parentheses.vim'
+Plug 'chrisbra/Recover.vim' "does not work well with neovim
+Plug 'tpope/vim-repeat'
+Plug 'kshenoy/vim-signature' " displayes marks
+
+" Plug 'sjl/badwolf'
+" Plug 'chriskempson/base16-vim'
+Plug 'altercation/vim-colors-solarized'
+
+Plug 'honza/vim-snippets'  "ultisnips
+Plug 'tpope/vim-surround'
+
+Plug 'godlygeek/tabular' " TODO use one of them
+Plug 'junegunn/vim-easy-align'
+
+Plug 'majutsushi/tagbar' , {'on' : 'Tagbar'} 
+Plug 'tomtom/tcomment_vim' "add comments gc
+Plug 'SirVer/ultisnips'
+Plug 'mbbill/undotree',     {'on' : 'UndotreeToggle'}
+" Plug 'terryma/vim-multiple-cursors' " not stable, does not work currust rest exit, can be have unexpected 
+Plug 'vim-scripts/YankRing.vim'
+Plug 'mileszs/ack.vim' |  Plug 'tpope/vim-dispatch'
+" Plug 'tommcdo/vim-exchange' "cx exchange commoad, did not use
+" Plug 'vim-scripts/restore_view.vim' -- replace vim stay
+Plug 'tpope/vim-abolish'
+
+Plug 'nelstrom/vim-qargs'
+" Plug 'thinca/vim-quickrun' " does run part of file in repl, hard to use use
+Plug 'wellle/targets.vim' " add extra text opjects an( i' ia
+" Plug 'takac/vim-hardtime'
+" Plug 'rstacruz/vim-closer' " does not work whell with indentation and editing existed code
 " Plug 'chrisbra/Colorizer'
 call plug#end()
 
-" allows cursor change in tmux mode
-if has('nvim')
-  let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
-elseif exists('$TMUX')
-    " does it work
-    let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-    let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
-else
-    let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-    let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-endif
+" edditqf
+     au BufReadPost quickfix nnoremap <buffer>  dd idd:w<CR>:copen<CR> " delete quickfix item
 
+" HardTime
+    aug END
+    " let g:hardtime_showmsg = 1
+    " au VimEnter * HardTimeOn
+
+" EasyAlign
+    " Start interactive EasyAlign in visual mode (e.g. vipga)
+    xmap ga <Plug>(EasyAlign)
+
+    " Start interactive EasyAlign for a motion/text object (e.g. gaip)
+    nmap ga <Plug>(EasyAlign)
+
+    au WinEnter * if winnr('$') == 1 && getbufvar(winbufnr(winnr()), "&buftype") == "quickfix"|q|endif
+
+if has('nvim')
+" cursor |
+  let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+  "
+" neomake
+  autocmd! BufWritePost * Neomake
+    " Use deoplete.
+    let g:deoplete#enable_at_startup = 1
+else
+"synntastic plugin syntax cheker
+
+    let g:syntastic_sh_checkers=['sh', 'checkbashisms', 'shellcheck']
+
+    let g:syntastic_sh_shellcheck_args = '-x'
+    let g:syntastic_sh_checkbashisms_args = '-x'
+    "
+    "If enabled, syntastic will do syntax checks when buffers are first loaded as well as on saving
+    let g:syntastic_aggregate_errors = 1
+    let g:syntastic_check_on_open=0
+    let g:syntastic_check_on_wq=0
+
+    let g:syntastic_enable_signs=1
+    let g:syntastic_error_symbol = "E>"
+    let g:syntastic_style_error_symbol = "e>"
+    let g:syntastic_warning_symbol = "W>"
+    let g:syntastic_style_warnig_symbol = "w>"
+    "
+    " "Enable this option to tell syntastic to always stick any detected errors into the loclist:
+    " if (&ft=='c' || &ft=='cpp') "TODO niet gekeken of het werkt
+    "     let g:syntastic_always_populate_loc_list=0
+    " else
+    "     let g:syntastic_always_populate_loc_list=1
+    " endif
+
+    "close error list (loclal list window) als de rest ook gesloten is  aug QFClose
+
+"neocomplete
+    let g:neocomplete#enable_at_startup = 1
+    " Use smartcase.
+    let g:neocomplete#enable_smart_case = 1
+    " Set minimum syntax keyword length.
+    let g:neocomplete#sources#syntax#min_keyword_length = 3
+    " inoremap <expr> <C-L>     neocomplete#complete_common_string()
+
+    inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+    " let g:neocomplcache_enable_at_startup = 1
+    " let g:neocomplcache_min_syntax_length = 3
+    " inoremap <expr><S-Space>  neocomplcache#start_manual_complete()
+    " inoremap <expr><C-l>  neocomplcache#close_popup()
+    " inoremap <expr><C-@> <C-Space>
+    " inoremap <C-j> <C-N>
+    " inoremap <C-k> <C-p>
+
+    let g:neocomplcache_force_overwrite_completefunc = 1
+
+    let g:neocomplete#use_vimproc = 1
+if &term =~ '^xterm\|rxvt'
+  " solid underscore
+  let &t_SI .= "\<Esc>[6 q"
+  " solid block
+  let &t_EI .= "\<Esc>[2 q"
+  " 1 or 0 -> blinking block
+  " 3 -> blinking underscore
+  " Recent versions of xterm (282 or above) also support
+  " 5 -> blinking vertical bar
+  " 6 -> solid vertical bar
+endif
+    " if exists('$TMUX')
+    "     " does it work
+    "
+    "     let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+    "     let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+        " let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+        " let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+    " else
+    "     let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+    "     let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+    " endif
+endif
 syntax enable
 
+" hindent
+let g:hindent_style = 'chris-done'
+
+"vim visual drag
+    vmap <unique> <up>    <Plug>SchleppUp
+    vmap <unique> <down>  <Plug>SchleppDown
+    vmap <unique> <left>  <Plug>SchleppLeft
+    vmap <unique> <right> <Plug>SchleppRight
+
+    map <X1Mouse> <C-o>
+    map <X2Mouse> <C-i>
+    nnoremap <2-LeftMouse> :exe "tag ". expand("<cword>")<CR>
+" vim-smooth-scroll
+    noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 0, 2)<CR>
+    noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 0, 2)<CR>
+    noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
+    noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 0, 4)<CR>
+
+    set ignorecase
+    " set smartcase
+"
 " incsearch
     map /  <Plug>(incsearch-forward)
     map ?  <Plug>(incsearch-backward)
@@ -111,9 +316,10 @@ syntax enable
 "
 "easytags
   let g:easytags_events = ['BufWritePost']
-  let g:easytags_dynamic_files = 1
 
-  " let g:easytags_suppress_report = 1
+  set tags=./tags;
+  let g:easytags_dynamic_files = 1
+  let g:easytags_async = 1
   let g:easytags_by_filetype = "~/.vim/easytags"
 
 "solarized colors scheme
@@ -123,54 +329,6 @@ syntax enable
   " let g:solarized_termcolors=16
   " let g:solarized_termcolors=256
   " set t_Co=256
-
-"neocomplete
-    let g:neocomplete#enable_at_startup = 1
-    " Use smartcase.
-    let g:neocomplete#enable_smart_case = 1
-    " Set minimum syntax keyword length.
-    let g:neocomplete#sources#syntax#min_keyword_length = 3
-    " inoremap <expr> <C-L>     neocomplete#complete_common_string()
-
-    inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-    " let g:neocomplcache_enable_at_startup = 1
-    " let g:neocomplcache_min_syntax_length = 3
-    " inoremap <expr><S-Space>  neocomplcache#start_manual_complete()
-    " inoremap <expr><C-l>  neocomplcache#close_popup()
-    " inoremap <expr><C-@> <C-Space>
-    " inoremap <C-j> <C-N>
-    " inoremap <C-k> <C-p>
-
-let g:neocomplcache_force_overwrite_completefunc = 1
-
-"synntastic plugin syntax cheker
-
-    let g:syntastic_sh_checkers=['sh', 'checkbashisms', 'shellcheck']
-    "If enabled, syntastic will do syntax checks when buffers are first loaded as well as on saving
-    let g:syntastic_aggregate_errors = 1
-    let g:syntastic_check_on_open=0
-    let g:syntastic_check_on_wq=0
-
-    let g:syntastic_enable_signs=1
-    let g:syntastic_error_symbol = "E>"
-    let g:syntastic_style_error_symbol = "e>"
-    let g:syntastic_warning_symbol = "W>"
-    let g:syntastic_style_warnig_symbol = "w>"
-    "
-    "Enable this option to tell syntastic to always stick any detected errors into the loclist:
-    if (&ft=='c' || &ft=='cpp')"TODO niet gekeken of het werkt
-        let g:syntastic_always_populate_loc_list=0
-    else
-        let g:syntastic_always_populate_loc_list=1
-    endif
-
-    "close error list (loclal list window) als de rest ook gesloten is  aug QFClose
-    au!
-    au WinEnter * if winnr('$') == 1 && getbufvar(winbufnr(winnr()), "&buftype") == "quickfix"|q|endif
-    aug END
-    " if has('autocmd')
-        "    autocmd cursorhold * SyntasticCheck
-    " endif
 
 "ultisnips
     let g:UltiSnipsExpandTrigger="<tab>"
@@ -189,9 +347,7 @@ let g:neocomplcache_force_overwrite_completefunc = 1
       let g:ackprg = 'ag --vimgrep'
     endif
 
-scriptencoding utf-8
-set encoding=utf-8
-
+    let g:ack_use_dispatch=1
 " ctrlp
     if executable('git')
         let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
@@ -200,29 +356,37 @@ set encoding=utf-8
     endif
 "persistent undo 1
 
+
     set undofile                " Save undo's after file closes
     set undodir=$HOME/.vim/undo// " where to save undo histories
     set undolevels=1000         " How many undos
     set undoreload=10000        " number of lines to save for undo
 
+    "swap file
+    set directory=.,$XDG_RUNTIME_DIR
+
 " fold
-    set foldmethod=syntax
+    " set foldmethod=syntax
     set foldlevelstart=99 "default all folds open
 
 
     " set ttymouse=xterm2
+
     syntax on
 
+" backup
+    set  backupdir=$HOME/.vim/backup//
+    let myvar = strftime("(%y%m%d)%Hh%M")
+    let myvar = "set backupext=_". myvar
+    execute myvar
+    set backup
 
-    set  backupdir=$HOME/.vim/backup
-    set nobackup
-    set hidden
     set showcmd
     set number
     set mouse=a
     set title
     set cursorline   " hi CursorLine term=none cterm=none ctermbg=3
-    set clipboard=unnamedplus
+    set clipboard=unnamed
     set list
     set listchars=tab:▸\ ,eol:¬,trail:_,extends:#,nbsp:.
 
@@ -240,24 +404,27 @@ set encoding=utf-8
     set hlsearch
     set incsearch
 
-    set viewoptions=folds
+    set viewoptions=cursor,folds,slash,unix
+
+    au CursorHoldI * stopinsert " leave insert after interactive
+
+    au InsertLeave * call cursor([getpos('.')[1], getpos('.')[2]+1]) " dont move curror on exit
 
     set virtualedit=block
-    set lazyredraw 
+    set lazyredraw
     set splitright
     set splitbelow
     set wildmenu
     set wildmode=list,full
     set gdefault " maybe no a good idee
     set scrolloff=7
-    set visualbell
     set errorbells
 
     " wrap
     set wrap
     set linebreak
     set showbreak=~~~
-    set showmatch   
+    set showmatch
     set spellcapcheck = ""
     set spelllang=en,nl
 
@@ -267,6 +434,8 @@ set encoding=utf-8
     nnoremap Z <nop>
     nnoremap K <nop>
     nnoremap Q <nop>
+
+    " nnoremap '' <nop>
 
     noremap <leader>r :source$MYVIMRC<CR>
 
@@ -292,7 +461,10 @@ set encoding=utf-8
     command! WQ wq
     command! Wq wq
     command! W w
-    cmap w!! w !sudo tee > /dev/null %
+
+    cmap w!! SudoWrite
+    " cmap w!! w !sudo tee > /dev/null %
+    " cmap w!! execute ':silent w !sudo tee %  > /dev/null'
 
     noremap <silent> [l :ll <CR> :lprevious<CR>
     noremap <silent> ]l :ll <CR> :lnext<CR>
@@ -306,10 +478,23 @@ set encoding=utf-8
     noremap <C-e>     <Esc>g_
     inoremap <C-e>     <Esc>g_a
 
+    inoremap          <F2>  <NOP>
+    inoremap <silent> <F3>  :Tagbar<CR><NOP>
+    inoremap          <F4> <NOP>
+    inoremap          <F4> <NOP>
+    inoremap          <F4> <NOP>
+    inoremap          <F4> <NOP>
+    inoremap          <F7> <NOP>
+    inoremap <silent> <F8> :set spell!<Cr>
+    inoremap          <F9> <NOP>
+    inoremap          <F10> <NOP>
+    inoremap          <F11> <NOP>
+    inoremap          <F12> <NOP>
+
     noremap <silent><F2>  :UndotreeToggle<CR>
     noremap <silent><F3>  :Tagbar<CR>
     set pastetoggle=<F4>
-    nnoremap <silent> <F5> :YRShow<CR>
+    noremap <silent> <F5> :YRShow<CR>
     noremap <silent> <F8> :set spell!<Cr>
 
     let g:ctrlp_map = '<F12>'
@@ -339,11 +524,14 @@ set encoding=utf-8
     map j gj
     map k gk
 
-    noremap <UP> <nop>
-    noremap <DOWN> <nop>
-    noremap <LEFT> <nop>
-    noremap <RIGHt> <nop>
+    " noremap <UP> <nop>
+    " noremap <DOWN> <nop>
+    " noremap <LEFT> <nop>
+    " noremap <RIGHt> <nop>
 
+    set hidden
+    autocmd WinLeave * setlocal nohidden
+    " autocmd WinLeave *(on-disk version) setlocal nohidden
     set confirm  " ask if you want to save
 
     set backspace=indent,eol,start "indent  allow backspacing over autoindent eol allow backspacing over line breaks (join lines)
@@ -374,9 +562,8 @@ let g:rbpt_colorpairs = [
     \ ['RED',         'FIREBRICK3'],
     \ ]
 
-
 autocmd BufNewFile,BufRead *.git/COMMIT_EDITMSG set ft=gitcommit
-autocmd Filetype gitcommit setlocal spell  textwidth=72
+let test = 1
 
 function! <SID>StripTrailingWhitespaces()
     let l = line(".")
@@ -395,6 +582,8 @@ function! s:DiffWithSaved()
 endfunction
 com! DiffSaved call s:DiffWithSaved()
 
+" noremap [c [d
+" noremap ]c ]d
 
     highlight SignColumn ctermbg=8
     highlight Comment ctermfg=2
@@ -403,10 +592,48 @@ com! DiffSaved call s:DiffWithSaved()
 "
 " "let g:indent_guides_auto_colors = 0
 
-"  set tw=2 sw=2 noet
   let g:indent_guides_guide_size=1
   let g:indent_guides_start_level=1
   let g:indent_guides_enable_on_vim_startup = 1
+
+" nnoremap <silent> <leader>zj :call NextClosedFold('j')<cr>
+" nnoremap <silent> <leader>zk :call NextClosedFold('k')<cr>
+" function! NextClosedFold(dir)
+"     let cmd = 'norm!z' . a:dir
+"     let view = winsaveview()
+"     let [l0, l, open] = [0, view.lnum, 1]
+"     while l != l0 && open
+"         exe cmd
+"         let [l0, l] = [l, line('.')]
+"         let open = foldclosed(l) < 0
+"     endwhile
+"     if open
+"         call winrestview(view)
+"     endif
+" endfunction
+
+
+" au BufRead,BufNewFile * let b:save_time = localtime()
+"
+" au CursorHold * call UpdateBackup ()
+"
+" let g:autosave_time = 10
+" " save if needed / update the save_time after the save
+" function! UpdateBackup ()
+"   if((localtime() - b:save_time) >= g:autosave_time)
+"       let l:fname = expand('%:p') . '_' . strftime('%Y_%m_%d_%H.%M.%S')
+"       echomsg l:fname
+"       let l:fname = "set backupext=_".l:fname
+"       execute l:fname
+"       echo l:fname
+"       " silent execute 'write' l:fname
+"       let b:save_time = localtime()
+"   else
+"       "
+"       " just debugging info
+"       echo "[+] ". (localtime() - b:save_time) ." seconds have elapsed so far."
+"   endif
+" endfunction
 
 function! ReverseBackground()
  if &bg=="light"
@@ -419,7 +646,6 @@ function! ReverseBackground()
     let s:test="colorscheme ".g:colors_name
     execute s:test
 endfunction
-
 command! Togglebackground call ReverseBackground()
 noremap <F7> :Togglebackground<CR>
 
@@ -429,14 +655,40 @@ function! SearchTODO ()
 endfunction
 command! TODO call SearchTODO()
 
-  cmap <F5> <Plug>(Cmd2Suggest)
 augroup vimrc_todo
     au!
     au Syntax * syn match MyTodo /\v<(FIXME|NOTE|TODO|OPTIMIZE|XXX)/
           \ containedin=.*Comment,vimCommentTitle
 augroup END
 highlight MyTodo ctermfg=red
+" save if needed / update the save_time after the save
 
-highlight ColorColumn ctermbg=lightgrey
+"  color colum for where the line is to long
+highlight ColorColumn ctermbg=10
+call matchadd('ColorColumn', '\%82v', 100) "longer then 80 is to long, so 81 should be colord, but i have end of line char that get collerd when the line is 80 long, so 82
 
-call matchadd('ColorColumn', '\%82v', 100)
+
+" TODO test if this works
+" Cyclic tag navigation {{{
+let g:rt_cw = ''
+function! RT()
+    let cw = expand('<cword>')
+    try
+        if cw != g:rt_cw
+            execute 'tag ' . cw
+            call search(cw,'c',line('.'))
+        else
+            try
+                execute 'tnext'
+            catch /.*/
+                execute 'trewind'
+            endtry
+            call search(cw,'c',line('.'))
+        endif
+        let g:rt_cw = cw
+    catch /.*/
+        echo "no tags on " . cw
+    endtry
+endfunction
+map <C-]> :call RT()<CR>
+" }}}

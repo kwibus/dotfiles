@@ -4,7 +4,8 @@ if exists("syntax_on")
 endif
 
 runtime colors/solarized.vim
-
+" runtime colors/base16-default.vim
+let g:solarized_diffmode="high"
 let g:colors_name = "mycolors"
 
 highlight SignColumn ctermbg=8
@@ -16,6 +17,6 @@ if &background=="dark"
     hi IndentGuidesEven ctermbg=black
 else
     highlight normal ctermbg=white
-    highlight  IndentGuidesEven ctermbg=white
+    " highlight IndentGuidesEven ctermbg=white
 endif
 

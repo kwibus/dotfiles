@@ -4,8 +4,8 @@ eval $(dircolors)
 
 # Lines configured by zsh-newuser-install
 HISTFILE=~/.histfile
-HISTSIZE=1000
-SAVEHIST=1000
+HISTSIZE=10000
+SAVEHIST=10000
 setopt APPEND_HISTORY AUTOCD BEEP NOTIFY SHARE_HISTORY
 bindkey -e
 # End of lines configured by zsh-newuser-install
@@ -17,7 +17,7 @@ zstyle ':completion:*' group-name ''
 zstyle ':completion:*' ignore-parents parent
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' max-errors 2
-zstyle ':completion:*' menu select=0
+zstyle ':completion:*' menu select=2
 zstyle ':completion:*' preserve-prefix '//[^/]##/'
 zstyle ':completion:*' prompt 'correction %e'
 zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %l%s'
@@ -27,17 +27,18 @@ zstyle ':completion:*' verbose true
 zstyle :compinstall filename '/home/rens/.zshrc'
 
 autoload -Uz compinit bashcompinit
+bashcompinit
 compinit
-# End of lines added by compinstall
 
-export PATH=$HOME/scripts:$HOME/.local/bin:$PATH
+# End of lines adcomplete
+
 
 Watch=all
-
-zstyle ':completion:*:functions' ignored-patterns '_*'
 stty -ixon # disable Ctrl-S  freeze
 
 # delete key
+bindkey "${terminfo[khome]}" beginning-of-line
+bindkey "${terminfo[kend]}" end-of-line
 bindkey '\e[3~' delete-char
 bindkey '^Xr' history-search-backward
 bindkey '\ef' emacs-forward-word
@@ -46,14 +47,13 @@ bindkey '\eb' emacs-backward-word
 # bindkey "^[[A" history-search-backward
 # bindkey "^[[B" history-search-forward
 
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 # setop EXTENDEDGLOB
 setopt PROMPT_SUBST
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_REDUCE_BLANKS
 setopt NO_LIST_BEEP
-setopt NO_HIST_BEEP
 setopt CORRECT
+# setopt auto_menu
 #setopt CORRECTALL
 setopt GLOBDOTS
 setopt AUTOPUSHD               # automatically append dirs to the push/pop list
@@ -65,24 +65,40 @@ export REPORTTIME=30
 # Helps avoid mistakes like 'rm * o' when 'rm *.o' was intended
 setopt RM_STAR_WAIT
 
-autoload -U +X bashcompinit && bashcompinit
-eval "$(stack --bash-completion-script "$(which stack)")"
 
+# bindkey "^I" menu-expand-or-complete
 
 zstyle ':completion:*' accept-exact '*(N)'
+
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+zstyle ':completion:*:functions' ignored-patterns '_*'
+zstyle ':completion:*' rehash true
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zsh/cache
-#
-#export _JAVA_AWT_WM_NONREPARENTING=1 # werk niet`
-#export PYTHONPATH=/usr/lib/python3.3/site-packages
+
+
+PATH=$HOME/scripts:$HOME/.local/bin:$PATH
+export EDITOR="vim"
+# export LESS="-ra"
+# must go aver PATH to find stack
+eval "$(stack --bash-completion-script stack)"
+
+# xdg corrections
+
+# export RXVT_SOCKET="$XDG_RUNTIME_DIR"/urxvt/urxvt-"$(hostname)"
+# export TMUX_TMPDIR="$XDG_RUNTIME_DIR"/tmux
+
+# export _JAVA_AWT_WM_NONREPARENTING=1 # werk niet`
+# export PYTHONPATH=/usr/lib/python3.3/site-packages
 # export CCACHE_DIR=/home/rens/.cache/ccache    # Tell ccache to use this path to store its cache
 
-export EDITOR="vim"
 KEYTIMEOUT=1
 
 alias -r startx='startx ~/.xinitrc'
 alias -r rm='rm -i'
 alias -r mv='mv -i'
+alias -r cp='cp -i'
+
 alias -r tp='trash-put'
 alias -r grep='grep --color=auto'
 alias -r ls='ls --color=auto -h '
@@ -93,23 +109,24 @@ alias octave="octave -q"
 alias o="xdg-open"
 alias gdb="gdb -q"
 alias -r glog='git log --oneline --graph --decorate=short'
-if which HsColour > /dev/null
-then
-    alias ghci='ghci 2>&1 | HsColour -tty'
-fi
+
+# if which HsColour > /dev/null
+# then
+#     alias ghci='ghci 2>&1 | HsColour -tty'
+# fi
 
 
 
 man() {
-	env \
-		LESS_TERMCAP_mb=$(printf "\e[1;31m") \
-		LESS_TERMCAP_md=$(printf "\e[1;31m") \
-		LESS_TERMCAP_me=$(printf "\e[0m") \
-		LESS_TERMCAP_se=$(printf "\e[0m") \
-		LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
-		LESS_TERMCAP_ue=$(printf "\e[0m") \
-		LESS_TERMCAP_us=$(printf "\e[1;32m") \
-			man "$@"
+        env \
+                LESS_TERMCAP_mb=$(printf "\e[1;31m") \
+                LESS_TERMCAP_md=$(printf "\e[1;31m") \
+                LESS_TERMCAP_me=$(printf "\e[0m") \
+                LESS_TERMCAP_se=$(printf "\e[0m") \
+                LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
+                LESS_TERMCAP_ue=$(printf "\e[0m") \
+                LESS_TERMCAP_us=$(printf "\e[1;32m") \
+                        man "$@"
 }
 include () {
     [ -f "$1" ] && source "$1"
@@ -121,7 +138,30 @@ include /usr/share/doc/pkgfile/command-not-found.zsh
 include ~/.zsh/cabalpromt.zsh
 include ~/.zsh/gitpromt.zsh
 
+
 prompt="%{$fg[red]%}%n%{$reset_color%}@%{$fg[blue]%}%m %{$fg_no_bold[yellow]%}%1~ %{$reset_color%}%(1j.%j.)%#"
 
 export RPS1='$(sandbox_prompt) $(__git_prompt)'
+help()
+{
+    man zshbuiltins | sed -ne "/^       $1 /,/^\$/{s/       //; p}"
+}
+# # Load zsh-autosuggestions.
+# source ~/.zsh/zsh-autosuggestions/autosuggestions.zsh
+# AUTOSUGGESTION_HIGHLIGHT_COLOR=1
+# # Enable autosuggestions automatically.
+# zle-line-init() {
+#     zle autosuggest-start
+# }
+# zle -N zle-line-init
+#
+# ttyctl -f
+#
+# zstyle ':completion:*:manuals'    separate-sections true
+# zstyle ':completion:*:manuals.*'  insert-sections   true
+# zstyle ':completion:*:man:*'      menu yes select
 
+GENCOMPL_FPATH=$HOME/.zsh/complete
+GENCOMPL_PY=python2
+source $HOME/.zsh/zsh-completion-generator/zsh-completion-generator.plugin.zsh
+compinit

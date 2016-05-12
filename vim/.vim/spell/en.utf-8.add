@@ -2,3 +2,4 @@ typeclass
 subtyping
 unboxed
 newtype
+namespace

@@ -1,11 +1,21 @@
+if executable('hscope' )
+    set cscopeprg=hscope
+endif
 setlocal omnifunc=necoghc#omnifunc
 let g:necoghc_enable_detailed_browse = 1
 
+" let b:closer = 1 |
+" let b:closer_flags = '([{'
+
 let g:syntastic_haskell_hdevtools_args= '-g -Wall'
 let g:syntastic_haskell_scan_args= "-jfalse -l110 -cf"
+set makeprg=cabal\ build
+" let g:syntastic_haskell_checkers=['hdevtools''hlint','scan']  "ghcmod, new versio of ghcmod do not work
 
-let g:syntastic_haskell_checkers=['ghcmod','hlint','scan']
-
+" if has('nvim')
+" else
+"     autocmd BufWritePost * GhcModCheckAndLintAsync
+" endif
 let g:tagbar_type_haskell = {
     \ 'ctagsbin'  : 'hasktags',
     \ 'ctagsargs' : '-x -c -o-',
@@ -40,11 +50,16 @@ let g:tagbar_type_haskell = {
 let g:easytags_languages = {
 \   'haskell': {
 \       'cmd': 'hasktags',
-\       'args': ['-x'],
-\       'fileoutput_opt': '-f ',
+\       'args': [],
+\       'fileoutput_opt': '-o ',
 \       'stdout_opt': '-o-',
-\       'recurse_flag': '-R'
+\       'recurse_flag': ''
 \   }
 \}
-nnoremap <silent> <leader>] :GhcModTypeClear<CR>
-nnoremap <silent> <leader>\\  :GhcModType<CR> 
+"
+" nnoremap <silent> <leader>] :GhcModTypeClear<CR>
+" nnoremap <silent> <leader>\\  :GhcModType<CR> 
+map <silent> tw :GhcModTypeInsert<CR>
+map <silent> ts :GhcModSplitFunCase<CR>
+map <silent> tq :GhcModType<CR>
+map <silent> te :GhcModTypeClear<CR>
