@@ -4,18 +4,16 @@ command! -nargs=* RunSilent
       \ | execute ':redraw!'
 nmap <Leader>pp :RunSilent pandoc --toc -o /tmp/vim-pandoc-out.pdf %<CR>:RunSilent xdg-open /tmp/vim-pandoc-out.pdf&<CR>
 
-filetype plugin indent on
-
 " syntax region markdownFold start="^\z(#\+\) " end="\(^#\(\z1#*\)\@!#*[^#]\)\@=" transparent fold
 " setlocal  foldmethod=syntax
-function! SyncTexForward()
-  let s:syncfile = LatexBox_GetOutputFile()
-  let execstr = "silent !okular --unique ".s:syncfile."\\#src:".line(".").expand("%\:p").' &'
-  exec execstr
-endfunction
-
+" function! SyncTexForward()
+"   let s:syncfile = LatexBox_GetOutputFile()
+"   let execstr = "silent !okular --unique ".s:syncfile."\\#src:".line(".").expand("%\:p").' &'
+"   exec execstr
+" endfunction
+let  g:pandoc#syntax#conceal#use=0
 nnoremap <Localleader>ls :call SyncTexForward()<CR>
-setlocal foldmethod=expr
+" setlocal foldmethod=expr
 " function! MarkdownLevel()
 "     let theline = getline(v:lnum)
 "     let nextline = getline(v:lnum+1)

@@ -1,6 +1,17 @@
 if executable('hscope' )
     set cscopeprg=hscope
 endif
+
+inoreab <buffer> int Int
+inoreab <buffer> integer Integer
+inoreab <buffer> string String
+inoreab <buffer> double Double
+inoreab <buffer> float Float
+
+" hindent {{{
+let g:hindent_style = 'chris-done' "}}}
+" https://github.com/eagletmt/neco-ghc
+let g:haskellmode_completion_ghc = 0
 setlocal omnifunc=necoghc#omnifunc
 let g:necoghc_enable_detailed_browse = 1
 
@@ -9,6 +20,7 @@ let g:necoghc_enable_detailed_browse = 1
 
 let g:syntastic_haskell_hdevtools_args= '-g -Wall'
 let g:syntastic_haskell_scan_args= "-jfalse -l110 -cf"
+
 set makeprg=cabal\ build
 " let g:syntastic_haskell_checkers=['hdevtools''hlint','scan']  "ghcmod, new versio of ghcmod do not work
 

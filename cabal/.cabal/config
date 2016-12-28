@@ -14,9 +14,13 @@
 require-sandbox: True
 -- ignore-sandbox: False
 remote-repo: hackage.haskell.org:http://hackage.haskell.org/packages/archive
+
 remote-repo-cache: /home/rens/.cabal/packages
+-- remote-repo-cache: /home/rens/.cache/cabal/packages
 -- local-repo:
 -- logs-dir:
+
+-- world-file: /home/rens/.config/cabal/world
 world-file: /home/rens/.cabal/world
 -- verbose: 1
 -- compiler: ghc
@@ -42,7 +46,7 @@ world-file: /home/rens/.cabal/world
 -- flags:
 -- extra-include-dirs:
 -- extra-lib-dirs:
-extra-prog-path: /home/rens/.cabal/bin
+extra-prog-path: /home/rens/.local/bin/
 -- instantiate-with:
 -- tests: False
 -- coverage: False
@@ -93,7 +97,9 @@ haddock
   -- contents-location:
 
 install-dirs user
-  -- prefix: /home/rens/.cabal
+
+  -- prefix: /home/rens/.local/share
+  prefix: /home/rens/.cabal
   -- bindir: $prefix/bin
   -- libdir: $prefix/lib
   -- libsubdir: $abi/$libname

@@ -1,4 +1,3 @@
-  [[ -z $XDG_CONFIG_HOME ]] && export XDG_CONFIG_HOME="$HOME/.config"
 autoload -U colors && colors
 eval $(dircolors)
 
@@ -26,9 +25,6 @@ zstyle ':completion:*' use-compctl false
 zstyle ':completion:*' verbose true
 zstyle :compinstall filename '/home/rens/.zshrc'
 
-autoload -Uz compinit bashcompinit
-bashcompinit
-compinit
 
 # End of lines adcomplete
 
@@ -81,7 +77,6 @@ PATH=$HOME/scripts:$HOME/.local/bin:$PATH
 export EDITOR="vim"
 # export LESS="-ra"
 # must go aver PATH to find stack
-eval "$(stack --bash-completion-script stack)"
 
 # xdg corrections
 
@@ -94,7 +89,9 @@ eval "$(stack --bash-completion-script stack)"
 
 KEYTIMEOUT=1
 
-alias -r startx='startx ~/.xinitrc'
+alias -g wlan=wlp5s0
+
+alias -r x='startx "$XINITRC"'
 alias -r rm='rm -i'
 alias -r mv='mv -i'
 alias -r cp='cp -i'
@@ -135,8 +132,8 @@ include () {
 include /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 include /usr/share/doc/pkgfile/command-not-found.zsh
 
-include ~/.zsh/cabalpromt.zsh
-include ~/.zsh/gitpromt.zsh
+include "$ZDOTDIR"/cabalpromt.zsh
+include "$ZDOTDIR"/gitpromt.zsh
 
 
 prompt="%{$fg[red]%}%n%{$reset_color%}@%{$fg[blue]%}%m %{$fg_no_bold[yellow]%}%1~ %{$reset_color%}%(1j.%j.)%#"
@@ -161,7 +158,12 @@ help()
 # zstyle ':completion:*:manuals.*'  insert-sections   true
 # zstyle ':completion:*:man:*'      menu yes select
 
-GENCOMPL_FPATH=$HOME/.zsh/complete
+GENCOMPL_FPATH="$ZDOTDIR"/complete
 GENCOMPL_PY=python2
-source $HOME/.zsh/zsh-completion-generator/zsh-completion-generator.plugin.zsh
-compinit
+source "$ZDOTDIR"/zsh-completion-generator/zsh-completion-generator.plugin.zsh
+
+autoload -Uz compinit bashcompinit
+compinit -d $XDG_RUNTIME_DIR
+bashcompinit
+
+eval "$(stack --bash-completion-script stack)"

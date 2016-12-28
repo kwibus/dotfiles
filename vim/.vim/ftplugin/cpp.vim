@@ -15,14 +15,15 @@
     let g:clang_snippets = 1
     let g:clang_user_options = '-std=c++11'
 
-    let g:neocomplcache_force_omni_patterns.c =
-                \ '[^.[:digit:] *\t]\%(\.\|->\)'
-    let g:neocomplcache_force_omni_patterns.cpp =
-                \ '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
-    let g:neocomplcache_force_omni_patterns.objc =
-                \ '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
-    let g:neocomplcache_force_omni_patterns.objcpp =
-                \ '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+    " let g:neocomplcache_force_omni_patterns.c =
+    "             \ '[^.[:digit:] *\t]\%(\.\|->\)'
+    " let g:neocomplcache_force_omni_patterns.cpp =
+    "             \ '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+    " let g:neocomplcache_force_omni_patterns.objc =
+    "             \ '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+    " let g:neocomplcache_force_omni_patterns.objcpp =
+                " \ '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+    "
 " Syntastic
     " let g:syntastic_c_remove_include_errors = 1
     let g:syntastic_cpp_compiler_options = ' -std=c++11'
@@ -43,7 +44,7 @@
 
 
 set foldmethod=syntax
-    set foldtext=CustomFoldText() 
+    set foldtext=CustomFoldText()
     function! CustomFoldText()
         "get first non-blank line
         let fs = v:foldstart
