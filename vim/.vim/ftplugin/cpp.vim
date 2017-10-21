@@ -1,4 +1,12 @@
 
+let g:neomake_cpp_enabled_makers = ['clangcheck']
+" let g:neomake_cpp_enabled_makers = ['clangtidy']
+" let g:neomake_cpp_clangtidy_args = ['-p /home/rens/Documenten/projects/fluidsimulator/compile_commands.json']
+" let g:neomake_cpp_test_maker= { 'exe': 'clang-check', 'args': ['clean'] }
+" let g:neomake_cpp_clangcheck_args = ['-extra-arg=-std=c++11 --extra-arg=-Isrc/' ]
+" let g:neomake_cpp_clangcheck_args = ['-p=/home/rens/Documenten/projects/fluidsimulator/' ]
+" let g:neomake_cpp_clang_args = ['-std=c++11', '-Isrc/', '-fsyntax-only', '-Wall', '-Wextra']
+
 " clang outo complet plugin(c,c++)
 "     noremap <leader>u :call g:ClangUpdateQuickFix()<CR>
     let g:clang_auto_select = 1
@@ -44,24 +52,24 @@
 
 
 set foldmethod=syntax
-    set foldtext=CustomFoldText()
-    function! CustomFoldText()
-        "get first non-blank line
-        let fs = v:foldstart
-        while getline(fs) =~ '^\s*$' | let fs = nextnonblank(fs + 1)
-        endwhile
-        if fs > v:foldend
-            let line = getline(v:foldstart)
-        else
-            let line = substitute(getline(fs), '\t', repeat(' ', &tabstop), 'g')
-        endif
+set foldtext=CustomFoldText()
+function! CustomFoldText()
+    "get first non-blank line
+    let fs = v:foldstart
+    while getline(fs) =~ '^\s*$' | let fs = nextnonblank(fs + 1)
+    endwhile
+    if fs > v:foldend
+        let line = getline(v:foldstart)
+    else
+        let line = substitute(getline(fs), '\t', repeat(' ', &tabstop), 'g')
+    endif
 
-        let w = winwidth(0) - &foldcolumn - (&number ? 8 : 0)
-        let foldSize = 1 + v:foldend - v:foldstart
-        let foldSizeStr = " " . foldSize . " lines "
-        let foldLevelStr = repeat("+--", v:foldlevel)
-        let lineCount = line("$")
-        let foldPercentage = printf("[%.1f", (foldSize*1.0)/lineCount*100) . "%] "
-        let expansionString = repeat(".", w - strwidth(foldSizeStr.line.foldLevelStr.foldPercentage))
-        return line . expansionString . foldSizeStr . foldPercentage . foldLevelStr
-    endfunction 
+    let w = winwidth(0) - &foldcolumn - (&number ? 8 : 0)
+    let foldSize = 1 + v:foldend - v:foldstart
+    let foldSizeStr = " " . foldSize . " lines "
+    let foldLevelStr = repeat("+--", v:foldlevel)
+    let lineCount = line("$")
+    let foldPercentage = printf("[%.1f", (foldSize*1.0)/lineCount*100) . "%] "
+    let expansionString = repeat(".", w - strwidth(foldSizeStr.line.foldLevelStr.foldPercentage))
+    return line . expansionString . foldSizeStr . foldPercentage . foldLevelStr
+endfunction 

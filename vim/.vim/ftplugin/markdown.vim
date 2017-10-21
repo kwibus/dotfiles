@@ -2,7 +2,9 @@
 command! -nargs=* RunSilent
       \ | execute ':silent !'.'<args>'
       \ | execute ':redraw!'
-nmap <Leader>pp :RunSilent pandoc --toc -o /tmp/vim-pandoc-out.pdf %<CR>:RunSilent xdg-open /tmp/vim-pandoc-out.pdf&<CR>
+
+nmap <Leader>v :RunSilent xdg-open /tmp/vim-pandoc-out.pdf&<CR>
+nmap <Leader>c :update<Cr> :Pandoc pdf  -o /tmp/vim-pandoc-out.pdf <CR> " toc
 
 " syntax region markdownFold start="^\z(#\+\) " end="\(^#\(\z1#*\)\@!#*[^#]\)\@=" transparent fold
 " setlocal  foldmethod=syntax
@@ -11,7 +13,8 @@ nmap <Leader>pp :RunSilent pandoc --toc -o /tmp/vim-pandoc-out.pdf %<CR>:RunSile
 "   let execstr = "silent !okular --unique ".s:syncfile."\\#src:".line(".").expand("%\:p").' &'
 "   exec execstr
 " endfunction
-let  g:pandoc#syntax#conceal#use=0
+let g:pandoc#syntax#conceal#use=0
+let g:livepreview_previewer = 'zathura'
 nnoremap <Localleader>ls :call SyncTexForward()<CR>
 " setlocal foldmethod=expr
 " function! MarkdownLevel()

@@ -8,16 +8,18 @@ runtime colors/solarized.vim
 let g:solarized_diffmode='high'
 let g:colors_name = 'mycolors'
 
-highlight SignColumn ctermbg=8
-highlight Comment ctermfg=2
+" highlight SignColumn ctermbg=8
 highlight MyTodo ctermfg=red
-
 let g:indent_guides_auto_colors = 0
+if &background==#'dark'
 
-if &background=='dark'
-    hi IndentGuidesEven ctermbg=black
+    highlight Comment ctermfg=grey  "default is to dark fro my tast
+    highlight IndentGuidesEven ctermbg=black
 else
+
+    highlight Comment ctermfg=darkgrey  "default is to dark fro my tast
     highlight normal ctermbg=white
     " highlight IndentGuidesEven ctermbg=white
 endif
 
+ highlight IncSearchCursor ctermfg=0 ctermbg=6

@@ -5,7 +5,7 @@ endif
 inoreab <buffer> int Int
 inoreab <buffer> integer Integer
 inoreab <buffer> string String
-inoreab <buffer> double Double
+" inoreab <buffer> double Double
 inoreab <buffer> float Float
 
 " hindent {{{
@@ -14,21 +14,24 @@ let g:hindent_style = 'chris-done' "}}}
 let g:haskellmode_completion_ghc = 0
 setlocal omnifunc=necoghc#omnifunc
 let g:necoghc_enable_detailed_browse = 1
-
+let g:necoghc_debug=1
 " let b:closer = 1 |
 " let b:closer_flags = '([{'
 
 let g:syntastic_haskell_hdevtools_args= '-g -Wall'
-let g:syntastic_haskell_scan_args= "-jfalse -l110 -cf"
+let g:syntastic_haskell_scan_args= '-jfalse -l110 -cf'
 
 set makeprg=cabal\ build
-" let g:syntastic_haskell_checkers=['hdevtools''hlint','scan']  "ghcmod, new versio of ghcmod do not work
+" let g:neomake_autolint_enabled=0 "try ale
+let g:neomake_haskell_enabled_makers =['ghcmod','hlint']
+let g:syntastic_haskell_checkers=['ghcmod','hlint','scan']  "ghcmod, new versio of ghcmod do not work
 
 " if has('nvim')
 " else
 "     autocmd BufWritePost * GhcModCheckAndLintAsync
 " endif
-let g:tagbar_type_haskell = {
+" tagbar hasktags {{{
+let g:tagbar_type_haskell = { 
     \ 'ctagsbin'  : 'hasktags',
     \ 'ctagsargs' : '-x -c -o-',
     \ 'kinds'     : [
@@ -59,7 +62,9 @@ let g:tagbar_type_haskell = {
         \ 'type'   : 't'
     \ }
 \ }
-let g:easytags_languages = {
+"}}}
+"easyTags hasktags {{{
+let  g:easytags_languages = {
 \   'haskell': {
 \       'cmd': 'hasktags',
 \       'args': [],
@@ -68,10 +73,53 @@ let g:easytags_languages = {
 \       'recurse_flag': ''
 \   }
 \}
-"
+"}}}
 " nnoremap <silent> <leader>] :GhcModTypeClear<CR>
-" nnoremap <silent> <leader>\\  :GhcModType<CR> 
-map <silent> tw :GhcModTypeInsert<CR>
-map <silent> ts :GhcModSplitFunCase<CR>
-map <silent> tq :GhcModType<CR>
-map <silent> te :GhcModTypeClear<CR>
+" nnoremap <silent> <leader>\\  :GhcModType<CR>
+nmap <leader>w :GhcModTypeInsert<CR>
+nmap <leader>s :GhcModSplitFunCase<CR>
+nmap <silent><leader>t :GhcModType<CR>
+nmap <leader>q :GhcModTypeClear<CR>
+
+" does not work yet
+let g:projectionist_heuristics = {
+      \   'tests/': {
+      \   'src/*.hs': {'alternate': 'tests/Test{}.hs'},
+      \   'tests/Test*.hs': {'alternate' : 'src/{}.hs'}
+      \   }
+      \ }
+
+" this will give problems if i ever enable autosove
+autocmd BufWritePre * StripTrailingWhitespaces
+
+" "{{{
+" function! s:CabalCargs(args)
+"    let l:output = system('cabal-cargs ' . a:args)
+"    if v:shell_error != 0
+"       let l:lines = split(l:output, '\n')
+"       echohl ErrorMsg
+"       echomsg 'args: ' . a:args
+"       for l:line in l:lines
+"          echomsg l:line
+"       endfor
+"       echohl None
+"       return ''
+"    endif
+"    return l:output
+" endfunction
+"
+" function! s:HdevtoolsOptions()
+"     return s:CabalCargs('--format=hdevtools --sourcefile=' . shellescape(expand('%')))
+" endfunction
+"
+"
+" function! s:InitHaskellVars()
+"    if filereadable(expand('%'))
+"
+"     let g:syntastic_haskell_hdevtools_args=  s:HdevtoolsOptions() " '-g -Wall'
+"       let g:hdevtools_options = s:HdevtoolsOptions()
+"    endif
+" endfunction
+"
+" call s:InitHaskellVars()
+" "}}}

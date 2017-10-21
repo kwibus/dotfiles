@@ -1,0 +1,23 @@
+snippet graph "Graph" b
+graph `!v expand("%:t:r")` {
+	${VISUAL}$0
+}
+endsnippet
+
+snippet digraph "Directed graph" b
+digraph `!v expand("%:t:r")` {
+	${VISUAL}$0
+}
+endsnippet
+
+snippet subgraph "Sub-graph" b
+subgraph cluster${1:1} {
+	${VISUAL}$0
+}
+endsnippet
+
+snippet block "Block" b
+{
+	${VISUAL}$0
+}
+endsnippet

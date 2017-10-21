@@ -1,4 +1,4 @@
-
+    let g:neomake_sh_enabled_makers =['sh', 'checkbashisms', 'shellcheck']
 " syntastic
     let g:syntastic_sh_checkers=['sh', 'checkbashisms', 'shellcheck']
 
