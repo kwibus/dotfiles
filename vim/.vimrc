@@ -1,14 +1,6 @@
-"TODO ?
- augroup vimrc
-
-   autocmd!
-
-   autocmd BufWinEnter,Syntax * syn sync minlines=500 maxlines=500
-
- augroup END
-
 "" REMEBER bear for  c/c++
 " general TODO's {{{
+" TODO ALE does not support checkbashisme
 " TODO make tab autocomplete if there is a menu
 " TODO improve or eplace repmo
 " TODO switch to test shortcut
@@ -63,12 +55,23 @@ function! Install()
         autocmd! VimEnter * PlugInstall --sync | source $MYVIMRC
      endif
 endfunction
-call Install()
+" call Install()
 "command! Install call Install()
 "}}}
+
 " Plugins {{{
-"hafsd"
 call plug#begin()
+Plug '907th/vim-auto-save'
+Plug 'rhysd/vim-grammarous'   " TODO choose one of the to 
+Plug 'dpelle/vim-LanguageTool'
+
+" Plug 'Raimondi/delimitMate'
+" Plug 'jiangmiao/auto-pairs'
+" Plug 'Townk/vim-autoclose'
+" Plug 'cohama/lexima.vim'
+
+" Plug 'vim-scripts/Highlight-UnMatched-Brackets'
+Plug 'roxma/vim-paste-easy'
 Plug 'junegunn/vim-peekaboo'
 Plug 'itchyny/vim-cursorword'
 " Plug 'airblade/vim-matchquote' -- conflict with matchit TODO alternative
@@ -78,8 +81,8 @@ Plug 'huesersohn/curry.vim' " TODO only cury files >
 Plug 'Houl/vim-repmo'       "TODO
 Plug 'ternjs/tern_for_vim', {'do':'npm install'}
 Plug 'mhinz/vim-startify'
-" Plug 'w0rp/ale'
-Plug 'dojoteef/neomake-autolint' | Plug 'benekastah/neomake'
+Plug 'w0rp/ale'
+" Plug 'dojoteef/neomake-autolint' | Plug 'benekastah/neomake'
 Plug 'rust-lang/rust.vim' ,{'for': 'rust'}
 Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-projectionist' " TODO implement
@@ -127,14 +130,16 @@ Plug 'tpope/vim-eunuch' " unix helpers sudowrite,..
 
 Plug 'jamessan/vim-gnupg'
 
+Plug 'kana/vim-textobj-fold' | Plug 'kana/vim-textobj-user'
+Plug 'glts/vim-textobj-comment' | Plug 'kana/vim-textobj-user'
 Plug 'vim-scripts/argtextobj.vim'
-
+Plug 'kana/vim-textobj-entire'
 Plug 'michaeljsmith/vim-indent-object'
 "
 Plug 'terryma/vim-smooth-scroll'
 
 " if has('nvim')
-   Plug 'benekastah/neomake' 
+   " Plug 'benekastahir/neomake'
 " else
 "     Plug 'scrooloose/syntastic' " always use neomake
 " endif
@@ -151,7 +156,7 @@ Plug 'christoomey/vim-tmux-navigator' " source even when not in tmux becauces it
 Plug 'Matt-Deacalion/vim-systemd-syntax'     , {'for': 'systemd'} " maybe need always loud for detection
 Plug 'rhysd/clever-f.vim' " repeat last f with f TODO Test
 " Plug 'justinmk/vim-sneak' " f with to char s does not work well with repmo
-Plug 'haya14busa/incsearch.vim' " incremental search  TODO room inprovement
+Plug 'haya14busa/incsearch.vim' " incremental search  TODO room inprovement TODO should no longer be nesecary in new vim version
 Plug 'idris-hackers/idris-vim'
 " Plug 'neovimhaskell/haskell-vim'
 " Plug 'gilligan/vim-textobj-haskell      , {'for': 'haskell'} | Plug 'kana/vim-textobj-user' " defined textobject haskell fucntion ih. maybe remove almost same as ip -now gitgutter hunk
@@ -172,8 +177,9 @@ Plug 'peterhoeg/vim-qml' , {'for': 'qml'}
 Plug 'LaTeX-Box-Team/LaTeX-Box'  , {'for': 'tex'}
 
 Plug 'vim-pandoc/vim-pandoc'          ", {'for': ['markdown','tex']}
+let g:pandoc#modules#disabled=['chdir']
 Plug 'vim-pandoc/vim-pandoc-syntax'   ", {'for': ['markdown','tex']}
-Plug 'pyarmak/vim-pandoc-live-preview' ", {'for': ['markdown','tex']} -- does this work?
+" Plug 'pyarmak/vim-pandoc-live-preview' ", {'for': ['markdown','tex']} -- does this work?
 
 " Plug 'nelstrom/vim-markdown-folding' , {'for': 'markdown'}
 "     let g:markdown_fold_style = 'nested'
@@ -202,7 +208,7 @@ Plug 'vim-airline/vim-airline-themes'
 
 Plug 'tpope/vim-git'
 Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-ragtag'  "<C-X>/ Last HTML tag closed
+Plug 'tpope/vim-ragtag'  "<C-X>/ Last HTML tag closed TODO are better plugins
 Plug 'gregsexton/gitv'
 Plug 'airblade/vim-gitgutter'
 Plug 'Firef0x/PKGBUILD.vim'              , {'for': 'PKGBUILD'}
@@ -239,7 +245,9 @@ Plug 'godlygeek/tabular' " TODO use one of them
 Plug 'junegunn/vim-easy-align'
 
 Plug 'majutsushi/tagbar' , {'on' : 'Tagbar'}
-Plug 'tomtom/tcomment_vim' "add comments gc
+Plug 'tomtom/tcomment_vim' "add comments gc TODO some conflicet with textObjectcomment
+  let g:tcommentTextObjectInlineComment=''
+
 Plug 'SirVer/ultisnips'
 " Plug 'simnalamburt/vim-mundo'
 " Plug 'sjl/gundo.vim'
@@ -262,14 +270,19 @@ Plug 'nelstrom/vim-qargs'
 Plug 'wellle/targets.vim' " add extra text opjects an( i' ia
 " Plug 'takac/vim-hardtime'
 " Plug 'rstacruz/vim-closer' " does not work whell with indentation and editing existed code
-Plug 'pseewald/vim-anyfold'
+Plug 'pseewald/vim-anyfold' " TODO not used but devince folding based on indentation
 Plug 'chrisbra/Colorizer'
 
 call plug#end() " }}}
 " {{{ highlighting
+   augroup synHiglight
+     autocmd!
+     autocmd BufWinEnter,Syntax * syntax sync fromstart " this can be slow on large files, fromstart can be replaced for a speedup
+   augroup END
+
   set conceallevel=0
   set synmaxcol=190
-
+"    autocmd BufWinEnter,Syntax * syn sync minlines=500 maxlines=500
 " solarized colors scheme {{{
   let g:solarized_termtrans = 1
   " let g:solarized_termcolors=256
@@ -363,7 +376,7 @@ endif
 
 set path+=**
 " set viewdir=$HOME/.vim/view
-set directory=.,$HOME/.vim/swap
+set directory=.,~/.vim/swap
 
 autocmd FileType * setlocal  formatoptions-=o " dont insert comment when you oO from within comment
 autocmd BufEnter * if &filetype == "" | setlocal filetype=text | endif " when no filetype detect make it text
@@ -506,6 +519,7 @@ endif
     set spelllang=en,nl
 
 " Languagetool install global {{{
+    " let g:grammarous#languagetool_cmd = '/usr/share/java/languagetool/languagetool-commandline.jar'
     let g:languagetool_jar='/usr/share/java/languagetool/languagetool-commandline.jar' "}}}
 "}}}
 "}}}
@@ -683,7 +697,10 @@ map <C-W>z :ZoomWinTabToggle<CR>
     " nnoremap <C-h> <C-w>h
     " nnoremap <C-l> <C-w>l
 
-    " nnoremap <C-S-h>
+    " nnoremap <C-S-j> :5winc + <Cr>
+    " nnoremap <C-S-k> :5winc - <Cr>
+    " nnoremap <C-S-h> :5winc < <Cr>
+    " nnoremap <C-S-l> :5winc > <Cr>
 
     map j gj
     map k gk
@@ -727,16 +744,16 @@ else
 endif
 "}}}
 " {{{ syntax checker
-" if has('nvim')
-  "neomake
+  " ale{{{
 
-let g:neomake_autolint_sign_column_always=1
-      " autocmd! BufWritePost * Neomake " TODO done by neomake-autlint
-" else
-"     "syntastic plugin syntax cheker {{{
-"
+  " }}}
+  "neomake {{{
+
+  let g:neomake_autolint_sign_column_always=1
+"       autocmd! BufWritePost * Neomake " TODO done by neomake-autlint
+"   }}}
+"     "syntastic {{{
 "     "If enabled, syntastic will do syntax checks when buffers are first loaded as well as on saving
-"
 "     let g:syntastic_always_populate_loc_list = 1
 "     let g:syntastic_aggregate_errors = 1
 "     let g:syntastic_check_on_open=1
@@ -756,7 +773,7 @@ let g:neomake_autolint_sign_column_always=1
 "     " endif
 "
 "     " }}}
-" endif
+
 " }}}
 " completion {{{
 " set completeopt=longest,menuone
@@ -839,13 +856,16 @@ endif
 " }}}
 " }}}
 " airline {{{
-set laststatus=2
-let g:airline_powerline_fonts = 0
+  set laststatus=2
+  " let g:airline#extensions#tabline#enabled = 1
+  let g:airline_powerline_fonts = 0
   let g:airline_symbols_ascii = 1
 " powerline symbols
-if !exists('g:airline_symbols')
-let g:airline_symbols = {}
-endif
+
+  if !exists('g:airline_symbols') " TODO why is this here
+    let g:airline_symbols = {}
+  endif
+
   let g:airline_left_sep = '»'
   let g:airline_left_sep = ''
   " let g:airline_left_sep = '▶'
@@ -930,7 +950,7 @@ noremap <F7> :Togglebackground<CR>
 "}}}
 
 " togle neomake sighn {{{
-function! NeomakeToggleSign()
+function! SignNeomakeToggle()
   if g:neomake_place_signs==#0
     let g:neomake_place_signs=1
   else
@@ -938,7 +958,7 @@ function! NeomakeToggleSign()
     sign unplace *
   endif
 endfunction
-command! NeomakeToggleSign call NeomakeToggleSign()
+command! SignNeomakeToggle call SignNeomakeToggle()
 " }}}
 
 " " search todos {{{

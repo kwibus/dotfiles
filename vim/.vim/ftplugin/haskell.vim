@@ -18,12 +18,17 @@ let g:necoghc_debug=1
 " let b:closer = 1 |
 " let b:closer_flags = '([{'
 
-let g:syntastic_haskell_hdevtools_args= '-g -Wall'
+let g:ale_linters = {
+\   'haskell': ['stack-build','hlint'],
+\}
+let g:ale_haskell_hdevtools_options  = '-S -g -Wall -g -dynamic'
+let g:syntastic_haskell_hdevtools_args = '-S -g -Wall -g -dynamic'
+
 let g:syntastic_haskell_scan_args= '-jfalse -l110 -cf'
 
 set makeprg=cabal\ build
 " let g:neomake_autolint_enabled=0 "try ale
-let g:neomake_haskell_enabled_makers =['ghcmod','hlint']
+let g:neomake_haskell_enabled_makers =['hdevtools','hlint']
 let g:syntastic_haskell_checkers=['ghcmod','hlint','scan']  "ghcmod, new versio of ghcmod do not work
 
 " if has('nvim')

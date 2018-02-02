@@ -6,6 +6,10 @@ command! -nargs=* RunSilent
 nmap <Leader>v :RunSilent xdg-open /tmp/vim-pandoc-out.pdf&<CR>
 nmap <Leader>c :update<Cr> :Pandoc pdf  -o /tmp/vim-pandoc-out.pdf <CR> " toc
 
+let g:pandoc#command#autoexec_on_writes = 1
+let g:pandoc#command#autoexec_command = 'Pandoc pdf -o /tmp/vim-pandoc-out.pdf'
+" autocmd BufWritePost *  Dispatch! Pandoc pdf  -o /tmp/vim-pandoc-out.pdf
+
 " syntax region markdownFold start="^\z(#\+\) " end="\(^#\(\z1#*\)\@!#*[^#]\)\@=" transparent fold
 " setlocal  foldmethod=syntax
 " function! SyncTexForward()
