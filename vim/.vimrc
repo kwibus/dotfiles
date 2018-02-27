@@ -62,7 +62,7 @@ endfunction
 " Plugins {{{
 call plug#begin()
 Plug '907th/vim-auto-save'
-Plug 'rhysd/vim-grammarous'   " TODO choose one of the to 
+Plug 'rhysd/vim-grammarous'   " TODO choose one of the to
 Plug 'dpelle/vim-LanguageTool'
 
 " Plug 'Raimondi/delimitMate'
@@ -78,7 +78,7 @@ Plug 'itchyny/vim-cursorword'
 Plug 'kovetskiy/sxhkd-vim'
 " Plug 'jiangmiao/auto-pairs'  "TODO Try configure
 Plug 'huesersohn/curry.vim' " TODO only cury files >
-Plug 'Houl/vim-repmo'       "TODO
+"Plug 'Houl/vim-repmo'       "TODO
 Plug 'ternjs/tern_for_vim', {'do':'npm install'}
 Plug 'mhinz/vim-startify'
 Plug 'w0rp/ale'
@@ -245,6 +245,7 @@ Plug 'godlygeek/tabular' " TODO use one of them
 Plug 'junegunn/vim-easy-align'
 
 Plug 'majutsushi/tagbar' , {'on' : 'Tagbar'}
+
 Plug 'tomtom/tcomment_vim' "add comments gc TODO some conflicet with textObjectcomment
   let g:tcommentTextObjectInlineComment=''
 
@@ -473,6 +474,7 @@ endif
     set smarttab
     set expandtab
     set shiftwidth=4
+    set tabstop=4
     set softtabstop=4
     "}}}
 
@@ -629,10 +631,10 @@ map <C-W>z :ZoomWinTabToggle<CR>
 "}}}
     " next {{{
 
-    map <expr> [l repmo#Key1(':ll<CR> :lprevious<CR>', ':ll<CR> :lnext<CR>')
-    map <expr> ]l repmo#Key1(':ll<CR> :lnext<CR>', ':ll<CR> :lprevious<CR>')
-    " noremap <silent> [l :ll <CR> :lprevious<CR>
-    " noremap <silent> ]l :ll <cr> :lnext<cr>
+    " map <expr> [l repmo#Key1(':ll<CR> :lprevious<CR>', ':ll<CR> :lnext<CR>')
+    " map <expr> ]l repmo#Key1(':ll<CR> :lnext<CR>', ':ll<CR> :lprevious<CR>')
+    noremap <silent> [l :ll <CR> :lprevious<CR>
+    noremap <silent> ]l :ll <cr> :lnext<cr>
 
     " noremap [c [d
     " noremap ]c ]d
@@ -1013,34 +1015,36 @@ com! DiffSaved call s:DiffWithSaved()
 " }}}
 
 " repeat the last [count]motion or the last zap-key:
-map <expr> ; repmo#LastKey(';')|sunmap ;
-map <expr> , repmo#LastRevKey(',')|sunmap ,
-imap jk <Esc>
-noremap <expr> [s repmo#Key1('[s', ']s')
-noremap <expr> ]s repmo#Key1(']s', '[s')
-noremap <expr> ge repmo#Key1('ge', 'e')
-noremap <expr> e repmo#Key1('e', 'ge')
-
-let g:clever_f_not_overwrites_standard_mappings=1
-nmap f repmo#ZapKey('<Plug>(clever-f-f)')"|nunmap f
-xmap f repmo#ZapKey('<Plug>(clever-f-f)')"|xunmap f
-omap f repmo#ZapKey('<Plug>(clever-f-f)')"|ounmap f
-nmap F repmo#ZapKey('<Plug>(clever-f-F)')"|nunmap F
-xmap F repmo#ZapKey('<Plug>(clever-f-F)')"|xunmap F
-omap F repmo#ZapKey('<Plug>(clever-f-F)')"|ounmap F
-nmap t repmo#ZapKey('<Plug>(clever-f-t)')"|nunmap t
-xmap t repmo#ZapKey('<Plug>(clever-f-t)')"|xunmap t
-omap t repmo#ZapKey('<Plug>(clever-f-t)')"|ounmap t
-nmap T repmo#ZapKey('<Plug>(clever-f-T)')"|nunmap T
-xmap T repmo#ZapKey('<Plug>(clever-f-T)')"|xunmap T
-omap T repmo#ZapKey('<Plug>(clever-f-T)')"|ounmap T
-
-" if you like `:noremap j gj', you can keep that:
-noremap <expr> j repmo#Key('gj', 'gk')|sunmap j
-noremap <expr> k repmo#Key('gk', 'gj')|sunmap k
+" map <expr> ; repmo#LastKey(';')|sunmap ;
+" map <expr> , repmo#LastRevKey(',')|sunmap ,
+" imap jk <Esc>
+" noremap <expr> [s repmo#Key1('[s', ']s')
+" noremap <expr> ]s repmo#Key1(']s', '[s')
+" noremap <expr> ge repmo#Key1('ge', 'e')
+" noremap <expr> e repmo#Key1('e', 'ge')
+"
+" let g:clever_f_not_overwrites_standard_mappings=1
+" nmap f repmo#ZapKey('<Plug>(clever-f-f)')"|nunmap f
+" xmap f repmo#ZapKey('<Plug>(clever-f-f)')"|xunmap f
+" omap f repmo#ZapKey('<Plug>(clever-f-f)')"|ounmap f
+" nmap F repmo#ZapKey('<Plug>(clever-f-F)')"|nunmap F
+" xmap F repmo#ZapKey('<Plug>(clever-f-F)')"|xunmap F
+" omap F repmo#ZapKey('<Plug>(clever-f-F)')"|ounmap F
+" nmap t repmo#ZapKey('<Plug>(clever-f-t)')"|nunmap t
+" xmap t repmo#ZapKey('<Plug>(clever-f-t)')"|xunmap t
+" omap t repmo#ZapKey('<Plug>(clever-f-t)')"|ounmap t
+" nmap T repmo#ZapKey('<Plug>(clever-f-T)')"|nunmap T
+" xmap T repmo#ZapKey('<Plug>(clever-f-T)')"|xunmap T
+" omap T repmo#ZapKey('<Plug>(clever-f-T)')"|ounmap T
+"
+" " if you like `:noremap j gj', you can keep that:
+" noremap <expr> j repmo#Key('gj', 'gk')|sunmap j
+" noremap <expr> k repmo#Key('gk', 'gj')|sunmap k
 
 " set foldopen=all
 " set foldclose=all
 set foldopen=block,hor,insert,jump,mark,quickfix,search,tag,undo
 command! ClearLocationList lexpr []
 command! ClearQuickfixList cexpr []
+
+  setglobal commentstring="# %s" " TODO does not work
