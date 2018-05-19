@@ -121,7 +121,7 @@ Plug 'jceb/vim-editqf' " eddit quickfix is not realy stable consider remove
 if executable('editorconfig')
     Plug 'editorconfig/editorconfig-vim'
 endif
-
+Plug 'git@github.com:timakro/vim-copytoggle.git'
 Plug 'zirrostig/vim-schlepp' " drag with visual cursor
 Plug 'vim-scripts/matchit.zip'
 Plug 'tpope/vim-eunuch' " unix helpers sudowrite,..
@@ -165,6 +165,9 @@ Plug 'idris-hackers/idris-vim'
 " Plug 'dag/vim2hs'                       , {'for': 'haskell'}
 " Plug 'itchyny/vim-haskell-indent'       , {'for': 'haskell'}
 " Plug 'chrisdone/hindent' ,                {'for': 'haskell'}
+
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'rob-b/gutenhasktags'
 Plug 'eagletmt/ghcmod-vim'              , {'for': 'haskell'} |  Plug 'Shougo/vimproc.vim' , {'do':'make'}
 Plug 'Twinside/vim-haskellFold'         , {'for': 'haskell'}
 Plug 'Twinside/vim-syntax-haskell-cabal', {'for': 'haskell'}
@@ -184,8 +187,7 @@ Plug 'vim-pandoc/vim-pandoc-syntax'   ", {'for': ['markdown','tex']}
 " Plug 'nelstrom/vim-markdown-folding' , {'for': 'markdown'}
 "     let g:markdown_fold_style = 'nested'
 
-Plug 'xolox/vim-easytags', {'do': 'mkdir ~/.vim/easytags' } | Plug 'xolox/vim-misc'
-
+" Plug 'xolox/vim-easytags', {'do': 'mkdir ~/.vim/easytags' } | Plug 'xolox/vim-misc'
 
 if &term =~# '^linux'
 else
@@ -527,7 +529,7 @@ endif
 "}}}
 " mappings {{{
     let g:mapleader = ' '
-    inoremap jj <Esc> " TODO does this work for me ?
+    "inoremap jj <Esc> " TODO does this work for me ?
     " inoremap l; <Esc>
     " inoremap ;l <Esc>
 "zoomwintab {{{
@@ -652,6 +654,7 @@ map <C-W>z :ZoomWinTabToggle<CR>
     imap              <F1>  <NOP>
     inoremap          <F2>  <NOP>
     inoremap <silent> <F3>  <C-o>:Tagbar<CR>
+
     inoremap          <F4>  <NOP>
     inoremap          <F7>  <NOP>
     inoremap <silent> <F8>  <C-o>:set spell!<Cr>
@@ -664,8 +667,19 @@ map <C-W>z :ZoomWinTabToggle<CR>
     noremap <silent><F2>  :UndotreeToggle<CR>
     noremap <silent><F3>  :Tagbar<CR>
     set pastetoggle=<F4>
+
+    nmap <F5> <Plug>copytoggle
     " noremap <silent> <F5> :YRShow<CR> -- was part of yankring
     noremap <silent> <F8> :set spell!<Cr>
+
+function Togglepast ()
+if &paste
+	echo past
+else
+	echo no
+endif
+endfunction
+command! Togglepast call Togglepast()
 
 " multicusor " {{{
     let g:ctrlp_map = '<F12>'
@@ -886,17 +900,26 @@ endif
   let g:airline_symbols.notexists = '∄'
   let g:airline_symbols.whitespace = 'Ξ'
 " }}}
-" easytags{{{
-let g:easytags_events = ['BufWritePost']
+" tags {{{
+" gutenhasktags {{{
+  let g:gutentags_project_info = [ {'type': 'python', 'file': 'setup.py'},
+                                 \ {'type': 'ruby', 'file': 'Gemfile'},
+                                 \ {'type': 'haskell', 'file': 'Setup.hs'} ]
+  let g:gutentags_ctags_executable_haskell = 'gutenhasktags'
+" }}}
+" easytags {{{
+  let g:easytags_events = ['BufWritePost']
 
-" set tags+=./tags
-let g:easytags_dynamic_files = 1
-let g:easytags_async = 1
-let g:easytags_by_filetype = '~/.vim/easytags'
+  " set tags+=./tags
+  let g:easytags_dynamic_files = 1
+  let g:easytags_async = 1
+  let g:easytags_by_filetype = '~/.vim/easytags'
+
+"}}}
 "}}}
 " git {{{
-autocmd! BufNewFile,BufRead *.git/COMMIT_EDITMSG set ft=gitcommit
-" " git gutter {{{
+  autocmd! BufNewFile,BufRead *.git/COMMIT_EDITMSG set ft=gitcommit
+" git gutter {{{
   " let g:gitgutter_escape_grep = 1 " TODO i think this no longer needed
   nmap ]h <Plug>GitGutterNextHunk
   nmap [h <Plug>GitGutterPrevHunk
@@ -976,43 +999,46 @@ command! SignNeomakeToggle call SignNeomakeToggle()
 " TODO test if this works
 let g:rt_cw = ''
 function! RT()
-let l:cw = expand('<cword>')
-try
-  if l:cw != g:rt_cw
-      execute 'tag ' . l:cw
-      call search(l:cw,'c',line('.'))
-  else
-      try
-          execute 'tnext'
-      catch /.*/
-          execute 'trewind'
-      endtry
-      call search(l:cw,'c',line('.'))
-  endif
-  let g:rt_cw = l:cw
-catch /.*/
-  echo 'no tags on ' . l:cw
-endtry
+  let l:cw = expand('<cword>')
+  try
+    if l:cw != g:rt_cw
+        execute 'tag ' . l:cw
+        call search(l:cw,'c',line('.'))
+    else
+        try
+            execute 'tnext'
+        catch /.*/
+            execute 'trewind'
+        endtry
+        call search(l:cw,'c',line('.'))
+    endif
+    let g:rt_cw = l:cw
+  catch /.*/
+    echo 'no tags on ' . l:cw
+  endtry
 endfunction
 map <C-]> :call RT()<CR>
 "}}}
+
 function! <SID>Preserve(command) "{{{
-let l:line = line('.')
-let l:colum = col('.')
-execute a:command
-call cursor(l:line, l:colum)
+  let l:line = line('.')
+  let l:colum = col('.')
+  execute a:command
+  call cursor(l:line, l:colum)
 endfunction
 com! StripTrailingWhitespaces call s:Preserve('%s/\s\+$//e')
 " }}}
+
 function! <SID>DiffWithSaved() " {{{
-let l:filetype=&filetype
-diffthis
-vnew | r # | normal! 1Gdd
-diffthis
-exe 'setlocal bt=nofile bh=wipe nobl noswf ro ft=' . l:filetype
+  let l:filetype=&filetype
+  diffthis
+  vnew | r # | normal! 1Gdd
+  diffthis
+  exe 'setlocal bt=nofile bh=wipe nobl noswf ro ft=' . l:filetype
 endfunction
 com! DiffSaved call s:DiffWithSaved()
 " }}}
+
 
 " repeat the last [count]motion or the last zap-key:
 " map <expr> ; repmo#LastKey(';')|sunmap ;
@@ -1047,4 +1073,4 @@ set foldopen=block,hor,insert,jump,mark,quickfix,search,tag,undo
 command! ClearLocationList lexpr []
 command! ClearQuickfixList cexpr []
 
-  setglobal commentstring="# %s" " TODO does not work
+setglobal commentstring="# %s" " TODO does not work
