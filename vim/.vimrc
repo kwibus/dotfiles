@@ -61,8 +61,12 @@ endfunction
 
 " Plugins {{{
 call plug#begin()
+Plug 'tobyS/pdv'   | Plug 'tobyS/vmustache'
+ 
+
+
 Plug '907th/vim-auto-save'
-Plug 'rhysd/vim-grammarous'   " TODO choose one of the to
+Plug 'rhysd/vim-grammarous'   " TODO choose one of the to 
 Plug 'dpelle/vim-LanguageTool'
 
 " Plug 'Raimondi/delimitMate'
@@ -80,7 +84,7 @@ Plug 'kovetskiy/sxhkd-vim'
 Plug 'huesersohn/curry.vim' " TODO only cury files >
 "Plug 'Houl/vim-repmo'       "TODO
 Plug 'ternjs/tern_for_vim', {'do':'npm install'}
-Plug 'mhinz/vim-startify'
+" Plug 'mhinz/vim-startify'
 Plug 'w0rp/ale'
 " Plug 'dojoteef/neomake-autolint' | Plug 'benekastah/neomake'
 Plug 'rust-lang/rust.vim' ,{'for': 'rust'}
@@ -165,9 +169,6 @@ Plug 'idris-hackers/idris-vim'
 " Plug 'dag/vim2hs'                       , {'for': 'haskell'}
 " Plug 'itchyny/vim-haskell-indent'       , {'for': 'haskell'}
 " Plug 'chrisdone/hindent' ,                {'for': 'haskell'}
-
-Plug 'ludovicchabant/vim-gutentags'
-Plug 'rob-b/gutenhasktags'
 Plug 'eagletmt/ghcmod-vim'              , {'for': 'haskell'} |  Plug 'Shougo/vimproc.vim' , {'do':'make'}
 Plug 'Twinside/vim-haskellFold'         , {'for': 'haskell'}
 Plug 'Twinside/vim-syntax-haskell-cabal', {'for': 'haskell'}
@@ -187,7 +188,7 @@ Plug 'vim-pandoc/vim-pandoc-syntax'   ", {'for': ['markdown','tex']}
 " Plug 'nelstrom/vim-markdown-folding' , {'for': 'markdown'}
 "     let g:markdown_fold_style = 'nested'
 
-" Plug 'xolox/vim-easytags', {'do': 'mkdir ~/.vim/easytags' } | Plug 'xolox/vim-misc'
+Plug 'xolox/vim-easytags', {'do': 'mkdir ~/.vim/easytags' } | Plug 'xolox/vim-misc'
 
 if &term =~# '^linux'
 else
@@ -247,7 +248,6 @@ Plug 'godlygeek/tabular' " TODO use one of them
 Plug 'junegunn/vim-easy-align'
 
 Plug 'majutsushi/tagbar' , {'on' : 'Tagbar'}
-
 Plug 'tomtom/tcomment_vim' "add comments gc TODO some conflicet with textObjectcomment
   let g:tcommentTextObjectInlineComment=''
 
@@ -529,7 +529,7 @@ endif
 "}}}
 " mappings {{{
     let g:mapleader = ' '
-    "inoremap jj <Esc> " TODO does this work for me ?
+    " inoremap jj <Esc> " TODO does this work for me ?
     " inoremap l; <Esc>
     " inoremap ;l <Esc>
 "zoomwintab {{{
@@ -592,9 +592,12 @@ map <C-W>z :ZoomWinTabToggle<CR>
 " Yank {{{
 
     "{{yankstack
-    nmap <M-n> <Plug>yankstack_substitute_newer_paste
-    "has to be before remaps yank and past
+
     call yankstack#setup()
+    nmap <M-n> <Plug>yankstack_substitute_newer_paste
+    nmap <A-p> <Plug>yankstack_substitute_older_paste
+    nmap <A-n> <Plug>yankstack_substitute_newer_paste
+    "has to be before remaps yank and past
     " }}}
     nnoremap Y y$
     " set clipboard=unnamedplus
@@ -635,8 +638,8 @@ map <C-W>z :ZoomWinTabToggle<CR>
 
     " map <expr> [l repmo#Key1(':ll<CR> :lprevious<CR>', ':ll<CR> :lnext<CR>')
     " map <expr> ]l repmo#Key1(':ll<CR> :lnext<CR>', ':ll<CR> :lprevious<CR>')
-    noremap <silent> [l :ll <CR> :lprevious<CR>
-    noremap <silent> ]l :ll <cr> :lnext<cr>
+    " noremap <silent> [l :ll <CR> :lprevious<CR>
+    " noremap <silent> ]l :ll <cr> :lnext<cr>
 
     " noremap [c [d
     " noremap ]c ]d
@@ -742,8 +745,8 @@ else
     " 6 -> solid vertical bar
   elseif &term =~? '^screen\|tmux'
       " this only works in tmux/screen on xterm rxvt
-      let &t_SI = "\<Esc>Ptmux;\<Esc>\e[5 q\<Esc>\\"
-      let &t_EI = "\<Esc>Ptmux;\<Esc>\e[2 q\<Esc>\\"
+      " let &t_SI = "\<Esc>Ptmux;\<Esc>\e[5 q\<Esc>\\"
+      " let &t_EI = "\<Esc>Ptmux;\<Esc>\e[2 q\<Esc>\\"
 
       " if exists('$TMUX')
       "     " does it work
@@ -910,13 +913,12 @@ endif
 " easytags {{{
   let g:easytags_events = ['BufWritePost']
 
-  " set tags+=./tags
+" set tags+=./tags
   let g:easytags_dynamic_files = 1
   let g:easytags_async = 1
   let g:easytags_by_filetype = '~/.vim/easytags'
+"}}}
 
-"}}}
-"}}}
 " git {{{
   autocmd! BufNewFile,BufRead *.git/COMMIT_EDITMSG set ft=gitcommit
 " git gutter {{{
@@ -1019,7 +1021,6 @@ function! RT()
 endfunction
 map <C-]> :call RT()<CR>
 "}}}
-
 function! <SID>Preserve(command) "{{{
   let l:line = line('.')
   let l:colum = col('.')
@@ -1038,7 +1039,6 @@ function! <SID>DiffWithSaved() " {{{
 endfunction
 com! DiffSaved call s:DiffWithSaved()
 " }}}
-
 
 " repeat the last [count]motion or the last zap-key:
 " map <expr> ; repmo#LastKey(';')|sunmap ;
@@ -1072,5 +1072,3 @@ com! DiffSaved call s:DiffWithSaved()
 set foldopen=block,hor,insert,jump,mark,quickfix,search,tag,undo
 command! ClearLocationList lexpr []
 command! ClearQuickfixList cexpr []
-
-setglobal commentstring="# %s" " TODO does not work
