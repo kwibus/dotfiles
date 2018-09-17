@@ -1,3 +1,6 @@
+XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/"$UID"}
+ZDOTDIR=${ZDOTDIR:-$HOME/.zsh}
+fpath=($ZDOTDIR/completion $fpath)
 autoload -U colors && colors
 eval $(dircolors)
 
@@ -72,9 +75,12 @@ zstyle ':completion:*' rehash true
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zsh/cache
 
-
+export GOPATH=$HOME/.local/godir
 PATH=$HOME/scripts:$HOME/.local/bin:$PATH
+export PATH=$GOROOT/bin:$GOPATH/bin:$PATH 
+
 export EDITOR="vim"
+export SYSTEMD_EDITOR="vim"
 # export LESS="-ra"
 # must go aver PATH to find stack
 
@@ -90,7 +96,7 @@ export EDITOR="vim"
 KEYTIMEOUT=1
 
 alias -g wlan=wlp5s0
-
+test -n "$TMUX" && alias ssh='TERM=screen ssh'
 alias -r x='startx "$XINITRC"'
 alias -r rm='rm -i'
 alias -r mv='mv -i'
@@ -129,7 +135,7 @@ include () {
     [ -f "$1" ] && source "$1"
 }
 
-include /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+include /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 include /usr/share/doc/pkgfile/command-not-found.zsh
 
 include "$ZDOTDIR"/cabalpromt.zsh
@@ -159,11 +165,15 @@ help()
 # zstyle ':completion:*:man:*'      menu yes select
 
 GENCOMPL_FPATH="$ZDOTDIR"/complete
-GENCOMPL_PY=python2
-source "$ZDOTDIR"/zsh-completion-generator/zsh-completion-generator.plugin.zsh
+# GENCOMPL_PY=python2
+# source "$ZDOTDIR"/zsh-completion-generator/zsh-completion-generator.plugin.zsh
 
 autoload -Uz compinit bashcompinit
 compinit -d $XDG_RUNTIME_DIR
 bashcompinit
 
-eval "$(stack --bash-completion-script stack)"
+# eval "$(stack --bash-completion-script stack)"
+
+if [ $commands[kubectl] ]; then
+  source <(kubectl completion zsh)
+fi
