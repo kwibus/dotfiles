@@ -56,14 +56,15 @@ function! Install()
      endif
 endfunction
 " call Install()
-"command! Install call Install()
+command! Install call Install()
 "}}}
 
 " Plugins {{{
 call plug#begin()
+Plug 'pearofducks/ansible-vim'
 Plug '907th/vim-auto-save'
-Plug 'rhysd/vim-grammarous'   " TODO choose one of the to
-Plug 'dpelle/vim-LanguageTool'
+" Plug 'rhysd/vim-grammarous'   " TODO choose one of the to
+" Plug 'dpelle/vim-LanguageTool'
 
 " Plug 'Raimondi/delimitMate'
 " Plug 'jiangmiao/auto-pairs'
@@ -80,7 +81,7 @@ Plug 'kovetskiy/sxhkd-vim'
 Plug 'huesersohn/curry.vim' " TODO only cury files >
 "Plug 'Houl/vim-repmo'       "TODO
 Plug 'ternjs/tern_for_vim', {'do':'npm install'}
-Plug 'mhinz/vim-startify'
+" Plug 'mhinz/vim-startify'
 Plug 'w0rp/ale'
 " Plug 'dojoteef/neomake-autolint' | Plug 'benekastah/neomake'
 Plug 'rust-lang/rust.vim' ,{'for': 'rust'}
@@ -121,7 +122,7 @@ Plug 'jceb/vim-editqf' " eddit quickfix is not realy stable consider remove
 if executable('editorconfig')
     Plug 'editorconfig/editorconfig-vim'
 endif
-Plug 'git@github.com:timakro/vim-copytoggle.git'
+Plug 'timakro/vim-copytoggle'
 Plug 'zirrostig/vim-schlepp' " drag with visual cursor
 Plug 'vim-scripts/matchit.zip'
 Plug 'tpope/vim-eunuch' " unix helpers sudowrite,..
