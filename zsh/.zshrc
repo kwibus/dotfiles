@@ -177,3 +177,9 @@ bashcompinit
 if [ $commands[kubectl] ]; then
   source <(kubectl completion zsh)
 fi
+
+if [ $commands[kompose] ]; then
+  source <(kompose completion zsh)
+fi
+
+
