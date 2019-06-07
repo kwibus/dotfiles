@@ -61,10 +61,13 @@ command! Install call Install()
 
 " Plugins {{{
 call plug#begin()
-Plug 'pearofducks/ansible-vim'
+Plug 'tobyS/pdv'   | Plug 'tobyS/vmustache'
+ 
+
+
 Plug '907th/vim-auto-save'
-" Plug 'rhysd/vim-grammarous'   " TODO choose one of the to
-" Plug 'dpelle/vim-LanguageTool'
+Plug 'rhysd/vim-grammarous'   " TODO choose one of the to 
+Plug 'dpelle/vim-LanguageTool'
 
 " Plug 'Raimondi/delimitMate'
 " Plug 'jiangmiao/auto-pairs'
@@ -250,7 +253,7 @@ Plug 'junegunn/vim-easy-align'
 Plug 'majutsushi/tagbar' , {'on' : 'Tagbar'}
 
 Plug 'tomtom/tcomment_vim' "add comments gc TODO some conflicet with textObjectcomment
-  let g:tcommentTextObjectInlineComment=''
+  let g:tcomment_textobject_inlinecommen=''
 
 Plug 'SirVer/ultisnips'
 " Plug 'simnalamburt/vim-mundo'
@@ -530,7 +533,7 @@ endif
 "}}}
 " mappings {{{
     let g:mapleader = ' '
-    "inoremap jj <Esc> " TODO does this work for me ?
+    " inoremap jj <Esc> " TODO does this work for me ?
     " inoremap l; <Esc>
     " inoremap ;l <Esc>
 "zoomwintab {{{
@@ -593,9 +596,12 @@ map <C-W>z :ZoomWinTabToggle<CR>
 " Yank {{{
 
     "{{yankstack
-    nmap <M-n> <Plug>yankstack_substitute_newer_paste
-    "has to be before remaps yank and past
+
     call yankstack#setup()
+    nmap <M-n> <Plug>yankstack_substitute_newer_paste
+    nmap <A-p> <Plug>yankstack_substitute_older_paste
+    nmap <A-n> <Plug>yankstack_substitute_newer_paste
+    "has to be before remaps yank and past
     " }}}
     nnoremap Y y$
     " set clipboard=unnamedplus
@@ -915,7 +921,6 @@ endif
   let g:easytags_dynamic_files = 1
   let g:easytags_async = 1
   let g:easytags_by_filetype = '~/.vim/easytags'
-
 "}}}
 "}}}
 " git {{{
@@ -1073,5 +1078,3 @@ com! DiffSaved call s:DiffWithSaved()
 set foldopen=block,hor,insert,jump,mark,quickfix,search,tag,undo
 command! ClearLocationList lexpr []
 command! ClearQuickfixList cexpr []
-
-setglobal commentstring="# %s" " TODO does not work

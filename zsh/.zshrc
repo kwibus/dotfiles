@@ -1,6 +1,6 @@
-source_count=$((${source_count-0} + 1 ))
-ZDOTDIR=${ZDOTDIR-$HOME/.config/zsh}
-
+XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/"$UID"}
+ZDOTDIR=${ZDOTDIR:-$HOME/.zsh}
+fpath=($ZDOTDIR/completion $fpath)
 autoload -U colors && colors
 eval $(dircolors)
 
@@ -12,7 +12,7 @@ HISTFILE=${HISTFILE:=~/.histfile}
 # Lines configured by zsh-newuser-install
 HISTSIZE=10000
 SAVEHIST=10000
-setopt APPEND_HISTORY AUTOCD BEEP NOTIFY #SHARE_HISTORY
+setopt APPEND_HISTORY AUTOCD BEEP NOTIFY SHARE_HISTORY
 bindkey -e
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
@@ -30,24 +30,20 @@ zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %
 zstyle ':completion:*' squeeze-slashes true
 zstyle ':completion:*' use-compctl false
 zstyle ':completion:*' verbose true
-zstyle :compinstall filename "$ZDOTDIR/.zshrc"
+zstyle :compinstall filename '/home/rens/.zshrc'
 
 
 # End of lines adcomplete
+
 
 Watch=all
 stty -ixon # disable Ctrl-S  freeze
 
 # delete key
-# bindkey -r  "^[h"
-
 bindkey "${terminfo[khome]}" beginning-of-line
 bindkey "${terminfo[kend]}" end-of-line
-
 bindkey '\e[3~' delete-char
-
 bindkey '^Xr' history-search-backward
-
 bindkey '\ef' emacs-forward-word
 bindkey '\eb' emacs-backward-word
 
@@ -89,8 +85,8 @@ export ANDROID_HOME=/opt/android-sdk
 export SUDO_ASKPASS=/usr/lib/git-core/git-gui--askpass
 
 export EDITOR="vim"
-export VAGRANT_DEFAULT_PROVIDER=libvirt
 # export LESS="-ra"
+# must go aver PATH to find stack
 
 export _JAVA_AWT_WM_NONREPARENTING=1
 # export PYTHONPATH=/usr/lib/python3.3/site-packages
@@ -99,7 +95,7 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 KEYTIMEOUT=1
 alias -r pandoc='pandoc --lua-filter=task-list.lua'
 alias -g wlan=wlp5s0
-
+test -n "$TMUX" && alias ssh='TERM=screen ssh'
 alias -r x='startx "$XINITRC"'
 alias -r rm='rm -i'
 alias -r mv='mv -i'
@@ -107,7 +103,7 @@ alias -r cp='cp -i'
 
 alias -r tp='trash-put'
 alias -r grep='grep --color=auto'
-alias -r ls='ls --color=auto -ht'
+alias -r ls='ls --color=auto -h'
 alias  dirs='dirs -v'
 alias -r less='less -r'
 alias -r myLimit='ulimit  -Sc unlimited -Sv $((1024*1024))'
@@ -171,7 +167,7 @@ local line='$leftHeader''%{$fg[grey]%}%U${(r:$((COLUMNS- ${#${(S%%)leftHeader//$
 
 prompt="$line""%(1j.%j.)%#> "
 
-export RPS1='$project $($cabal_pr) $($git_pr)'
+export RPS1='$_project $($cabal_pr) $($git_pr)'
 fuction precmd_reset()
 {
     stty sane
@@ -184,12 +180,13 @@ help()
     man zshbuiltins | sed -ne "/^       $1 /,/^\$/{s/       //; p}"
 }
 # # Load zsh-autosuggestions.
-# include "$ZDOTDIR"/zsh-autosuggestions/zsh-autosuggestions.zsh
-
-# ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=3"
-
-
-# bindkey '^ ' autosuggest-accept
+# source ~/.zsh/zsh-autosuggestions/autosuggestions.zsh
+# AUTOSUGGESTION_HIGHLIGHT_COLOR=1
+# # Enable autosuggestions automatically.
+# zle-line-init() {
+#     zle autosuggest-start
+# }
+# zle -N zle-line-init
 #
 # ttyctl -f
 #
@@ -201,6 +198,9 @@ GENCOMPL_FPATH="$ZDOTDIR"/gencomplete
 # GENCOMPL_PY=python2
 include "$ZDOTDIR"/zsh-completion-generator/zsh-completion-generator.plugin.zsh
 
+GENCOMPL_FPATH="$ZDOTDIR"/complete
+GENCOMPL_PY=python2
+source "$ZDOTDIR"/zsh-completion-generator/zsh-completion-generator.plugin.zsh
 
 autoload -Uz compinit bashcompinit
 # On slow systems, checking the cached .zcompdump file to see if it must be
@@ -238,7 +238,7 @@ function chpwd {
 
     if ! [ -z $projectroot ]
     then
-        _project="$(basename projectroot)"
+        _project="$(basename $projectroot)"
         GOPATH="$projectroot:$GOPATHSTART"
     else
         _project=""
@@ -246,20 +246,3 @@ function chpwd {
 }
 chpwd
 
-# cdUndoKey() { #   popd #   zle       reset-prompt #   echo
-#   ls
-#   zle       reset-prompt
-# }
-#
-# cdParentKey() {
-#   pushd ..
-#   zle      reset-prompt
-#   echo
-#   ls
-#   zle       reset-prompt
-# }
-#
-# zle -N                 cdParentKey
-# zle -N                 cdUndoKey
-# bindkey '^[[1;3A'      cdParentKey
-# bindkey '^[[1;3D'      cdUndoKey
