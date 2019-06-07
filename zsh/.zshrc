@@ -93,8 +93,9 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 # export CCACHE_DIR=/home/rens/.cache/ccache    # Tell ccache to use this path to store its cache
 
 KEYTIMEOUT=1
-alias -r pandoc='pandoc --lua-filter=task-list.lua'
-alias -g wlan=wlp5s0
+alias -r pandoc='pandoc --lua-filter=/home/rens/scripts/task-list.lua'
+alias -g wlan=$(basename /sys/class/net/w*)
+alias -g eth=$(basename /sys/class/net/e*)
 test -n "$TMUX" && alias ssh='TERM=screen ssh'
 alias -r x='startx "$XINITRC"'
 alias -r rm='rm -i'
