@@ -1,1 +1,10 @@
+# Vim-related files
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+
 vim/.vim/plugged
+vim/.vim/backup
+vim/.vim/easytags
+vim/.vim/view
+vim/.vim/viminfo
+vim/.vim/undo
