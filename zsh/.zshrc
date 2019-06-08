@@ -35,15 +35,19 @@ zstyle :compinstall filename '/home/rens/.zshrc'
 
 # End of lines adcomplete
 
-
 Watch=all
 stty -ixon # disable Ctrl-S  freeze
 
 # delete key
+# bindkey -r  "^[h"
+
 bindkey "${terminfo[khome]}" beginning-of-line
 bindkey "${terminfo[kend]}" end-of-line
+
 bindkey '\e[3~' delete-char
+
 bindkey '^Xr' history-search-backward
+
 bindkey '\ef' emacs-forward-word
 bindkey '\eb' emacs-backward-word
 
@@ -85,8 +89,8 @@ export ANDROID_HOME=/opt/android-sdk
 export SUDO_ASKPASS=/usr/lib/git-core/git-gui--askpass
 
 export EDITOR="vim"
+export VAGRANT_DEFAULT_PROVIDER=libvirt
 # export LESS="-ra"
-# must go aver PATH to find stack
 
 export _JAVA_AWT_WM_NONREPARENTING=1
 # export PYTHONPATH=/usr/lib/python3.3/site-packages
@@ -195,9 +199,6 @@ help()
 # zstyle ':completion:*:manuals.*'  insert-sections   true
 # zstyle ':completion:*:man:*'      menu yes select
 #
-GENCOMPL_FPATH="$ZDOTDIR"/gencomplete
-# GENCOMPL_PY=python2
-include "$ZDOTDIR"/zsh-completion-generator/zsh-completion-generator.plugin.zsh
 
 GENCOMPL_FPATH="$ZDOTDIR"/complete
 GENCOMPL_PY=python2

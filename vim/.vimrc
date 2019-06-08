@@ -32,6 +32,7 @@ filetype indent on
 syntax enable
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
+
 set encoding=utf-8
 scriptencoding utf-8
 
@@ -67,8 +68,8 @@ Plug 'tobyS/pdv'   | Plug 'tobyS/vmustache'
 
 
 Plug '907th/vim-auto-save'
-Plug 'rhysd/vim-grammarous'   " TODO choose one of the to 
-Plug 'dpelle/vim-LanguageTool'
+" Plug 'rhysd/vim-grammarous'   " TODO choose one of the to
+" Plug 'dpelle/vim-LanguageTool'
 
 " Plug 'Raimondi/delimitMate'
 " Plug 'jiangmiao/auto-pairs'
@@ -548,8 +549,8 @@ endif
     " inoremap jj <Esc> " TODO does this work for me ?
     " inoremap l; <Esc>
     " inoremap ;l <Esc>
-  nnoremap _ <C-x>
-  nnoremap + <C-a>
+  " nnoremap _ <C-x>
+  " nnoremap + <C-a>
 "zoomwintab {{{
 let g:zoomwintab_remap=0
 map <C-W>z :ZoomWinTabToggle<CR>
@@ -935,6 +936,7 @@ endif
   let g:easytags_dynamic_files = 1
   let g:easytags_async = 1
   let g:easytags_by_filetype = '~/.vim/easytags'
+
 "}}}
 "}}}
 " git {{{
@@ -1092,3 +1094,5 @@ com! DiffSaved call s:DiffWithSaved()
 set foldopen=block,hor,insert,jump,mark,quickfix,search,tag,undo
 command! ClearLocationList lexpr []
 command! ClearQuickfixList cexpr []
+
+setglobal commentstring="# %s" " TODO does not work
