@@ -1,0 +1,68 @@
+#! /bin/bash
+
+# this script copies the git index to a temporary directory and execute its first argument
+# if you want to export local function use export -f
+# if file descriptor 3 exist then stdout of the command is send to >3
+# if file descriptor 4 exist then stderror of the command is send to >r
+
+set -o errexit
+# set -o nounset
+set -o pipefail
+
+. colors.sh
+
+
+cleanup (){
+
+    rm -r "$sandbox"
+    rmdir "$gitSandboxDir"  --ignore-fail-on-non-empty
+}
+
+isopen (){
+  eval "true >&${1}" &> /dev/null
+}
+
+if ! gitRoot="$(git rev-parse --show-toplevel)"
+then
+    echo this program only works in git repository
+    exit 2
+else
+
+    gitSandboxDir="$XDG_RUNTIME_DIR"/git-sandbox
+
+    projectname="$(basename "$gitRoot")"
+    sandbox="${gitSandboxDir}/${projectname}"
+
+    if [ -e "$sandbox" ]
+    then
+        echo there alread exist a file called: "$sandbox"
+        exit 3
+    else
+        trap cleanup EXIT
+        mkdir -p "$sandbox"
+        echo created sandbox at: "$sandbox"
+        git checkout-index -a --prefix="$sandbox"/
+        cd "$sandbox"|| exit 1
+
+        stdout=1
+        if isopen 3
+        then
+           stdout=3
+        fi
+
+        stderror=2
+        if isopen 4
+        then
+            stderror=4
+        fi
+        eval "${1:-} 1>&${stdout} 2>&${stderror}"
+        cleanup
+        trap - EXIT
+
+    fi
+fi
+
+
+
+
+
