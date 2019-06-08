@@ -87,7 +87,7 @@ documentation: True
 -- upgrade-dependencies: False
 -- index-state:
 -- root-cmd:
--- symlink-bindir:
+symlink-bindir:/home/rens/.local/bin
 build-summary: /home/rens/.cabal/logs/build.log
 -- build-log:
 remote-build-reporting: anonymous

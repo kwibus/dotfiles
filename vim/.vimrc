@@ -32,7 +32,6 @@ filetype indent on
 syntax enable
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
-
 set encoding=utf-8
 scriptencoding utf-8
 
@@ -61,10 +60,15 @@ command! Install call Install()
 
 " Plugins {{{
 call plug#begin()
-Plug 'pearofducks/ansible-vim'
+Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
+
+Plug 'tobyS/pdv'   | Plug 'tobyS/vmustache'
+ 
+
+
 Plug '907th/vim-auto-save'
-" Plug 'rhysd/vim-grammarous'   " TODO choose one of the to
-" Plug 'dpelle/vim-LanguageTool'
+Plug 'rhysd/vim-grammarous'   " TODO choose one of the to 
+Plug 'dpelle/vim-LanguageTool'
 
 " Plug 'Raimondi/delimitMate'
 " Plug 'jiangmiao/auto-pairs'
@@ -89,7 +93,9 @@ Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-projectionist' " TODO implement
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'scrooloose/nerdtree'
-Plug 'terryma/vim-expand-region' "expand visual selection with +
+" Plug 'terryma/vim-expand-region' "expand visual selection with +
+" vnoremap _ <Plug>(expand_region_expand)
+" vnoremap + <Plug>(expand_region_shrink)
 Plug 'mustache/vim-mustache-handlebars' "TODO test
 " Plug 'machakann'/vim-columnmove " TODO have to try??
 " Plug 'takac/vim-hardtime'
@@ -169,7 +175,11 @@ Plug 'idris-hackers/idris-vim'
 
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'rob-b/gutenhasktags'
-Plug 'eagletmt/ghcmod-vim'              , {'for': 'haskell'} |  Plug 'Shougo/vimproc.vim' , {'do':'make'}
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': './install.sh'
+    \ }
+"Plug 'eagletmt/ghcmod-vim'              , {'for': 'haskell'} |  Plug 'Shougo/vimproc.vim' , {'do':'make'}
 Plug 'Twinside/vim-haskellFold'         , {'for': 'haskell'}
 Plug 'Twinside/vim-syntax-haskell-cabal', {'for': 'haskell'}
 " Plug 'dan-t/vim-hsimport'               , {'for': 'haskell'}
@@ -220,14 +230,16 @@ Plug 'ujihisa/neco-look'
 Plug 'Shougo/neco-vim'
 Plug 'eagletmt/neco-ghc'                  , {'for': 'haskell'}
 Plug 'Shougo/neco-syntax'
+Plug 'zchee/deoplete-zsh'
 if has('nvim')
     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' } "TODO lookinto  zchee/deoplete-clang  and jave suport
-    Plug 'zchee/deoplete-zsh'
 else
     " Plug 'Shougo/neocomplcache.vim'
     " Plug 'JazzCore/neocomplcache-ultisnips'
-
-    Plug 'Shougo/neocomplete.vim'|  Plug 'Shougo/vimproc.vim' , {'do':'make'}
+  Plug 'Shougo/deoplete.nvim',
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+    " Plug 'Shougo/neocomplete.vim'|  Plug 'Shougo/vimproc.vim' , {'do':'make'}
 endif
 Plug 'chrisbra/Recover.vim' "does not work well with neovim
 Plug 'tpope/vim-repeat'
@@ -250,7 +262,7 @@ Plug 'junegunn/vim-easy-align'
 Plug 'majutsushi/tagbar' , {'on' : 'Tagbar'}
 
 Plug 'tomtom/tcomment_vim' "add comments gc TODO some conflicet with textObjectcomment
-  let g:tcommentTextObjectInlineComment=''
+  let g:tcomment_textobject_inlinecommen=''
 
 Plug 'SirVer/ultisnips'
 " Plug 'simnalamburt/vim-mundo'
@@ -286,6 +298,8 @@ call plug#end() " }}}
 
   set conceallevel=0
   set synmaxcol=190
+
+autocmd BufEnter * :syntax sync fromstart
 "    autocmd BufWinEnter,Syntax * syn sync minlines=500 maxlines=500
 " solarized colors scheme {{{
   let g:solarized_termtrans = 1
@@ -530,9 +544,12 @@ endif
 "}}}
 " mappings {{{
     let g:mapleader = ' '
-    "inoremap jj <Esc> " TODO does this work for me ?
+    let g:mapleader="\<SPACE>"
+    " inoremap jj <Esc> " TODO does this work for me ?
     " inoremap l; <Esc>
     " inoremap ;l <Esc>
+  nnoremap _ <C-x>
+  nnoremap + <C-a>
 "zoomwintab {{{
 let g:zoomwintab_remap=0
 map <C-W>z :ZoomWinTabToggle<CR>
@@ -548,7 +565,7 @@ map <C-W>z :ZoomWinTabToggle<CR>
     call camelcasemotion#CreateMotionMappings(',') "}}}
 " disable mappings {{{
 
-    nnoremap Z <nop>
+    " nnoremap Z <nop>
     nnoremap K <nop>
     nnoremap Q <nop>
    " nnoremap '' <nop>
@@ -593,9 +610,12 @@ map <C-W>z :ZoomWinTabToggle<CR>
 " Yank {{{
 
     "{{yankstack
-    nmap <M-n> <Plug>yankstack_substitute_newer_paste
-    "has to be before remaps yank and past
+
     call yankstack#setup()
+    nmap <M-n> <Plug>yankstack_substitute_newer_paste
+    nmap <A-p> <Plug>yankstack_substitute_older_paste
+    nmap <A-n> <Plug>yankstack_substitute_newer_paste
+    "has to be before remaps yank and past
     " }}}
     nnoremap Y y$
     " set clipboard=unnamedplus
@@ -643,7 +663,7 @@ map <C-W>z :ZoomWinTabToggle<CR>
     " noremap ]c ]d
     " }}}
     " nnoremap <C-i>   <Esc>:tabnext<CR> " <C-i> == tab
-    noremap <C-t>    <Esc>:tabnew<CR>
+    " noremap <C-t>    <Esc>:tabnew<CR>
 
 " emac compatable mappings {{{
     noremap <C-a>     <Esc>^
@@ -794,7 +814,7 @@ endif
 " }}}
 " completion {{{
 " set completeopt=longest,menuone
-if has('nvim')
+" if has('nvim')
   " Use deoplete. {{{
     let g:deoplete#enable_at_startup = 1
 
@@ -802,31 +822,31 @@ if has('nvim')
     " Let <Tab> also do completion
     " autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
     " }}}
-else
-  " neocomplete {{{
-    let g:neocomplete#enable_at_startup = 1
-    " Use smartcase.
-    let g:neocomplete#enable_smart_case = 0
-    " Set minimum syntax keyword length.
-    let g:neocomplete#sources#syntax#min_keyword_length = 3
-    " inoremap <expr> <C-L>     neocomplete#complete_common_string()
-
-    inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-    " let g:neocomplcache_enable_at_startup = 1
-    " let g:neocomplcache_min_syntax_length = 3
-    " inoremap <expr><S-Space>  neocomplcache#start_manual_complete()
-    " inoremap <expr><C-l>  neocomplcache#close_popup()
-    " inoremap <expr><C-@> <C-Space>
-    " inoremap <C-j> <C-N>
-    " inoremap <C-k> <C-p>
-
-    let g:neocomplete#enable_fuzzy_completion=0
-    let g:neocomplcache_force_overwrite_completefunc = 1
-
-    call neocomplete#custom#source('_', 'sorters', ['sorter_length'])
-    let g:neocomplete#use_vimproc = 1
+" else
+"   " neocomplete {{{
+"     let g:neocomplete#enable_at_startup = 1
+"     " Use smartcase.
+"     let g:neocomplete#enable_smart_case = 0
+"     " Set minimum syntax keyword length.
+"     let g:neocomplete#sources#syntax#min_keyword_length = 3
+"     " inoremap <expr> <C-L>     neocomplete#complete_common_string()
+"
+"     inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+"     " let g:neocomplcache_enable_at_startup = 1
+"     " let g:neocomplcache_min_syntax_length = 3
+"     " inoremap <expr><S-Space>  neocomplcache#start_manual_complete()
+"     " inoremap <expr><C-l>  neocomplcache#close_popup()
+"     " inoremap <expr><C-@> <C-Space>
+"     " inoremap <C-j> <C-N>
+"     " inoremap <C-k> <C-p>
+"
+"     let g:neocomplete#enable_fuzzy_completion=0
+"     let g:neocomplcache_force_overwrite_completefunc = 1
+"
+"     call neocomplete#custom#source('_', 'sorters', ['sorter_length'])
+"     let g:neocomplete#use_vimproc = 1
 " }}}
-endif
+" endif
   " ultisnips {{{
   let g:UltiSnipsExpandTrigger='<C-l>'
   let g:UltiSnipsJumpForwardTrigger='<c-j>'
@@ -915,7 +935,6 @@ endif
   let g:easytags_dynamic_files = 1
   let g:easytags_async = 1
   let g:easytags_by_filetype = '~/.vim/easytags'
-
 "}}}
 "}}}
 " git {{{
@@ -1073,5 +1092,3 @@ com! DiffSaved call s:DiffWithSaved()
 set foldopen=block,hor,insert,jump,mark,quickfix,search,tag,undo
 command! ClearLocationList lexpr []
 command! ClearQuickfixList cexpr []
-
-setglobal commentstring="# %s" " TODO does not work
