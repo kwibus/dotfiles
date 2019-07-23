@@ -89,16 +89,17 @@ checkConfig() {
          echo cabaltest
          export  -f cabaltest
          echo $cabaltest
-         cabal new-exec -- git-sandbox cabaltest  3> /dev/null
+
+         git-sandbox cabaltest  3> /dev/null
+         #cabal new-exec -- git-sandbox cabaltest  3> /dev/null
    fi
 }
 
 cabalCheckUnuesd (){
-   echo
-    # cabal clean
-    # cabal configure -O0 --disable-library-profiling --enable-test --enable-benchmark
-    # cabal build --ghc-option=-ddump-minimal-imports
-    # packunused
+   cabal clean
+   cabal configure -O0 --disable-library-profiling --enable-test --enable-benchmark
+   cabal build --ghc-option=-ddump-minimal-imports
+   packunused
 }
 
 checkWithSpace () {

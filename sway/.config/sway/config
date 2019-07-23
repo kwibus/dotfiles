@@ -56,7 +56,9 @@ seat * hide_cursor 10000
 # Basics:
 #
     # start a terminal
+    bindsym $mod+z [urgent=latest] focus
 
+    bindsym $mod+shift+B border csd
     bindsym $mod+b border toggle
     bindsym $mod+Return exec sway-focus-or-exec.sh $term
     # kill focused window
@@ -203,11 +205,11 @@ bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume $(pacmd list-si
 bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume $(pacmd list-sinks |awk '/* index:/{print $3}') -5%
 bindsym --locked XF86AudioMute exec pactl set-sink-mute $(pacmd list-sinks |awk '/* index:/{print $3}') toggle
 
-bindsym XF86MonBrightnessDown exec light -U 10 -v 3 > /home/rens/dump-light
-bindsym XF86MonBrightnessUp exec light -A 10 -v 3  > /home/rens/dump-light
+bindsym --locked XF86MonBrightnessDown exec light -U 10 -v 3 > /home/rens/dump-light
+bindsym --locked XF86MonBrightnessUp exec light -A 10 -v 3  > /home/rens/dump-light
 
-bindsym XF86KbdBrightnessDown exec light -s sysfs/leds/tpacpi::kbd_backlight -U 50
-bindsym XF86KbdBrightnessUp exec light -s sysfs/leds/tpacpi::kbd_backlight -A 50
+bindsym --locked XF86KbdBrightnessDown exec light -s sysfs/leds/tpacpi::kbd_backlight -U 50
+bindsym --locked XF86KbdBrightnessUp exec light -s sysfs/leds/tpacpi::kbd_backlight -A 50
 
 bindsym --release Print exec grim -g \"$(slurp)" - | wl-copy
 
@@ -223,17 +225,20 @@ bindsym Ctrl+Alt+l exec swaylock -eFc 111111
 #         inactive_workspace #32323200 #32323200 #5c5c5c
 #     #tray_output primary LVDS
 # }
+
+exec redshift-gtk -m wayland -c ~/.config/redshift.conf -r
+exec read-gtk3-settings.sh
+exec waybar
 exec /usr/lib/kdeconnectd
 exec indicator-kdeconnect
 exec QT_QPA_PLATFORM=xcb albert
-exec sleep 3 && keepassxc
 exec udiskie -n -s -A --appindicator
 
-exec read-gtk3-settings.sh
-exec waybar
 exec mako --default-timeout 3000
 exec xrdb ~/.config/X11/Xresources
 exec nm-applet --indicator
+exec blueman-applet
+
 exec swayidle -w\
   timeout 650 'swaylock -efFc 111111'\
   timeout 600 'swaymsg "output * dpms off"'\

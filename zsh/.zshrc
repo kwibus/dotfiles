@@ -93,7 +93,7 @@ export SYSTEMD_EDITOR="vim"
 # export CCACHE_DIR=/home/rens/.cache/ccache    # Tell ccache to use this path to store its cache
 
 KEYTIMEOUT=1
-alias -r pandoc='pandoc --lua-filter=/home/rens/scripts/task-list.lua'
+# alias -r pandoc='pandoc --lua-filter=/home/rens/scripts/task-list.lua'
 alias -g wlan=$(basename /sys/class/net/w*)
 alias -g eth=$(basename /sys/class/net/e*)
 test -n "$TMUX" && alias ssh='TERM=screen ssh'

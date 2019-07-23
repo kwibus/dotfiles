@@ -15,6 +15,10 @@ export SDL_VIDEODRIVER=wayland
 export _JAVA_AWT_WM_NONREPARENTING=1
 
 export XDG_SESSION_TYPE=wayland
+
+export MOZ_ENABLE_WAYLAND=1
+
+
 pkill ssh-agent
 eval `ssh-agent -s`
 exec sway -V

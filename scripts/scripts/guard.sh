@@ -33,7 +33,8 @@ haskell() {
 cabaltest(){
     # echo "$arg"
     # echo cabal  new-test --  --color=always -j 8 --quickcheck-max-size 100 "$arg"
-    cabal new-run test:tests -- -j 4 --quickcheck-max-size 20 --quickcheck-tests 20 -t 3 -q 
+    # cabal new-run test:tests -- -j 4 --quickcheck-max-size 20 --quickcheck-tests 20 -t 3 -q 
+    stack test --test-arguments="-j 4 -t 20 --quickcheck-max-size 30 --quickcheck-tests 100  --color=always --hide-successes"
 }
 
 declare -A fileMapHash
