@@ -36,6 +36,13 @@ gaps outer -4
 #
 output * scale 1
 output * bg /home/rens/Afbeeldingen/Wallpapers/spring_tranquility-wallpaper-1920x1080.jpg  fill
+
+output HDMI-A-2 pos 0,0
+set $laptop eDP-1
+bindswitch lid:on exec sway-disable-if.sh  $laptop 
+bindswitch lid:off output $laptop enable
+output *DP-1 pos 0,0
+
 #input * xkb_options compose:rctrl
 #input * xkb_options eurosign:5,lv3:ralt_switch¬
 #input "1:1:AT_Translated_Set_2_keyboard" xkb_capslock disabled
@@ -51,6 +58,7 @@ seat * hide_cursor 10000
 #
 # output HDMI-A-1 resolution 1920x1080 position 1920,0
 
+focus_follows_mouse no
 ### Key bindings
 #
 # Basics:
@@ -58,7 +66,6 @@ seat * hide_cursor 10000
     # start a terminal
     bindsym $mod+z [urgent=latest] focus
 
-    bindsym $mod+shift+B border csd
     bindsym $mod+b border toggle
     bindsym $mod+Return exec sway-focus-or-exec.sh $term
     # kill focused window
@@ -90,6 +97,8 @@ seat * hide_cursor 10000
 
     bindsym $mod+Tab exec sway-next.sh
     bindsym $mod+Shift+Tab exec sway-next.sh previous
+    bindsym Alt+Tab exec sway-next.sh
+    bindsym Alt+Shift+Tab exec sway-next.sh previous
 
     bindsym $mod+h focus left
     bindsym $mod+j focus down
@@ -205,13 +214,13 @@ bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume $(pacmd list-si
 bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume $(pacmd list-sinks |awk '/* index:/{print $3}') -5%
 bindsym --locked XF86AudioMute exec pactl set-sink-mute $(pacmd list-sinks |awk '/* index:/{print $3}') toggle
 
-bindsym --locked XF86MonBrightnessDown exec light -U 10 -v 3 > /home/rens/dump-light
-bindsym --locked XF86MonBrightnessUp exec light -A 10 -v 3  > /home/rens/dump-light
+bindsym --locked XF86MonBrightnessDown exec light -U 10 -v 3
+bindsym --locked XF86MonBrightnessUp exec light -A 10 -v 3
 
 bindsym --locked XF86KbdBrightnessDown exec light -s sysfs/leds/tpacpi::kbd_backlight -U 50
 bindsym --locked XF86KbdBrightnessUp exec light -s sysfs/leds/tpacpi::kbd_backlight -A 50
 
-bindsym --release Print exec grim -g \"$(slurp)" - | wl-copy
+bindsym --release Print exec grim -g \"$(slurp)\" - | tee /home/rens/screenshot | wl-copy
 
 bindsym Ctrl+Alt+l exec swaylock -eFc 111111
 #

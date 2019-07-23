@@ -21,5 +21,6 @@ export MOZ_ENABLE_WAYLAND=1
 
 pkill ssh-agent
 eval `ssh-agent -s`
+WLR_DRM_NO_ATOMIC=0
 exec sway -V
 

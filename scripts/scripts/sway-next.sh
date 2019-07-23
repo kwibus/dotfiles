@@ -8,8 +8,8 @@ case $layout in
         [ "$next" -eq 0 ] && direction=UP
     ;;
     *) 
-        direction=Left
-        [ "$next" -eq 0 ] && direction=Right
+        direction=Right
+        [ "$next" -eq 0 ] && direction=Left
     ;;
 esac
 sway focus $direction
