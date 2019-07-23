@@ -7,7 +7,7 @@ export CLUTTER_BACKEND=wayland
 #QT
 #export QT_QPA_PLATFORM=wayland-egl
 export QT_QPA_PLATFORM=wayland
-export QT_STYLE_OVERRIDE=kvantum
+#export QT_STYLE_OVERRIDE=kvantum
 #SDL
 export SDL_VIDEODRIVER=wayland
 
@@ -21,5 +21,6 @@ export MOZ_ENABLE_WAYLAND=1
 
 pkill ssh-agent
 eval `ssh-agent -s`
+WLR_DRM_NO_ATOMIC=0
 exec sway -V
 
