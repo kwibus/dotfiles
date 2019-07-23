@@ -35,7 +35,6 @@ zstyle :compinstall filename '/home/rens/.zshrc'
 
 # End of lines adcomplete
 
-
 Watch=all
 stty -ixon # disable Ctrl-S  freeze
 
@@ -60,8 +59,7 @@ setopt CORRECT
 #setopt CORRECTALL
 setopt GLOBDOTS
 setopt AUTOPUSHD               # automatically append dirs to the push/pop list
-setopt PUSHDIGNOREdUPS         # and dont duplicate them
-setopt COMPLETE_ALIASES
+setopt PUSHDIGNOREdUPS         # and don't duplicate them
 
 setopt PRINT_EXIT_VALUE
 # Say how long a command took, if it took more than 30 seconds
@@ -74,21 +72,23 @@ setopt RM_STAR_WAIT
 
 zstyle ':completion:*' accept-exact '*(N)'
 
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 zstyle ':completion:*:functions' ignored-patterns '_*'
 zstyle ':completion:*' rehash true
 zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path "${XDG_CACHE_HOME}"/zsh/cache
+zstyle ':completion:*' cache-path ~/.zsh/cache
 
-
-export ANDROID_HOME=/opt/android-sdk
-export SUDO_ASKPASS=/usr/lib/git-core/git-gui--askpass
+export GOPATH=$HOME/.local/godir
+PATH=$HOME/scripts:$HOME/.local/bin:$PATH
+export PATH=$GOROOT/bin:$GOPATH/bin:$PATH 
 
 export EDITOR="vim"
+export SYSTEMD_EDITOR="vim"
 # export LESS="-ra"
-# must go aver PATH to find stack
 
-export _JAVA_AWT_WM_NONREPARENTING=1
+# export RXVT_SOCKET="$XDG_RUNTIME_DIR"/urxvt/urxvt-"$(hostname)"
+# export TMUX_TMPDIR="$XDG_RUNTIME_DIR"/tmux
+
 # export PYTHONPATH=/usr/lib/python3.3/site-packages
 # export CCACHE_DIR=/home/rens/.cache/ccache    # Tell ccache to use this path to store its cache
 
@@ -113,7 +113,6 @@ alias o="xdg-open"
 alias gdb="gdb -q"
 alias -r glog='git log --oneline --graph --decorate=short'
 
-alias -r cabal-static-install='cabal install --with-compiler=/usr/share/ghc-pristine/bin/ghc'
 # if which HsColour > /dev/null
 # then
 #     alias ghci='ghci 2>&1 | HsColour -tty'
@@ -194,33 +193,14 @@ help()
 # zstyle ':completion:*:manuals'    separate-sections true
 # zstyle ':completion:*:manuals.*'  insert-sections   true
 # zstyle ':completion:*:man:*'      menu yes select
-#
-GENCOMPL_FPATH="$ZDOTDIR"/gencomplete
-# GENCOMPL_PY=python2
-include "$ZDOTDIR"/zsh-completion-generator/zsh-completion-generator.plugin.zsh
 
 GENCOMPL_FPATH="$ZDOTDIR"/complete
-GENCOMPL_PY=python2
-source "$ZDOTDIR"/zsh-completion-generator/zsh-completion-generator.plugin.zsh
+# GENCOMPL_PY=python2
+# source "$ZDOTDIR"/zsh-completion-generator/zsh-completion-generator.plugin.zsh
 
 autoload -Uz compinit bashcompinit
-# On slow systems, checking the cached .zcompdump file to see if it must be
-# regenerated adds a noticable delay to zsh startup.  This little hack restricts
-# it to once a day.  It should be pasted into your own completion file.
-#
-# The globbing is a little complicated here:
-# - '#q' is an explicit glob qualifier that makes globbing work within zsh's [[ ]] construct.
-# - 'N' makes the glob pattern evaluate to nothing when it doesn't match (rather than throw a globbing error)
-# - '.' matches "regular files"
-# - 'mh+24' matches files (or directories or whatever) that are older than 24 hours.
-# if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
-    compinit;
-# else
-#     compinit -C;
-# fi;
-
+compinit -d $XDG_RUNTIME_DIR
 bashcompinit
-include /usr/share/bash-completion/completions/cabal
 
 ( cd "$ZDOTDIR"/completion/
     { which stack    && test ! $(find _stack    -mtime -20) } &> /dev/null && stack --bash-completion-script stack > _stack

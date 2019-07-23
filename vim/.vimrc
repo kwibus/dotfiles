@@ -32,6 +32,7 @@ filetype indent on
 syntax enable
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
+
 set encoding=utf-8
 scriptencoding utf-8
 
@@ -60,7 +61,6 @@ command! Install call Install()
 
 " Plugins {{{
 call plug#begin()
-Plug 'andymass/vim-matchup'
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 
 Plug 'tobyS/pdv'   | Plug 'tobyS/vmustache'
@@ -77,9 +77,9 @@ Plug 'dpelle/vim-LanguageTool'
 " Plug 'cohama/lexima.vim'
 
 " Plug 'vim-scripts/Highlight-UnMatched-Brackets'
-Plug 'roxma/vim-paste-easy' "set paste on when pasting
-Plug 'junegunn/vim-peekaboo' " reigiser tab
-Plug 'itchyny/vim-cursorword' " underline word under cursor
+Plug 'roxma/vim-paste-easy'
+Plug 'junegunn/vim-peekaboo'
+Plug 'itchyny/vim-cursorword'
 " Plug 'airblade/vim-matchquote' -- conflict with matchit TODO alternative
 Plug 'kovetskiy/sxhkd-vim'
 " Plug 'jiangmiao/auto-pairs'  "TODO Try configure
@@ -94,9 +94,7 @@ Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-projectionist' " TODO implement
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'scrooloose/nerdtree'
-" Plug 'terryma/vim-expand-region' "expand visual selection with +
-" vnoremap _ <Plug>(expand_region_expand)
-" vnoremap + <Plug>(expand_region_shrink)
+Plug 'terryma/vim-expand-region' "expand visual selection with +
 Plug 'mustache/vim-mustache-handlebars' "TODO test
 " Plug 'machakann'/vim-columnmove " TODO have to try??
 " Plug 'takac/vim-hardtime'
@@ -549,8 +547,8 @@ endif
     " inoremap jj <Esc> " TODO does this work for me ?
     " inoremap l; <Esc>
     " inoremap ;l <Esc>
-  nnoremap _ <C-x>
-  nnoremap + <C-a>
+  " nnoremap _ <C-x>
+  " nnoremap + <C-a>
 "zoomwintab {{{
 let g:zoomwintab_remap=0
 map <C-W>z :ZoomWinTabToggle<CR>
@@ -613,8 +611,6 @@ map <C-W>z :ZoomWinTabToggle<CR>
     "{{yankstack
 
     call yankstack#setup()
-    set <m-p> =p 
-    set <m-P> =P
     nmap <M-n> <Plug>yankstack_substitute_newer_paste
     nmap <A-p> <Plug>yankstack_substitute_older_paste
     nmap <A-n> <Plug>yankstack_substitute_newer_paste
