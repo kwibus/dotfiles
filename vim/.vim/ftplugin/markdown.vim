@@ -5,7 +5,7 @@ command! -nargs=* RunSilent
 
 nmap <Leader>v :RunSilent xdg-open /tmp/vim-pandoc-out.pdf&<CR>
 nmap <Leader>c :update<Cr> :Pandoc pdf  -o /tmp/vim-pandoc-out.pdf <CR> " toc
-let g:pandoc#compiler#arguments = "--lua-filter=/home/rens/scripts/task-list.lua"
+" let g:pandoc#compiler#arguments = "--lua-filter=/home/rens/scripts/task-list.lua"
 let g:pandoc#command#autoexec_on_writes = 1
 let g:pandoc#command#autoexec_command = 'Pandoc pdf -o /tmp/vim-pandoc-out.pdf'
 " autocmd BufWritePost *  Dispatch! Pandoc pdf  -o /tmp/vim-pandoc-out.pdf
