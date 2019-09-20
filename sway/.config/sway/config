@@ -49,8 +49,7 @@ output *DP-1 pos 0,0
 #input "1:1:AT_Translated_Set_2_keyboard" xkb_options caps:disabled
 
 input "*" {
-  xkb_options caps:disabled
-  xkb_capslock disabled
+  xkb_options ctrl:nocaps
 }
 seat * hide_cursor 10000
 #
