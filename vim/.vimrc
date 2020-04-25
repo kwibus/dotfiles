@@ -61,6 +61,8 @@ command! Install call Install()
 
 " Plugins {{{
 call plug#begin()
+Plug 'artur-shaik/vim-javacomplete2'
+Plug 'sedm0784/vim-you-autocorrect' " autocimic autocorrect spell
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 
 Plug 'tobyS/pdv'   | Plug 'tobyS/vmustache'
@@ -537,7 +539,13 @@ endif
 "{{{ spellcheck
     set spellcapcheck = ""
     set spelllang=en,nl
-
+" vim-you-autocorrect
+imap <c-U> <Esc><Plug>VimyouautocorrectUndo i
+highlight AutocorrectGood ctermfg=Red guifg=Red gui=undercurl
+augroup ILoveCorrections
+  autocmd!
+  autocmd BufEnter * EnableAutocorrect
+augroup END
 " Languagetool install global {{{
     " let g:grammarous#languagetool_cmd = '/usr/share/java/languagetool/languagetool-commandline.jar'
     let g:languagetool_jar='/usr/share/java/languagetool/languagetool-commandline.jar' "}}}
@@ -546,6 +554,10 @@ endif
 " mappings {{{
     let g:mapleader = ' '
     let g:mapleader="\<SPACE>"
+    inoremap <C-w> <C-\><C-o>dB
+
+    inoremap <C-h> <C-\><C-o>db
+    inoremap <C-BS> <C-\><C-o>db
     " inoremap jj <Esc> " TODO does this work for me ?
     " inoremap l; <Esc>
     " inoremap ;l <Esc>

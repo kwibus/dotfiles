@@ -208,7 +208,7 @@ bashcompinit
     { which minikube && test ! $(find _minikube -mtime -20) } &> /dev/null && minikube completion zsh > _minikube
 )
 include $ZDOTDIR/git-extras-completion.zsh
-
+include /opt/google-cloud-sdk/completion.zsh.inc
 include /usr/share/undistract-me/long-running.bash notify_when_long_running_commands_finish_install
 
 GOPATHSTART="$GOPATH"

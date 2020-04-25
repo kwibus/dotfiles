@@ -17,7 +17,7 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator
-set $term termite -t termite -e tmx.sh
+set $term termite -t termite -e /home/rens/scripts/tmx.sh
 # Your preferred application launcher
 set $menu albert toggle #dmenu_run
 
@@ -38,8 +38,9 @@ output * scale 1
 output * bg /home/rens/Afbeeldingen/Wallpapers/spring_tranquility-wallpaper-1920x1080.jpg  fill
 
 output HDMI-A-2 pos 0,0
+output HDMI-A-2 scale 1.5
 set $laptop eDP-1
-bindswitch lid:on exec sway-disable-if.sh  $laptop 
+bindswitch lid:on exec /home/rens/script/sway-disable-if.sh  $laptop
 bindswitch lid:off output $laptop enable
 output *DP-1 pos 0,0
 
@@ -66,7 +67,7 @@ focus_follows_mouse no
     bindsym $mod+z [urgent=latest] focus
 
     bindsym $mod+b border toggle
-    bindsym $mod+Return exec sway-focus-or-exec.sh $term
+    bindsym $mod+Return exec /home/rens/scripts/sway-focus-or-exec.sh $term
     # kill focused window
     bindsym $mod+Shift+c kill
 
@@ -161,7 +162,7 @@ focus_follows_mouse no
     bindsym $mod+space focus mode_toggle
 
     # move focus to the parent container
-    #bindsym $mod+a focus parent
+    bindsym $mod+a focus parent
 
 #
 # Scratchpad:
@@ -234,15 +235,15 @@ bindsym Ctrl+Alt+l exec swaylock -eFc 111111
 #     #tray_output primary LVDS
 # }
 
+exec waybar
 exec redshift-gtk -m wayland -c ~/.config/redshift.conf -r
 exec read-gtk3-settings.sh
-exec waybar
 exec /usr/lib/kdeconnectd
 exec indicator-kdeconnect
 exec QT_QPA_PLATFORM=xcb albert
 exec udiskie -n -s -A --appindicator
 
-exec mako --default-timeout 3000
+exec mako --default-timeout 9000
 exec xrdb ~/.config/X11/Xresources
 exec nm-applet --indicator
 exec blueman-applet
