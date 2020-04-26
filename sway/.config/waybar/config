@@ -23,6 +23,11 @@
     //         "default": ""
     //     }
     // },
+
+    "disable-scroll": true,
+    "sway/workspaces":{
+       "disable-scroll": true
+    },
     "sway/mode": {
         "format": "<span style=\"italic\">{}</span>"
     },

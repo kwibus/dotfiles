@@ -17,17 +17,18 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator
-set $term termite -t termite -e /home/rens/scripts/tmx.sh
+set $term termite -t termite -e tmx.sh
 # Your preferred application launcher
 set $menu albert toggle #dmenu_run
 
-workspace_auto_back_and_forth yes
+workspace_auto_back_and_forth no
 smart_gaps on
 smart_borders on
 hide_edge_borders smart_no_gaps
 gaps inner 4
 gaps outer -4
-
+focus_on_window_activation focus
+show_marks yes
 
 # gaps vertical 10
 # gaps horizontal 10
@@ -40,8 +41,8 @@ output * bg /home/rens/Afbeeldingen/Wallpapers/spring_tranquility-wallpaper-1920
 output HDMI-A-2 pos 0,0
 output HDMI-A-2 scale 1.5
 set $laptop eDP-1
-bindswitch lid:on exec /home/rens/script/sway-disable-if.sh  $laptop
-bindswitch lid:off output $laptop enable
+bindswitch --locked lid:on exec sway-disable-if.sh  $laptop
+bindswitch --locked lid:off output $laptop enable
 output *DP-1 pos 0,0
 
 #input * xkb_options compose:rctrl
@@ -59,6 +60,7 @@ seat * hide_cursor 10000
 # output HDMI-A-1 resolution 1920x1080 position 1920,0
 
 focus_follows_mouse no
+mouse_warping container
 ### Key bindings
 #
 # Basics:
@@ -115,7 +117,13 @@ focus_follows_mouse no
     bindsym $mod+Shift+j move down
     bindsym $mod+Shift+k move up
     bindsym $mod+Shift+l move right
-    # ditto, with arrow keys
+
+    bindsym $mod+Ctrl+h move workspace to left
+    bindsym $mod+Ctrl+j move workspace to down
+    bindsym $mod+Ctrl+k move workspace to up
+    bindsym $mod+Ctrl+l move workspace to right
+
+# ditto, with arrow keys
     bindsym $mod+Shift+Left move left
     bindsym $mod+Shift+Down move down
     bindsym $mod+Shift+Up move up
@@ -143,7 +151,7 @@ focus_follows_mouse no
     bindsym $mod+7 workspace 7
     bindsym $mod+8 workspace 8
     bindsym $mod+9 workspace 9
-    # respectively.
+
     bindsym $mod+v split t
 
     # Switch the current container between different layout styles
@@ -161,9 +169,23 @@ focus_follows_mouse no
     # Swap focus between the tiling area and the floating area
     bindsym $mod+space focus mode_toggle
 
-    # move focus to the parent container
-    bindsym $mod+a focus parent
+# stick floating window 
+    bindsym $mod+Shift+s sticky toggle
 
+# move focus to the parent container
+    bindsym $mod+a focus parent
+    bindsym $mod+Shift+a focus child
+
+    bindsym $mod+shift+minus opacity minus 0.1
+  bindsym $mod+shift+equal opacity plus 0.1
+  bindsym $mod+comma  mark --toggle master
+
+  bindsym $mod+space [workspace="__focused__" con_mark="master"] focus
+  bindsym $mod+Shift+space swap container  with mark master; mark --add master
+  #bindsym $mod+Shift+space [con_mark="slave"] focus;swap container  with mark master ; [con_mark=master] mark slave ; mark --add master
+
+  bindsym  --whole-window $mod+button6 exec /home/rens/scripts/sway-scale.sh +0.2
+   bindsym  --whole-window $mod+button5 exec /home/rens/scripts/sway-scale.sh -0.2
 #
 # Scratchpad:
 #
@@ -210,28 +232,35 @@ bindsym --locked $mod+Ctrl+Left  exec player.sh prev
 bindsym --locked $mod+Ctrl+Right exec player.sh next
 bindsym  --locked $mod+Ctrl+Down  exec player.sh toggle
 
-bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume $(pacmd list-sinks |awk '/* index:/{print $3}') +5%
-bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume $(pacmd list-sinks |awk '/* index:/{print $3}') -5%
-bindsym --locked XF86AudioMute exec pactl set-sink-mute $(pacmd list-sinks |awk '/* index:/{print $3}') toggle
+bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym --locked XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
 
-bindsym --locked XF86MonBrightnessDown exec light -U 10 -v 3
-bindsym --locked XF86MonBrightnessUp exec light -A 10 -v 3
+bindsym --locked XF86MonBrightnessDown exec light -U 10  && light -G 
+bindsym --locked XF86MonBrightnessUp exec light -A 10  && light -G 
 
 bindsym --locked XF86KbdBrightnessDown exec light -s sysfs/leds/tpacpi::kbd_backlight -U 50
 bindsym --locked XF86KbdBrightnessUp exec light -s sysfs/leds/tpacpi::kbd_backlight -A 50
 
 bindsym --release Print exec grim -g \"$(slurp)\" - | tee /home/rens/screenshot | wl-copy
 
-bindsym Ctrl+Alt+l exec swaylock -eFc 111111
+bindsym Ctrl+Alt+l exec swaylock -eFc 555555
 #
 # Status Bar:
-#
-# bar {
+for_window [shell=".*"] title_format "%title :: %shell"
+for_window [app_id="waybar" floating] {
+    move position cursor
+    move down 120px # adjust if some menus still don't fit
+}
+bar {
+
+    swaybar_command waybar
 #     position top
 #     colors {
 #         statusline #ffffff
 #         background #323232
 #         inactive_workspace #32323200 #32323200 #5c5c5c
+#     }
 #     #tray_output primary LVDS
 # }
 
@@ -249,8 +278,10 @@ exec nm-applet --indicator
 exec blueman-applet
 
 exec swayidle -w\
-  timeout 650 'swaylock -efFc 111111'\
+  timeout 650 'swaylock -efFc 555555'\
   timeout 600 'swaymsg "output * dpms off"'\
        resume 'swaymsg "output * dpms on"'\
-  before-sleep 'swaylock -efFc 111111'\
+  before-sleep 'swaylock -efFc 555555'\
+
+# exec mkfifo $SWAYSOCK.wob && tail -f $SWAYSOCK.wob | wob
 

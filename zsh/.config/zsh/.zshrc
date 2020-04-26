@@ -52,6 +52,11 @@ bindkey '\eb' emacs-backward-word
 # bindkey "^[[A" history-search-backward
 # bindkey "^[[B" history-search-forward
 
+bindkey ${terminfo[kLFT]:-'\e[1;2D'} backward-word #shift-left
+bindkey ${terminfo[kRIT]:-'\e[1;2C'} forward-word #shift-right
+#bindkey $terminfo[kri] shift-up
+#bindkey $terminfo[kind] shift-down
+
 # setop EXTENDEDGLOB
 setopt PROMPT_SUBST
 setopt HIST_IGNORE_ALL_DUPS
@@ -69,7 +74,7 @@ setopt PRINT_EXIT_VALUE
 export REPORTTIME=30
 # Helps avoid mistakes like 'rm * o' when 'rm *.o' was intended
 setopt RM_STAR_WAIT
-
+VDPAU_DRIVER=va_gl
 
 # bindkey "^I" menu-expand-or-complete
 
@@ -85,6 +90,8 @@ export GOPATH=$HOME/.local/godir
 PATH=$HOME/scripts:$HOME/.local/bin:$PATH
 export PATH=$GOROOT/bin:$GOPATH/bin:$PATH
 
+export SWAYSOCK=/run/user/$(id -u)/sway-ipc.$(id -u).$(pgrep -x sway).sock
+export SUDO_ASKPASS=/usr/lib/ssh/ssh-askpass
 export EDITOR="vim"
 export SYSTEMD_EDITOR="vim"
 # export LESS="-ra"
@@ -97,10 +104,12 @@ export SYSTEMD_EDITOR="vim"
 
 KEYTIMEOUT=1
 # alias -r pandoc='pandoc --lua-filter=/home/rens/scripts/task-list.lua'
-alias -g wlan=$(basename /sys/class/net/w*)
-alias -g eth=$(basename /sys/class/net/e*)
+
+alias -g wlan=$(basename -a /sys/class/net/w* |head  -n1)
+alias -g eth=$(basename -a /sys/class/net/e* |head -n1 )
 test -n "$TMUX" && alias ssh='TERM=screen ssh'
 alias -r x='startx "$XINITRC"'
+alias -r info='info --vi-keys'
 alias -r rm='rm -i'
 alias -r mv='mv -i'
 alias -r cp='cp -i'
@@ -115,7 +124,7 @@ alias octave="octave -q"
 alias o="xdg-open"
 alias gdb="gdb -q"
 alias -r glog='git log --oneline --graph --decorate=short'
-
+alias -r gcloud="LOGNAME=r_sikma gcloud"
 # if which HsColour > /dev/null
 # then
 #     alias ghci='ghci 2>&1 | HsColour -tty'
@@ -167,9 +176,9 @@ local timeLength=${#${(S%%)timePrompt//$~zero/}}
 
 # badSmile="%(?,halo ,%{$fg[red]%}:( %{$reset_color%} "
 
-local line='$leftHeader''%{$fg[grey]%}%U${(r:$((COLUMNS- ${#${(S%%)leftHeader//$~zero/}} -$timeLength )):: :)}%u%{$reset_color%}''$timePrompt'
+local line='$leftHeader''%{$fg[grey]%}%U${(r:$((COLUMNS- ${#${(S%%)leftHeader//$~zero/}} -$timeLength -10 )):: :)}%u%{$reset_color%}''$timePrompt'
 
-prompt="$line""%(1j.%j.)%#> "
+prompt="$line"$'\n'"%(1j.%j.)%#> "
 
 export RPS1='$_project $($cabal_pr) $($git_pr)'
 fuction precmd_reset()
@@ -205,14 +214,18 @@ include "$ZDOTDIR"/zsh-completion-generator/zsh-completion-generator.plugin.zsh
 autoload -Uz compinit bashcompinit
 compinit -d $XDG_CACHE_HOME/zsh
 bashcompinit
+include /opt/google-cloud-sdk/completion.zsh.inc
+include /usr/bin/aws_zsh_completer.sh
+# eval "$(_MOLECULE_COMPLETE=source molecule)"
 
 ( cd "$ZDOTDIR"/updatedComplete/
+    { which rclone   && test ! $(find _rclone   -mtime -20) } &> /dev/null && rclone genautocomplete zsh _rclone
     { which stack    && test ! $(find _stack    -mtime -20) } &> /dev/null && stack --bash-completion-script stack > _stack
     { which kubectl  && test ! $(find _kubectl  -mtime -20) } &> /dev/null && kubectl completion zsh > _kubectl
     { which minikube && test ! $(find _minikube -mtime -20) } &> /dev/null && minikube completion zsh > _minikube
 )
 include $ZDOTDIR/git-extras-completion.zsh
-include /opt/google-cloud-sdk/completion.zsh.inc
+
 include /usr/share/undistract-me/long-running.bash notify_when_long_running_commands_finish_install
 
 # GOPATHSTART="$GOPATH"

@@ -1,5 +1,4 @@
 #
-#
 # This simple script displays whether you are in a cabal sandbox
 # the the result of checking for a sandbox is cached, but now that I
 # actually think about it, it was probably an unnecessary step.
@@ -46,8 +45,7 @@ update_cabal_sandbox_preexec () {
 SLR_DARKSEA=%{$fg_bold[green]%}
 
 sandbox_prompt () {
-     test -n $__CABAL_SANDBOX
-     echo "$SLR_DARKSEA$(get_cabal_sandbox_info)%{$reset_color%}"
+     test -n $__CABAL_SANDBOX && echo "$SLR_DARKSEA$(get_cabal_sandbox_info)%{$reset_color%}"
 }
 
 PROMPT="$(sandbox_prompt) , %~ \n"

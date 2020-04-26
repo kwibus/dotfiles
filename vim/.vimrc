@@ -389,7 +389,7 @@ let g:rainbow_conf = {
   " }}}
 "}}}
 " general settings {{{
-
+  set nojoinspaces
 if has('gui_running')
     set ballooneval
     set mousemodel=popup
@@ -948,7 +948,6 @@ endif
   let g:easytags_dynamic_files = 1
   let g:easytags_async = 1
   let g:easytags_by_filetype = '~/.vim/easytags'
-
 "}}}
 "}}}
 " git {{{
