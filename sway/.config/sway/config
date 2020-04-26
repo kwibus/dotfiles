@@ -167,7 +167,7 @@ mouse_warping container
     bindsym $mod+g floating toggle
 
     # Swap focus between the tiling area and the floating area
-    bindsym $mod+space focus mode_toggle
+    bindsym $mod+shift+g focus mode_toggle
 
 # stick floating window 
     bindsym $mod+Shift+s sticky toggle
@@ -263,9 +263,7 @@ bar {
 #     }
 #     #tray_output primary LVDS
 # }
-
-exec waybar
-exec redshift-gtk -m wayland -c ~/.config/redshift.conf -r
+}
 exec read-gtk3-settings.sh
 exec /usr/lib/kdeconnectd
 exec indicator-kdeconnect
@@ -285,3 +283,4 @@ exec swayidle -w\
 
 # exec mkfifo $SWAYSOCK.wob && tail -f $SWAYSOCK.wob | wob
 
+exec redshift-gtk -m wayland -c ~/.config/redshift.conf -r
