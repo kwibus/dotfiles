@@ -33,7 +33,7 @@ zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %
 zstyle ':completion:*' squeeze-slashes true
 zstyle ':completion:*' use-compctl false
 zstyle ':completion:*' verbose true
-zstyle :compinstall filename '/home/rens/.zshrc'
+# zstyle :compinstall filename '/home/rens/.zshrc'
 
 
 # End of lines adcomplete
@@ -79,11 +79,11 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 zstyle ':completion:*:functions' ignored-patterns '_*'
 zstyle ':completion:*' rehash true
 zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path ~/.zsh/cache
+zstyle ':completion:*' cache-path $XDG_CACHE_HOME/zsh
 
 export GOPATH=$HOME/.local/godir
 PATH=$HOME/scripts:$HOME/.local/bin:$PATH
-export PATH=$GOROOT/bin:$GOPATH/bin:$PATH 
+export PATH=$GOROOT/bin:$GOPATH/bin:$PATH
 
 export EDITOR="vim"
 export SYSTEMD_EDITOR="vim"
@@ -203,7 +203,7 @@ GENCOMPL_FPATH="$ZDOTDIR"/gencomplete
 include "$ZDOTDIR"/zsh-completion-generator/zsh-completion-generator.plugin.zsh
 
 autoload -Uz compinit bashcompinit
-compinit -d $XDG_RUNTIME_DIR
+compinit -d $XDG_CACHE_HOME/zsh
 bashcompinit
 
 ( cd "$ZDOTDIR"/updatedComplete/
