@@ -1,0 +1,23 @@
+#compdef hwinfo
+
+# zsh completions for 'hwinfo'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+    '--short[Show only a summary. Use this option in addition to a hardware]'
+    '--listmd[Normally hwinfo does not report RAID devices. Add this option to]'
+    '--only[This option can be given more than once. If you add this option]'
+    '--save-config[Store config  for a particular device below /var/lib/hardware.]'
+    '--show-config[Show saved config data for a particular device.]'
+    '--map[If disk names have  changed (e.g. after a kernel update) this]'
+    '--debug[Set debug level to N. The debug info is shown only in the log]'
+    '--verbose[Increase verbosity. Only together with --map.]'
+    '--log[Write log info to FILE.]'
+    '--dump-db[Dump hardware data base. N is either 0 for the external data]'
+    '--version[Print libhd version.]'
+    '--help[Print usage.]'
+    '*:filename:_files'
+)
+
+_arguments -s $arguments

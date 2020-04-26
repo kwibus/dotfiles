@@ -1,0 +1,21 @@
+#compdef progress
+
+# zsh completions for 'progress'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+    {-q,--quiet}'[hides all messages]'
+    {-d,--debug}'[shows all warning/error messages]'
+    {-w,--wait}'[estimate I/O throughput and ETA (slower display)]'
+    {-W,--wait-delay}'[wait secs seconds for I/O estimation (implies -w, default=1.0)]'
+    {-m,--monitor}'[loop while monitored processes are still running]'
+    {-M,--monitor-continous}'[like monitor but never stop (similar to watch progress)]'
+    {-c,--command}'[monitor only this command name (ex: firefox)]'
+    {-p,--pid}'[monitor only this process ID (ex: `pidof firefox`)]'
+    {-v,--version}'[show program version and exit]'
+    {-h,--help}'[display this help and exit]'
+    '*:filename:_files'
+)
+
+_arguments -s $arguments

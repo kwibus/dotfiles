@@ -1,0 +1,28 @@
+#compdef pcmanfm
+
+# zsh completions for 'pcmanfm'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+    {-h,--help}'[Deze hulptekst tonen]'
+    '--help-all[Alle hulpteksten tonen]'
+    '--help-gtk[GTK+-options tonen]'
+    {-p,--profile}'[Naam van configuratieprofiel]'
+    {-d,--daemon-mode}'[Voer PCManFM uit als een achtergronddienst]'
+    '--no-desktop[Geen functie. Gewoon om verenigbaar te zijn met Nautilus]'
+    '--desktop[Start bureaubladbeheerder]'
+    '--desktop-off[Sluit bureaubladbeheerder af als hij aanstaat]'
+    '--desktop-pref[Open dialoog voor bureaubladvoorkeur]'
+    '--one-screen[Gebruik optie --desktop slechts voor één scherm]'
+    {-w,--set-wallpaper}'[Stel bureaubladachtergrond in vanuit afbeelding FILE]'
+    '--wallpaper-mode[Stel de modus van de bureaubladachtergrond in. MODE=(color|stretch|fit|crop|center|tile|screen)]'
+    '--show-pref[Open voorkeurendialoog op de pagina N]'
+    {-n,--new-win}'[Open nieuw venster]'
+    {-f,--find-files}'[Open een venster voor Bestanden zoeken]'
+    '--role[Rol van venster voor gebruik door vensterbeheerder]'
+    '--display[Te gebruiken X-display]'
+    '*:filename:_files'
+)
+
+_arguments -s $arguments

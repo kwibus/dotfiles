@@ -1,6 +1,7 @@
 XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/"$UID"}
 ZDOTDIR=${ZDOTDIR:-$HOME/.zsh}
-fpath=($ZDOTDIR/completion $fpath)
+
+fpath=("$ZDOTDIR"/completion  "$ZDOTDIR"/gencomplete/ "$ZDOTDIR/updatedComplete"  $fpath)
 autoload -U colors && colors
 eval $(dircolors)
 
@@ -8,6 +9,8 @@ HISTFILE=${HISTFILE:=~/.histfile}
 [ -f "$HISTFILE" ] || mkdir -p $(dirname "$HISTFILE")
 [ -d "$ZDOTDIR" ] || mkdir -p "$ZDOTDIR"
 [ -d "$ZDOTDIR/completion" ] || mkdir "$ZDOTDIR/completion"
+[ -d "$ZDOTDIR/gencomplete" ] || mkdir "$ZDOTDIR/gencomplete"
+[ -d "$ZDOTDIR/updatedComplete" ] || mkdir "$ZDOTDIR/updatedComplete"
 
 # Lines configured by zsh-newuser-install
 HISTSIZE=10000
@@ -145,6 +148,7 @@ include /usr/share/doc/pkgfile/command-not-found.zsh
 
 include "$ZDOTDIR"/cabalpromt.zsh 'cabal_pr="sandbox_prompt"'
 include "$ZDOTDIR"/gitpromt.zsh 'git_pr="__git_prompt"'
+include "$ZDOTDIR"/conda.zsh
 
 setopt promptsubst
 
@@ -194,15 +198,15 @@ help()
 # zstyle ':completion:*:manuals.*'  insert-sections   true
 # zstyle ':completion:*:man:*'      menu yes select
 
-GENCOMPL_FPATH="$ZDOTDIR"/complete
-# GENCOMPL_PY=python2
-# source "$ZDOTDIR"/zsh-completion-generator/zsh-completion-generator.plugin.zsh
+GENCOMPL_FPATH="$ZDOTDIR"/gencomplete
+# GENCOMPL_PY=python3
+include "$ZDOTDIR"/zsh-completion-generator/zsh-completion-generator.plugin.zsh
 
 autoload -Uz compinit bashcompinit
 compinit -d $XDG_RUNTIME_DIR
 bashcompinit
 
-( cd "$ZDOTDIR"/completion/
+( cd "$ZDOTDIR"/updatedComplete/
     { which stack    && test ! $(find _stack    -mtime -20) } &> /dev/null && stack --bash-completion-script stack > _stack
     { which kubectl  && test ! $(find _kubectl  -mtime -20) } &> /dev/null && kubectl completion zsh > _kubectl
     { which minikube && test ! $(find _minikube -mtime -20) } &> /dev/null && minikube completion zsh > _minikube
@@ -211,19 +215,19 @@ include $ZDOTDIR/git-extras-completion.zsh
 include /opt/google-cloud-sdk/completion.zsh.inc
 include /usr/share/undistract-me/long-running.bash notify_when_long_running_commands_finish_install
 
-GOPATHSTART="$GOPATH"
-
-function chpwd {
-
-    local projectroot=$(findProjectRoot.sh)
-
-    if ! [ -z $projectroot ]
-    then
-        _project="$(basename $projectroot)"
-        GOPATH="$projectroot:$GOPATHSTART"
-    else
-        _project=""
-    fi
-}
-chpwd
+# GOPATHSTART="$GOPATH"
+#
+# function chpwd {
+#
+#     local projectroot=$(findProjectRoot.sh)
+#
+#     if ! [ -z $projectroot ]
+#     then
+#         _project="$(basename $projectroot)"
+#         GOPATH="$projectroot:$GOPATHSTART"
+#     else
+#         _project=""
+#     fi
+# }
+# chpwd
 

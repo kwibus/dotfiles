@@ -1,0 +1,25 @@
+#compdef xbindkeys
+
+# zsh completions for 'xbindkeys'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+    {-V,--version}'[Print version and exit]'
+    {-d,--defaults}'[Print a default rc file]'
+    {-dg,--defaults-guile}'[Print a default guile configuration file]'
+    {-f,--file}'[Use an alternative rc file]'
+    {-fg,--file-guile}'[Use an alternative guile configuration file]'
+    {-p,--poll-rc}'[Poll the rc/guile configs for updates]'
+    {-h,--help}'[This help!]'
+    {-X,--display}'[Set X display to use]'
+    {-v,--verbose}'[More information on xbindkeys when it run]'
+    {-s,--show}'[Show the actual keybinding]'
+    {-k,--key}'[Identify one key pressed]'
+    {-mk,--multikey}'[Identify multi key pressed]'
+    {-g,--geometry}'[size and position of window open with -k|-mk option]'
+    {-n,--nodaemon}'[dont start as daemon]'
+    '*:filename:_files'
+)
+
+_arguments -s $arguments

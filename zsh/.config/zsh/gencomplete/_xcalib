@@ -1,0 +1,28 @@
+#compdef xcalib
+
+# zsh completions for 'xcalib'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+    '-display[or -d]'
+    '-screen[or -s]'
+    '-clear[or -c]'
+    '-noaction[or -n]'
+    '-verbose[or -v]'
+    '-printramps[or -p]'
+    '-loss[or -l]'
+    '-invert[or -i]'
+    '-gammacor[or -gc]'
+    '-brightness[or -b]'
+    '-contrast[or -co]'
+    '-red[<brightness-percent> <contrast-percent>]'
+    '-green[<brightness-percent> <contrast-percent>]'
+    '-blue[<brightness-percent> <contrast-percent>]'
+    '-alter[or -a]'
+    '-help[or -h]'
+    '-version[]'
+    '*:filename:_files'
+)
+
+_arguments -s $arguments

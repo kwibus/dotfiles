@@ -1,0 +1,20 @@
+#compdef nft
+
+# zsh completions for 'nft'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+    {-h,--help}'[Show this help]'
+    {-v,--version}'[Show version information]'
+    {-f,--file}'[Read input from <filename>]'
+    {-i,--interactive}'[Read input from interactive CLI]'
+    {-n,--numeric}'[When specified once, show network addresses numerically (default behaviour).]'
+    '-N[Translate IP addresses to names.]'
+    {-a,--handle}'[Output rule handle.]'
+    {-I,--includepath}'[Add <directory> to the paths searched for include files.]'
+    '--debug[\[,level...\]>	Specify debugging level (scanner, parser, eval, netlink, mnl, proto-ctx, segtree, all)]'
+    '*:filename:_files'
+)
+
+_arguments -s $arguments

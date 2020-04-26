@@ -1,0 +1,23 @@
+#compdef cat
+
+# zsh completions for 'cat'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+    {-A,--show-all}'[hetzelfde als -vET]'
+    {-b,--number-nonblank}'[niet-blanco uitvoerregels nummeren (negeert -n)]'
+    '-e[hetzelfde als -vE]'
+    {-E,--show-ends}'[een $ weergeven aan het einde van elke regel]'
+    {-n,--number}'[alle uitvoerregels nummeren]'
+    {-s,--squeeze-blank}'[opeenvolgende blanco regels comprimeren tot één]'
+    '-t[hetzelfde als -vT]'
+    {-T,--show-tabs}'[tab-tekens weergeven met ^I]'
+    '-u[(genegeerde optie)]'
+    {-v,--show-nonprinting}'[notatie met ^ en M- gebruiken, behalve voor LF/TAB]'
+    '--help[deze hulptekst tonen en stoppen]'
+    '--version[programmaversie tonen en stoppen]'
+    '*:filename:_files'
+)
+
+_arguments -s $arguments

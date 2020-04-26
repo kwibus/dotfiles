@@ -1,0 +1,19 @@
+#compdef gpasswd
+
+# zsh completions for 'gpasswd'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+    {-a,--add}'[add USER to GROUP]'
+    {-d,--delete}'[remove USER from GROUP]'
+    {-h,--help}'[display this help message and exit]'
+    {-Q,--root}'[directory to chroot into]'
+    {-r,--remove-password}'[remove the GROUPs password]'
+    {-R,--restrict}'[restrict access to GROUP to its members]'
+    {-M,--members}'[...        set the list of members of GROUP]'
+    {-A,--administrators}'[...]'
+    '*:filename:_files'
+)
+
+_arguments -s $arguments

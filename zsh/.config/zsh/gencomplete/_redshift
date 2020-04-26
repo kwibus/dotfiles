@@ -1,0 +1,26 @@
+#compdef redshift
+
+# zsh completions for 'redshift'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+    '-h[Toon dit helpbericht]'
+    '-v[Gedetailleerde uitvoer]'
+    '-V[Programmaversie weergeven]'
+    '-b[Helderheid van het scherm (tussen 0,1 en 1,0)]'
+    '-c[Laadt instellingen van opgegeven configuratiebestand]'
+    '-g[Extra gammacorrectie toepassen]'
+    '-l[Uw huidige locatie (latitude:longitude)]'
+    '-l[Kies een aanbieder voor automatische locatie-updates]'
+    '-m[Gebruikte methode om de kleurtemperatuur in te stellen]'
+    '-o[One shot mode (do not continuously adjust color temperature)]'
+    '-O[One shot manual mode (set color temperature)]'
+    '-p[Print mode (only print parameters and exit)]'
+    '-x[Reset mode (remove adjustment from screen)]'
+    '-r[Disable temperature transitions]'
+    '-t[Color temperature to set at daytime/night]'
+    '*:filename:_files'
+)
+
+_arguments -s $arguments
