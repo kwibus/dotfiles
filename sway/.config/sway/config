@@ -17,7 +17,7 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator
-set $term termite -t termite -e tmx.sh
+set $term termite -t termite -e /home/rens/scripts/tmx.sh
 # Your preferred application launcher
 set $menu albert toggle #dmenu_run
 
@@ -45,14 +45,18 @@ bindswitch --locked lid:on exec sway-disable-if.sh  $laptop
 bindswitch --locked lid:off output $laptop enable
 output *DP-1 pos 0,0
 
+
 #input * xkb_options compose:rctrl
 #input * xkb_options eurosign:5,lv3:ralt_switch¬
 #input "1:1:AT_Translated_Set_2_keyboard" xkb_capslock disabled
 #input "1:1:AT_Translated_Set_2_keyboard" xkb_options caps:disabled
 
+
 input "*" {
-  xkb_options ctrl:nocaps
+  xkb_options ctrl:nocaps,compose:ralt,eurosign:5,lv3:ralt
+
 }
+
 seat * hide_cursor 10000
 #
 # Example output configuration:
@@ -60,7 +64,7 @@ seat * hide_cursor 10000
 # output HDMI-A-1 resolution 1920x1080 position 1920,0
 
 focus_follows_mouse no
-mouse_warping container
+mouse_warping output
 ### Key bindings
 #
 # Basics:
@@ -92,7 +96,7 @@ mouse_warping container
     # bindsym $mod+Shift+r restart
 
     # exit sway (logs you out of your wayland session)
-    bindsym $mod+Shift+q exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+    bindsym $mod+Shift+q exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit; pkill notifyLog.sh'
 # Moving around:
 #
     # Move your focus around with $mod+[h|j|k|l], like vim
@@ -122,6 +126,7 @@ mouse_warping container
     bindsym $mod+Ctrl+j move workspace to down
     bindsym $mod+Ctrl+k move workspace to up
     bindsym $mod+Ctrl+l move workspace to right
+
 
 # ditto, with arrow keys
     bindsym $mod+Shift+Left move left
@@ -169,7 +174,7 @@ mouse_warping container
     # Swap focus between the tiling area and the floating area
     bindsym $mod+shift+g focus mode_toggle
 
-# stick floating window 
+# stick floating window
     bindsym $mod+Shift+s sticky toggle
 
 # move focus to the parent container
@@ -184,8 +189,10 @@ mouse_warping container
   bindsym $mod+Shift+space swap container  with mark master; mark --add master
   #bindsym $mod+Shift+space [con_mark="slave"] focus;swap container  with mark master ; [con_mark=master] mark slave ; mark --add master
 
+  bindsym $mod+n exec makoctl dismiss --all
+
   bindsym  --whole-window $mod+button6 exec /home/rens/scripts/sway-scale.sh +0.2
-   bindsym  --whole-window $mod+button5 exec /home/rens/scripts/sway-scale.sh -0.2
+  bindsym  --whole-window $mod+button5 exec /home/rens/scripts/sway-scale.sh -0.2
 #
 # Scratchpad:
 #
@@ -236,8 +243,8 @@ bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ 
 bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
 bindsym --locked XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
 
-bindsym --locked XF86MonBrightnessDown exec light -U 10  && light -G 
-bindsym --locked XF86MonBrightnessUp exec light -A 10  && light -G 
+bindsym --locked XF86MonBrightnessDown exec light -U 10  && light -G
+bindsym --locked XF86MonBrightnessUp exec light -A 10  && light -G
 
 bindsym --locked XF86KbdBrightnessDown exec light -s sysfs/leds/tpacpi::kbd_backlight -U 50
 bindsym --locked XF86KbdBrightnessUp exec light -s sysfs/leds/tpacpi::kbd_backlight -A 50
@@ -265,8 +272,8 @@ bar {
 # }
 }
 exec read-gtk3-settings.sh
-exec /usr/lib/kdeconnectd
-exec indicator-kdeconnect
+#exec /usr/lib/kdeconnectd
+#exec indicator-kdeconnect
 exec QT_QPA_PLATFORM=xcb albert
 exec udiskie -n -s -A --appindicator
 
@@ -282,5 +289,8 @@ exec swayidle -w\
   before-sleep 'swaylock -efFc 555555'\
 
 # exec mkfifo $SWAYSOCK.wob && tail -f $SWAYSOCK.wob | wob
-
+exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+exec firewall-applet
+exec notifyLog.sh
 exec redshift-gtk -m wayland -c ~/.config/redshift.conf -r
+
