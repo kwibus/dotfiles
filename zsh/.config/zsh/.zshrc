@@ -13,9 +13,11 @@ HISTFILE=${HISTFILE:=~/.histfile}
 [ -d "$ZDOTDIR/updatedComplete" ] || mkdir "$ZDOTDIR/updatedComplete"
 
 # Lines configured by zsh-newuser-install
-HISTSIZE=10000
-SAVEHIST=10000
-setopt APPEND_HISTORY AUTOCD BEEP NOTIFY SHARE_HISTORY
+# HISTSIZE=10000
+export SAVEHIST=1000000
+export HISTFILESIZE=1000000000
+export HISTSIZE=1000000000
+setopt APPEND_HISTORY AUTOCD BEEP NOTIFY SHARE_HISTORY INCAPPENDHISTORY
 bindkey -e
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
@@ -92,8 +94,8 @@ export PATH=$GOROOT/bin:$GOPATH/bin:$PATH
 
 export SWAYSOCK=/run/user/$(id -u)/sway-ipc.$(id -u).$(pgrep -x sway).sock
 export SUDO_ASKPASS=/usr/lib/ssh/ssh-askpass
-export EDITOR="vim"
-export SYSTEMD_EDITOR="vim"
+export EDITOR="nvim"
+export SYSTEMD_EDITOR="nvim"
 # export LESS="-ra"
 
 # export RXVT_SOCKET="$XDG_RUNTIME_DIR"/urxvt/urxvt-"$(hostname)"
@@ -212,7 +214,7 @@ GENCOMPL_FPATH="$ZDOTDIR"/gencomplete
 include "$ZDOTDIR"/zsh-completion-generator/zsh-completion-generator.plugin.zsh
 
 autoload -Uz compinit bashcompinit
-compinit -d $XDG_CACHE_HOME/zsh
+compinit -d $XDG_CACHE_HOME/zsh 
 bashcompinit
 include /opt/google-cloud-sdk/completion.zsh.inc
 include /usr/bin/aws_zsh_completer.sh
@@ -243,4 +245,3 @@ include /usr/share/undistract-me/long-running.bash notify_when_long_running_comm
 #     fi
 # }
 # chpwd
-

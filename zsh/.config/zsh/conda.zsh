@@ -1,3 +1,4 @@
+CONDA_ROOT=~/.config/conda
 __conda_setup="$('/home/rens/.local/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
 
 function conda_setup {
