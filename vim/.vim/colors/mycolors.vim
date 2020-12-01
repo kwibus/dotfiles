@@ -3,13 +3,16 @@ if exists('syntax_on')
   syntax reset
 endif
 
-runtime colors/solarized.vim
+runtime colors/solarized8.vim
 " runtime colors/base16-default.vim
 let g:solarized_diffmode='high'
 let g:colors_name = 'mycolors'
 
 " highlight SignColumn ctermbg=8
 highlight MyTodo ctermfg=red
+
+highlight ToLong ctermfg=red
+highlight IndentGuidesEven ctermbg=black
 let g:indent_guides_auto_colors = 0
 if &background==#'dark'
 

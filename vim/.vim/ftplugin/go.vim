@@ -27,3 +27,6 @@ let g:tagbar_type_go = {
     \ 'ctagsbin'  : 'gotags',
     \ 'ctagsargs' : '-sort -silent'
 \ }
+
+let g:go_imports_autosave = 1
+let g:go_fmt_autosave = 1
