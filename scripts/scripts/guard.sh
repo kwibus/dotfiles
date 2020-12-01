@@ -1,6 +1,6 @@
 #! /bin/bash
 
-command="$1"
+command="$*"
 
 doctest(){
     file=$1
@@ -50,21 +50,25 @@ do
     md5="$(md5sum "$File" 2> /dev/null )"
     if [ "${fileMapHash[$File]}" != "$md5" ];
     then
-    fileMapHash["$File"]="$md5"
-         echo "$File"
-         fHaskell=$(echo "$File" |grep -E '(.hs$)|(.lhs$)')
-         if [ "$fHaskell"  !=  "" ]
-         then
-             haskell "$File";
-         fi
-         if [ -f makefile ]  || [ -f Makefile ]
-         then
-             make|| break 
-         fi
+        clear
+        fileMapHash["$File"]="$md5"
+        if [ -n $commnnd ] 
+        then
+            $command
+            continue
+        fi
+        echo "$File"
+        fHaskell=$(echo "$File" |grep -E '(.hs$)|(.lhs$)')
+        if [ "$fHaskell"  !=  "" ]
+        then
+            haskell "$File";
+        fi
+        if [ -f makefile ]  || [ -f Makefile ]
+        then
+            make|| break 
+        fi
 
-         sleep 1
-
-         $1
+        sleep 1
      fi
 done
 
