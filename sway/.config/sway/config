@@ -81,6 +81,8 @@ mouse_warping output
     bindsym Alt+l exec swaylock -c 222222
 
     # lcok
+
+    bindsym $mod+o exec sway-select.sh
     bindsym $mod+p exec $menu
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -177,15 +179,17 @@ mouse_warping output
 # stick floating window
     bindsym $mod+Shift+s sticky toggle
 
+
 # move focus to the parent container
     bindsym $mod+a focus parent
     bindsym $mod+Shift+a focus child
 
     bindsym $mod+shift+minus opacity minus 0.1
   bindsym $mod+shift+equal opacity plus 0.1
+
   bindsym $mod+comma  mark --toggle master
 
-  bindsym $mod+space [workspace="__focused__" con_mark="master"] focus
+  bindsym $mod+space mark --toggle slave ;[workspace="__focused__" con_mark="master"] focus
   bindsym $mod+Shift+space swap container  with mark master; mark --add master
   #bindsym $mod+Shift+space [con_mark="slave"] focus;swap container  with mark master ; [con_mark=master] mark slave ; mark --add master
 
@@ -274,7 +278,7 @@ bar {
 exec read-gtk3-settings.sh
 #exec /usr/lib/kdeconnectd
 #exec indicator-kdeconnect
-exec QT_QPA_PLATFORM=xcb albert
+exec albert
 exec udiskie -n -s -A --appindicator
 
 exec mako --default-timeout 9000
