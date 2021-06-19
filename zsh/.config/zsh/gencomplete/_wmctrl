@@ -1,0 +1,37 @@
+#compdef wmctrl
+
+# zsh completions for 'wmctrl'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+    '-m[Show information about the window manager and]'
+    '-l[List windows managed by the window manager.]'
+    '-d[List desktops. The current desktop is marked]'
+    '-s[Switch to the specified desktop.]'
+    '-a[Activate the window by switching to its desktop and]'
+    '-c[Close the window gracefully.]'
+    '-R[Move the window to the current desktop and]'
+    {-r,-t}'[Move the window to the specified desktop.]'
+    {-r,-e}'[Resize and move the window around the desktop.]'
+    {-r,-b}'[Change the state of the window. Using this option its]'
+    {-r,-N}'[Set the name (long title) of the window.]'
+    {-r,-I}'[Set the icon name (short title) of the window.]'
+    {-r,-T}'[Set both the name and the icon name of the window.]'
+    '-k[)          Activate or deactivate window managers]'
+    '-o[<Y>           Change the viewport for the current desktop.]'
+    '-n[Change number of desktops.]'
+    '-g[<H>           Change geometry (common size) of all desktops.]'
+    '-h[Print help.]'
+    '-i[Interpret <WIN> as a numerical window ID.]'
+    '-p[Include PIDs in the window list. Very few]'
+    '-G[Include geometry in the window list.]'
+    '-x[Include WM_CLASS in the window list or]'
+    '-u[Override auto-detection and force UTF-8 mode.]'
+    '-F[Modifies the behavior of the window title matching]'
+    '-v[Be verbose. Useful for debugging.]'
+    '-w[Use a workaround. The option may appear multiple]'
+    '*:filename:_files'
+)
+
+_arguments -s $arguments

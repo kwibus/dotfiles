@@ -1,0 +1,21 @@
+#compdef lightdm
+
+# zsh completions for 'lightdm'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+    {-h,--help}'[Show help options]'
+    {-c,--config}'[Use configuration file]'
+    {-d,--debug}'[Print debugging messages]'
+    '--test-mode[Run as unprivileged user, skipping things that require root access]'
+    '--pid-file[File to write PID into]'
+    '--log-dir[Directory to write logs to]'
+    '--run-dir[Directory to store running state]'
+    '--cache-dir[Directory to cache information]'
+    '--show-config[Show combined configuration]'
+    {-v,--version}'[Show release version]'
+    '*:filename:_files'
+)
+
+_arguments -s $arguments

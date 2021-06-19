@@ -1,0 +1,21 @@
+#compdef encfs
+
+# zsh completions for 'encfs'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+    '-H[toon optionele FUSE Mount opties]'
+    '-s[schakel multithread modus uit]'
+    '-f[raai op de voorgrond (niet als daemon).]'
+    {-v,--verbose}'[verbose: geeft encfs debug berichten]'
+    {-i,--idle}'[Automatisch unmounten nadat een bepaalde tijd geen activiteit is geweest]'
+    '--anykey[Verifieer de gebruikte sleutel niet]'
+    '--forcedecode[Decodeer de data zelfs wanneer er een fout wordt geconstanteerd]'
+    '--public[act als een typisch bestandssysteem voor meerdere gebruikers]'
+    '--reverse[omgekeerde encryptie]'
+    '--extpass[Gebruik een extern programma voor het vragen van het password]'
+    '*:filename:_files'
+)
+
+_arguments -s $arguments

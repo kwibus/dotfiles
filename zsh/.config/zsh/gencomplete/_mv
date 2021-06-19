@@ -1,0 +1,25 @@
+#compdef mv
+
+# zsh completions for 'mv'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+    '--backup[van elk bestemmingsbestand een reservekopie maken]'
+    '-b[als --backup, maar accepteert geen argument]'
+    {-f,--force}'[niets vragen alvorens te overschrijven]'
+    {-i,--interactive}'[voor overschrijven om toestemming vragen]'
+    {-n,--no-clobber}'[geen bestaand bestand overschrijven]'
+    '--strip-trailing-slashes[schuine strepen achter elke BRON verwijderen]'
+    {-S,--suffix}'[te gebruiken achtervoegsel voor reservekopieën]'
+    {-t,--target-directory}'[alle BRON-argumenten naar deze map verplaatsen]'
+    {-T,--no-target-directory}'[BESTEMMING als een normaal bestand behandelen]'
+    {-u,--update}'[alleen verplaatsen als BRON nieuwer is dan de]'
+    {-v,--verbose}'[tonen wat er gedaan wordt]'
+    {-Z,--context}'[de SELinux-beveiligingscontext van doelbestand]'
+    '--help[deze hulptekst tonen en stoppen]'
+    '--version[programmaversie tonen en stoppen]'
+    '*:filename:_files'
+)
+
+_arguments -s $arguments

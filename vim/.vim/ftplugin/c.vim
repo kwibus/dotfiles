@@ -1,4 +1,4 @@
 let g:ale_linters = {
-\   'c': ['clangcheck','clangtidy'],
+\   'c': ['clangd','clangcheck','clangtidy'],
 \}
 

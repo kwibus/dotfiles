@@ -1,0 +1,15 @@
+#compdef arch-audit
+
+# zsh completions for 'arch-audit'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+    {-h,--help}'[Prints help information]'
+    {-q,--quiet}'[Show only vulnerable package names and their versions]'
+    {-u,--upgradable}'[Show only packages that have already been fixed]'
+    {-V,--version}'[Prints version information]'
+    '*:filename:_files'
+)
+
+_arguments -s $arguments

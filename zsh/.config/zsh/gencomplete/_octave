@@ -1,0 +1,41 @@
+#compdef octave
+
+# zsh completions for 'octave'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+    '--built-in-docstrings-file[Use docs for built-ins from FILE.]'
+    {--debug,-d}'[Enter parser debugging mode.]'
+    '--debug-jit[Enable JIT compiler debugging/tracing.]'
+    '--doc-cache-file[Use doc cache file FILE.]'
+    {--echo-commands,-x}'[Echo commands as they are executed.]'
+    '--eval[Evaluate CODE.  Exit when done unless --persist.]'
+    '--exec-path[Set path for executing subprograms.]'
+    '--force-gui[Force graphical user interface to start.]'
+    {--help,-h}'[Print short help message and exit.]'
+    '--image-path[Add PATH to head of image search path.]'
+    '--info-file[Use top-level info file FILE.]'
+    '--info-program[Use PROGRAM for reading info files.]'
+    {--interactive,-i}'[Force interactive behavior.]'
+    '--jit-compiler[Enable the JIT compiler.]'
+    '--line-editing[Force readline use for command-line editing.]'
+    '--no-gui[Disable the graphical user interface.]'
+    {--no-history,-H}'[Dont save commands to the history list]'
+    '--no-init-file[Dont read the ~/.octaverc or .octaverc files.]'
+    '--no-init-path[Dont initialize function search path.]'
+    '--no-line-editing[Dont use readline for command-line editing.]'
+    '--no-site-file[Dont read the site-wide octaverc file.]'
+    {--no-window-system,-W}'[Disable window system, including graphics.]'
+    {--norc,-f}'[Dont read any initialization files.]'
+    {--path,-p}'[Add PATH to head of function search path.]'
+    '--persist[Go interactive after --eval or reading from FILE.]'
+    {--silent,--quiet,-q}'[Dont print message at startup.]'
+    '--texi-macros-file[Use Texinfo macros in FILE for makeinfo command.]'
+    '--traditional[Set variables for closer MATLAB compatibility.]'
+    {--verbose,-V}'[Enable verbose output in some cases.]'
+    {--version,-v}'[Print version number and exit.]'
+    '*:filename:_files'
+)
+
+_arguments -s $arguments

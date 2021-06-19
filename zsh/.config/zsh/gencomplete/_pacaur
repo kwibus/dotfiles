@@ -1,0 +1,33 @@
+#compdef pacaur
+
+# zsh completions for 'pacaur'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+    {-S,-Ss,-Si,-Sw,-Su,-Qu,-Sc,-Scc}'[pacman handelingen uitbreiden naar de AUR]'
+    {-s,--search}'[zoeken in AUR voor overeenkomende strings]'
+    {-i,--info}'[pakketinfomatie bekijken]'
+    {-d,--download}'[doel(en) downloaden -- geef twee keer om AUR afhankelijkheden te downloaden]'
+    {-m,--makepkg}'[download en bouw doel(en)]'
+    {-y,--sync}'[download, bouw en installeer doel(en)]'
+    {-k,--check}'[naar AUR update(s) zoeken]'
+    {-u,--update}'[AUR pakket(ten) updaten]'
+    {-v,--version}'[toon versie-informatie]'
+    {-h,--help}'[toon help-informatie]'
+    {-a,--aur}'[alleen zoeken, bouwen of installeren van doel(en) uit de AUR]'
+    {-r,--repo}'[alleen zoeken, bouwen of installeren van doel(en) uit de repositories]'
+    {-e,--edit}'[bewerk PKGBUILD van doel(en) en bekijk het installatie script]'
+    {-q,--quiet}'[laat minder informatie zien bij query en zoekopdrachten]'
+    '--devel[overweeg AUR ontwikkelings pakketten als upgrade]'
+    '--foreign[overweeg al ge�nstalleerde vreemde afhankelijkheiden]'
+    '--ignore[negeer een pakket upgrade (kan meer dan eens gebruikt worden)]'
+    '--needed[herinstalleer doel(en) die al up-to-date zijn niet]'
+    '--noconfirm[vraag niet om bevestiging]'
+    '--noedit[vraag niet om bestanden te bewerken]'
+    '--rebuild[bouw pakket(ten) altijd opnieuw]'
+    '--silent[toon geen output]'
+    '*:filename:_files'
+)
+
+_arguments -s $arguments

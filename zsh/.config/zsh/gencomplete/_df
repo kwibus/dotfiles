@@ -1,0 +1,29 @@
+#compdef df
+
+# zsh completions for 'df'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+    {-a,--all}'[ook pseudo-, duplicaat, en ontoegankelijke]'
+    {-B,--block-size}'[de te tonen groottes schalen naar deze waarde;]'
+    {-h,--human-readable}'[groottes in machten van 1024 tonen (bijv. 234M)]'
+    {-H,--si}'[groottes in machten van 1000 tonen (bijv. 245M)]'
+    {-i,--inodes}'[inode-informatie tonen in plaats van blokgebruik]'
+    '-k[hetzelfde als --block-size=1K]'
+    {-l,--local}'[de opsomming beperken tot lokale bestandssystemen]'
+    '--no-sync[geen sync doen vóór ophalen van info (standaard)]'
+    '--output[de gegeven uitvoeropmaak gebruiken, of]'
+    {-P,--portability}'[de POSIX-uitvoeropmaak gebruiken]'
+    '--sync[een sync doen vóór het ophalen van gebruiksinfo]'
+    '--total[alle items die irrelevant zijn voor de beschikbare]'
+    {-t,--type}'[alleen bestandssystemen van dit type tonen]'
+    {-T,--print-type}'[van elk bestandssysteem ook het type tonen]'
+    {-x,--exclude-type}'[bestandssystemen van dit type niet tonen]'
+    '-v[(genegeerde optie)]'
+    '--help[deze hulptekst tonen en stoppen]'
+    '--version[programmaversie tonen en stoppen]'
+    '*:filename:_files'
+)
+
+_arguments -s $arguments

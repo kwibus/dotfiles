@@ -1,0 +1,17 @@
+#compdef aura
+
+# zsh completions for 'aura'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+    {-A,--aursync}'[\[0;32mPerform actions involving the \[A\]UR.]'
+    {-B,--save}'[\[0;33mManage the \[S\]aving and restoring of the global package state.]'
+    {-C,--downgrade}'[\[0;31mPerform actions involving the package \[C\]ache.]'
+    {-L,--viewlog}'[\[0;36mPerform actions involving the pacman \[L\]ogfile.]'
+    {-M,--abssync}'[\[0;35mPerform actions involving the ABS tree.]'
+    {-O,--orphans}'[\[0;34mPerform actions involving \[O\]rphan packages.]'
+    '*:filename:_files'
+)
+
+_arguments -s $arguments

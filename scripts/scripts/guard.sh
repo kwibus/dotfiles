@@ -1,6 +1,6 @@
 #! /bin/bash
 
-command="$1"
+command="$*"
 
 doctest(){
     file=$1
@@ -33,7 +33,7 @@ haskell() {
 cabaltest(){
     # echo "$arg"
     # echo cabal  new-test --  --color=always -j 8 --quickcheck-max-size 100 "$arg"
-    # cabal new-run test:tests -- -j 4 --quickcheck-max-size 20 --quickcheck-tests 20 -t 3 -q 
+    # cabal new-run test:tests -- -j 4 --quickcheck-max-size 20 --quickcheck-tests 20 -t 3 -q
     stack test --test-arguments="-j 4 -t 20 --quickcheck-max-size 30 --quickcheck-tests 100  --color=always --hide-successes"
 }
 
@@ -50,21 +50,25 @@ do
     md5="$(md5sum "$File" 2> /dev/null )"
     if [ "${fileMapHash[$File]}" != "$md5" ];
     then
-    fileMapHash["$File"]="$md5"
-         echo "$File"
-         fHaskell=$(echo "$File" |grep -E '(.hs$)|(.lhs$)')
-         if [ "$fHaskell"  !=  "" ]
-         then
-             haskell "$File";
-         fi
-         if [ -f makefile ]  || [ -f Makefile ]
-         then
-             make|| break 
-         fi
+        clear
+        fileMapHash["$File"]="$md5"
+        if [ -n $commnnd ]
+        then
+            $command
+            continue
+        fi
+        echo "$File"
+        fHaskell=$(echo "$File" |grep -E '(.hs$)|(.lhs$)')
+        if [ "$fHaskell"  !=  "" ]
+        then
+            haskell "$File";
+        fi
+        if [ -f makefile ]  || [ -f Makefile ]
+        then
+            make|| break
+        fi
 
-         sleep 1
-
-         $1
+        sleep 1
      fi
 done
 

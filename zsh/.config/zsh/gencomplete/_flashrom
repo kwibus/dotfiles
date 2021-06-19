@@ -1,0 +1,26 @@
+#compdef flashrom
+
+# zsh completions for 'flashrom'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+    {-h,--help}'[print this help text]'
+    {-R,--version}'[print version (release)]'
+    {-r,--read}'[read flash and save to <file>]'
+    {-w,--write}'[write <file> to flash]'
+    {-v,--verify}'[verify flash against <file>]'
+    {-E,--erase}'[erase flash memory]'
+    {-V,--verbose}'[more verbose output]'
+    {-c,--chip}'[probe only for specified flash chip]'
+    {-f,--force}'[force specific operations (see man page)]'
+    {-n,--noverify}'[dont auto-verify]'
+    {-l,--layout}'[read ROM layout from <layoutfile>]'
+    {-i,--image}'[only flash image <name> from flash layout]'
+    {-o,--output}'[log output to <logfile>]'
+    {-L,--list-supported}'[print supported devices]'
+    {-p,--programmer}'[specify the programmer device. One of]'
+    '*:filename:_files'
+)
+
+_arguments -s $arguments

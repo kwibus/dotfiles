@@ -10,12 +10,12 @@ function __git_prompt {
     echo -n "["
     if [[ `git ls-files -u >& /dev/null` == '' ]]
     then
-      git diff --quiet >& /dev/null
+      timeout "0,1" git diff --quiet >& /dev/null
       if [[ $? == 1 ]]
       then
         echo -n $DIRTY
       else
-        git diff --cached --quiet >& /dev/null
+        timeout "0,1" git diff --cached --quiet >& /dev/null
         if [[ $? == 1 ]]
         then
           echo -n $DIRTY

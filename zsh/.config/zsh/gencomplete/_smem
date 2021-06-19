@@ -1,0 +1,31 @@
+#compdef smem
+
+# zsh completions for 'smem'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+    {-h,--help}'[show this help message and exit]'
+    {-H,--no-header}'[disable header line]'
+    {-c,--columns}'[columns to show]'
+    {-t,--totals}'[show totals]'
+    {-R,--realmem}'[amount of physical RAM]'
+    {-K,--kernel}'[path to kernel image]'
+    {-m,--mappings}'[show mappings]'
+    {-u,--users}'[show users]'
+    {-w,--system}'[show whole system]'
+    {-P,--processfilter}'[process filter regex]'
+    {-M,--mapfilter}'[map filter regex]'
+    {-U,--userfilter}'[user filter regex]'
+    {-n,--numeric}'[numeric output]'
+    {-s,--sort}'[field to sort on]'
+    {-r,--reverse}'[reverse sort]'
+    {-p,--percent}'[show percentage]'
+    {-k,--abbreviate}'[show unit suffixes]'
+    '--pie[show pie graph]'
+    '--bar[show bar graph]'
+    {-S,--source}'[/proc data source]'
+    '*:filename:_files'
+)
+
+_arguments -s $arguments

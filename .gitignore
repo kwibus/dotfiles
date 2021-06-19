@@ -8,3 +8,9 @@ vim/.vim/easytags
 vim/.vim/view
 vim/.vim/viminfo
 vim/.vim/undo
+
+*.hi
+*.o
+xmonad/.config/xmonad/xmonad-x86_64-linux
+*.errors
+

@@ -1,0 +1,17 @@
+#compdef tee
+
+# zsh completions for 'tee'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+    {-a,--append}'[aan BESTAND(en) toevoegen, niet overschrijven]'
+    {-i,--ignore-interrupts}'[interruptsignalen negeren]'
+    '-p[diagnose errors writing to non pipes]'
+    '--output-error[set behavior on write error.  See MODE below]'
+    '--help[deze hulptekst tonen en stoppen]'
+    '--version[programmaversie tonen en stoppen]'
+    '*:filename:_files'
+)
+
+_arguments -s $arguments

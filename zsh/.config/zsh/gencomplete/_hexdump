@@ -1,0 +1,25 @@
+#compdef hexdump
+
+# zsh completions for 'hexdump'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+    {-b,--one-byte-octal}'[enkel-bytes octale weergave]'
+    {-c,--one-byte-char}'[enkel-bytes-tekenweergave]'
+    {-C,--canonical}'[canonieke hex+ASCII-weergave]'
+    {-d,--two-bytes-decimal}'[twee-bytes decimale weergave]'
+    {-o,--two-bytes-octal}'[twee-bytes octale weergave]'
+    {-x,--two-bytes-hex}'[twee-bytes hexadecimale weergave]'
+    {-L,--color}'[kleurspecificaties interpreteren]'
+    {-e,--format}'[opmaaktekenreeks voor weergave van gegevens]'
+    {-f,--format-file}'[de opmaaktekenreeksen uit dit bestand lezen]'
+    {-n,--length}'[slechts dit aantal bytes van de invoer verwerken]'
+    {-s,--skip}'[dit aantal bytes aan het begin overslaan]'
+    {-v,--no-squeezing}'[identieke regels ook weergeven]'
+    {-h,--help}'[deze hulptekst tonen en stoppen]'
+    {-V,--version}'[programmaversie tonen en stoppen]'
+    '*:filename:_files'
+)
+
+_arguments -s $arguments

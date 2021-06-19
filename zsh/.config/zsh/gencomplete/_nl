@@ -1,0 +1,24 @@
+#compdef nl
+
+# zsh completions for 'nl'
+# automatically generated with http://github.com/RobSis/zsh-completion-generator
+local arguments
+
+arguments=(
+  {-b,--body-numbering}'[te gebruiken stijl voor regelnummering]'
+  {-d,--section-delimiter}'[te gebruiken tekenpaar voor paginascheiding]'
+  {-f,--footer-numbering}'[stijl voor de nummering van voetregels]'
+  {-h,--header-numbering}'[stijl voor de nummering van kopregels]'
+  {-i,--page-increment}'[regelnummer na elke regel met dit getal ophogen]'
+  {-l,--join-blank-lines}'[dit aantal lege regels als één regel tellen]'
+  {-n,--number-format}'[te gebruiken OPMAAK voor regelnummers]'
+  {-p,--no-renumber}'[regelnummer niet resetten voor elke sectie]'
+  {-s,--number-separator}'[toe te voegen tekst na (mogelijk) regelnummer]'
+  {-v,--starting-line-number}'[eerste regelnummer voor elke sectie]'
+  {-w,--number-width}'[aantal te gebruiken kolommen voor regelnummers]'
+  '--help[deze hulptekst tonen en stoppen]'
+  '--version[programmaversie tonen en stoppen]'
+  '*:filename:_files'
+)
+
+_arguments -s $arguments

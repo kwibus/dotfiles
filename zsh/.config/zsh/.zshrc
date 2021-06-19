@@ -1,6 +1,7 @@
 XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/"$UID"}
 ZDOTDIR=${ZDOTDIR:-$HOME/.zsh}
-fpath=($ZDOTDIR/completion $fpath)
+
+fpath=("$ZDOTDIR"/completion  "$ZDOTDIR"/gencomplete/ "$ZDOTDIR/updatedComplete"  $fpath)
 autoload -U colors && colors
 eval $(dircolors)
 
@@ -8,11 +9,15 @@ HISTFILE=${HISTFILE:=~/.histfile}
 [ -f "$HISTFILE" ] || mkdir -p $(dirname "$HISTFILE")
 [ -d "$ZDOTDIR" ] || mkdir -p "$ZDOTDIR"
 [ -d "$ZDOTDIR/completion" ] || mkdir "$ZDOTDIR/completion"
+[ -d "$ZDOTDIR/gencomplete" ] || mkdir "$ZDOTDIR/gencomplete"
+[ -d "$ZDOTDIR/updatedComplete" ] || mkdir "$ZDOTDIR/updatedComplete"
 
 # Lines configured by zsh-newuser-install
-HISTSIZE=10000
-SAVEHIST=10000
-setopt APPEND_HISTORY AUTOCD BEEP NOTIFY SHARE_HISTORY
+# HISTSIZE=10000
+export SAVEHIST=1000000
+export HISTFILESIZE=1000000000
+export HISTSIZE=1000000000
+setopt APPEND_HISTORY AUTOCD BEEP NOTIFY SHARE_HISTORY INCAPPENDHISTORY
 bindkey -e
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
@@ -30,7 +35,7 @@ zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %
 zstyle ':completion:*' squeeze-slashes true
 zstyle ':completion:*' use-compctl false
 zstyle ':completion:*' verbose true
-zstyle :compinstall filename '/home/rens/.zshrc'
+# zstyle :compinstall filename '/home/rens/.zshrc'
 
 
 # End of lines adcomplete
@@ -48,6 +53,11 @@ bindkey '\eb' emacs-backward-word
 
 # bindkey "^[[A" history-search-backward
 # bindkey "^[[B" history-search-forward
+
+bindkey ${terminfo[kLFT]:-'\e[1;2D'} backward-word #shift-left
+bindkey ${terminfo[kRIT]:-'\e[1;2C'} forward-word #shift-right
+#bindkey $terminfo[kri] shift-up
+#bindkey $terminfo[kind] shift-down
 
 # setop EXTENDEDGLOB
 setopt PROMPT_SUBST
@@ -67,6 +77,7 @@ export REPORTTIME=30
 # Helps avoid mistakes like 'rm * o' when 'rm *.o' was intended
 setopt RM_STAR_WAIT
 
+export VDPAU_DRIVER=va_gl
 
 # bindkey "^I" menu-expand-or-complete
 
@@ -76,14 +87,16 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 zstyle ':completion:*:functions' ignored-patterns '_*'
 zstyle ':completion:*' rehash true
 zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path ~/.zsh/cache
+zstyle ':completion:*' cache-path $XDG_CACHE_HOME/zsh
 
 export GOPATH=$HOME/.local/godir
 PATH=$HOME/scripts:$HOME/.local/bin:$PATH
-export PATH=$GOROOT/bin:$GOPATH/bin:$PATH 
+export PATH=$GOROOT/bin:$GOPATH/bin:$PATH
 
-export EDITOR="vim"
-export SYSTEMD_EDITOR="vim"
+export SWAYSOCK=/run/user/$(id -u)/sway-ipc.$(id -u).$(pgrep -x sway).sock
+export SUDO_ASKPASS=/usr/lib/ssh/ssh-askpass
+export EDITOR="nvim"
+export SYSTEMD_EDITOR="nvim"
 # export LESS="-ra"
 
 # export RXVT_SOCKET="$XDG_RUNTIME_DIR"/urxvt/urxvt-"$(hostname)"
@@ -94,10 +107,12 @@ export SYSTEMD_EDITOR="vim"
 
 KEYTIMEOUT=1
 # alias -r pandoc='pandoc --lua-filter=/home/rens/scripts/task-list.lua'
-alias -g wlan=$(basename /sys/class/net/w*)
-alias -g eth=$(basename /sys/class/net/e*)
+
+alias -g wlan=$(basename -a /sys/class/net/w* |head  -n1)
+alias -g eth=$(basename -a /sys/class/net/e* |head -n1 )
 test -n "$TMUX" && alias ssh='TERM=screen ssh'
 alias -r x='startx "$XINITRC"'
+alias -r info='info --vi-keys'
 alias -r rm='rm -i'
 alias -r mv='mv -i'
 alias -r cp='cp -i'
@@ -112,7 +127,7 @@ alias octave="octave -q"
 alias o="xdg-open"
 alias gdb="gdb -q"
 alias -r glog='git log --oneline --graph --decorate=short'
-
+alias -r gcloud="LOGNAME=r_sikma gcloud"
 # if which HsColour > /dev/null
 # then
 #     alias ghci='ghci 2>&1 | HsColour -tty'
@@ -145,6 +160,7 @@ include /usr/share/doc/pkgfile/command-not-found.zsh
 
 include "$ZDOTDIR"/cabalpromt.zsh 'cabal_pr="sandbox_prompt"'
 include "$ZDOTDIR"/gitpromt.zsh 'git_pr="__git_prompt"'
+include "$ZDOTDIR"/conda.zsh
 
 setopt promptsubst
 
@@ -163,9 +179,9 @@ local timeLength=${#${(S%%)timePrompt//$~zero/}}
 
 # badSmile="%(?,halo ,%{$fg[red]%}:( %{$reset_color%} "
 
-local line='$leftHeader''%{$fg[grey]%}%U${(r:$((COLUMNS- ${#${(S%%)leftHeader//$~zero/}} -$timeLength )):: :)}%u%{$reset_color%}''$timePrompt'
+local line='$leftHeader''%{$fg[grey]%}%U${(r:$((COLUMNS- ${#${(S%%)leftHeader//$~zero/}} -$timeLength -10 )):: :)}%u%{$reset_color%}''$timePrompt'
 
-prompt="$line""%(1j.%j.)%#> "
+prompt="$line"$'\n'"%(1j.%j.)%#> "
 
 export RPS1='$_project $($cabal_pr) $($git_pr)'
 fuction precmd_reset()
@@ -194,15 +210,19 @@ help()
 # zstyle ':completion:*:manuals.*'  insert-sections   true
 # zstyle ':completion:*:man:*'      menu yes select
 
-GENCOMPL_FPATH="$ZDOTDIR"/complete
-# GENCOMPL_PY=python2
-# source "$ZDOTDIR"/zsh-completion-generator/zsh-completion-generator.plugin.zsh
+GENCOMPL_FPATH="$ZDOTDIR"/gencomplete
+# GENCOMPL_PY=python3
+include "$ZDOTDIR"/zsh-completion-generator/zsh-completion-generator.plugin.zsh
 
 autoload -Uz compinit bashcompinit
-compinit -d $XDG_RUNTIME_DIR
+compinit -d $XDG_CACHE_HOME/zsh
 bashcompinit
+include /opt/google-cloud-sdk/completion.zsh.inc
+include /usr/bin/aws_zsh_completer.sh
+# eval "$(_MOLECULE_COMPLETE=source molecule)"
 
-( cd "$ZDOTDIR"/completion/
+( cd "$ZDOTDIR"/updatedComplete/
+    { which rclone   && test ! $(find _rclone   -mtime -20) } &> /dev/null && rclone genautocomplete zsh _rclone
     { which stack    && test ! $(find _stack    -mtime -20) } &> /dev/null && stack --bash-completion-script stack > _stack
     { which kubectl  && test ! $(find _kubectl  -mtime -20) } &> /dev/null && kubectl completion zsh > _kubectl
     { which minikube && test ! $(find _minikube -mtime -20) } &> /dev/null && minikube completion zsh > _minikube
@@ -211,19 +231,18 @@ include $ZDOTDIR/git-extras-completion.zsh
 
 include /usr/share/undistract-me/long-running.bash notify_when_long_running_commands_finish_install
 
-GOPATHSTART="$GOPATH"
-
-function chpwd {
-
-    local projectroot=$(findProjectRoot.sh)
-
-    if ! [ -z $projectroot ]
-    then
-        _project="$(basename $projectroot)"
-        GOPATH="$projectroot:$GOPATHSTART"
-    else
-        _project=""
-    fi
-}
-chpwd
-
+# GOPATHSTART="$GOPATH"
+#
+# function chpwd {
+#
+#     local projectroot=$(findProjectRoot.sh)
+#
+#     if ! [ -z $projectroot ]
+#     then
+#         _project="$(basename $projectroot)"
+#         GOPATH="$projectroot:$GOPATHSTART"
+#     else
+#         _project=""
+#     fi
+# }
+# chpwd
