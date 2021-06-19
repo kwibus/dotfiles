@@ -1,0 +1,37 @@
+[user]
+	name = Rens Sikma
+	email =rens@atcomputing.nl
+[color]
+	ui = auto
+[diff]
+	tool = meld
+[difftool]
+	prompt = true
+[alias]
+	d = difftool
+[push]
+	default = simple
+[core]
+	editor = nvim
+	whitespace = blank-at-eol,space-before-tab
+	excludesfile = ~/.config/git/ignore
+	trustctime = false
+[rerere]
+	enabled = true
+[merge]
+	conflictstyle = diff3
+[init]
+	templatedir = ~/.config/git/templates
+
+[merge]
+  tool = nvim
+[mergetool]
+  prompt = true
+[mergetool "nvim"]
+  cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+
+[merge] tool = mymeld 
+    conflictstyle = diff3 
+[mergetool "mymeld"] cmd = meld $LOCAL $BASE $REMOTE --output $MERGED 
+[pull]
+	ff = only

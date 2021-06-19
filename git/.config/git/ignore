@@ -1,0 +1,24 @@
+# general
+todo
+error
+old/
+backup/
+unused
+notes
+# vim
+*.sw[a-z]
+tags
+tags.*
+# haskell
+dist/
+cabal.sandbox.config
+.cabal-sandbox
+*.tix
+*.prof
+.hpc
+
+coverages
+
+# javascript
+.tern-project
+.eslintrc.yml
