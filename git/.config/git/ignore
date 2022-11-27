@@ -16,9 +16,12 @@ cabal.sandbox.config
 *.tix
 *.prof
 .hpc
-
+*.orig
 coverages
 
 # javascript
 .tern-project
 .eslintrc.yml
+
+# python
+venv
