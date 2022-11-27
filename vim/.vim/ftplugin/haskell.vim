@@ -1,5 +1,7 @@
-let g:LanguageClient_rootMarkers = ['*.cabal', 'stack.yaml']
 
+setlocal shiftwidth=2 " TODO
+
+let g:LanguageClient_rootMarkers = ['*.cabal', 'stack.yaml']
 let g:LanguageClient_serverCommands = { 'haskell': ['hie-wrapper'] }
 
 nnoremap <F5> :call LanguageClient_contextMenu()<CR>
@@ -23,16 +25,19 @@ inoreab <buffer> float Float
 
 " hindent {{{
 let g:hindent_style = 'chris-done' "}}}
-" https://github.com/eagletmt/neco-ghc
+
+" https://github.com/eagletmt/neco-ghc {{{
 let g:haskellmode_completion_ghc = 0
 setlocal omnifunc=necoghc#omnifunc
+"}}}
+let g:necoghc_use_stack=1
 let g:necoghc_enable_detailed_browse = 1
 let g:necoghc_debug=1
 " let b:closer = 1 |
 " let b:closer_flags = '([{'
 
 let g:ale_linters = {
-\   'haskell': ['stack-build','hlint'],
+\   'haskell': ['cabal_ghc','hlint','hls'],
 \}
 let g:ale_haskell_hdevtools_options  = '-S -g -Wall -g -dynamic'
 let g:syntastic_haskell_hdevtools_args = '-S -g -Wall -g -dynamic'
@@ -49,7 +54,8 @@ let g:syntastic_haskell_checkers=['ghcmod','hlint','scan']  "ghcmod, new versio 
 "     autocmd BufWritePost * GhcModCheckAndLintAsync
 " endif
 " tagbar hasktags {{{
-let g:tagbar_type_haskell = { 
+
+let g:tagbar_type_haskell = {
     \ 'ctagsbin'  : 'hasktags',
     \ 'ctagsargs' : '-x -c -o-',
     \ 'kinds'     : [
@@ -81,6 +87,7 @@ let g:tagbar_type_haskell = {
     \ }
 \ }
 "}}}
+
 "easyTags hasktags {{{
 let  g:easytags_languages = {
 \   'haskell': {
@@ -92,6 +99,7 @@ let  g:easytags_languages = {
 \   }
 \}
 "}}}
+
 " nnoremap <silent> <leader>] :GhcModTypeClear<CR>
 " nnoremap <silent> <leader>\\  :GhcModType<CR>
 nmap <leader>w :GhcModTypeInsert<CR>

@@ -18,21 +18,33 @@
 set secure
 filetype plugin on
 filetype indent on
+
+" TODO
+
 syntax enable
 
 set encoding=utf-8
 scriptencoding utf-8
-let g:python3_host_prog = "/usr/bin/python3"
+" let g:python3_host_prog = "/usr/bin/python3"
 "instal " {{{
+
+function! EnsureDir (dir)
+  if !isdirectory(a:dir)
+    call mkdir(a:dir,'p')
+  endif
+endfunction
+
+let VIMHOME=expand($HOME.'/.vim/') " todo windows
+
+call EnsureDir(VIMHOME.'/undo')
+call EnsureDir(VIMHOME.'/backup')
+call EnsureDir(VIMHOME.'/swap')
+" call mkdir($HOME.'/.vim/view')
+
 function! Install()
     if empty(glob('~/.vim/autoload/plug.vim'))
       !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
         \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-
-    call mkdir($HOME.'/.vim/undo')
-    call mkdir($HOME.'/.vim/backup')
-    call mkdir($HOME.'/.vim/swap')
-    " call mkdir($HOME.'/.vim/view')
 
      source  ~/.vim/autoload/plug.vim
 
@@ -45,126 +57,108 @@ endfunction
 " call Install()
 command! Install call Install()
 "}}}
-
 " Plugins {{{
+if expand('$UID') >= 1000
 call plug#begin()
+
 Plug 'vim-scripts/LargeFile'
-Plug 'hari-rangarajan/CCTree'
-" Plug 'gu-fan/InstantRst'
-Plug 'vim-utils/vim-man'
-Plug 'hashivim/vim-terraform'
-" Plug 'andymass/vim-matchup'  " try out
-Plug 'posva/vim-vue'                                   "vue.js support
-Plug 'rhysd/reply.vim', { 'on': ['Repl', 'ReplAuto'] } " for repl
-Plug 'PProvost/vim-ps1'                                " powershel
-Plug 'gnattishness/cscope_maps'                        " cscope key  bindings
-Plug 'artur-shaik/vim-javacomplete2'                   " jave competion
-Plug 'sedm0784/vim-you-autocorrect'                    " autocimic autocorrect spell
-Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }    " go plugin
-Plug 'tobyS/pdv'   | Plug 'tobyS/vmustache'            " mustash plugin
-Plug '907th/vim-auto-save'                             " auto save not enabled by deval
-
-" Plug 'rhysd/vim-grammarous'    " advanced spell checking TODO choose one of the to
-" Plug 'dpelle/vim-LanguageTool' " advanced spellll checking
-
-" Plug 'Raimondi/delimitMate'
-" Plug 'jiangmiao/auto-pairs'
-" Plug 'Townk/vim-autoclose'
-" Plug 'cohama/lexima.vim'
-
-" Plug 'vim-scripts/Highlight-UnMatched-Brackets'
-Plug 'roxma/vim-paste-easy'  "set paste on when pasting
-Plug 'junegunn/vim-peekaboo' " show content registers
-Plug 'itchyny/vim-cursorword' " underline word under cursor
-" Plug 'airblade/vim-matchquote' -- conflict with matchit TODO alternative
-Plug 'kovetskiy/sxhkd-vim'
-" Plug 'jiangmiao/auto-pairs'  "TODO Try configure
-Plug 'huesersohn/curry.vim' " TODO only cury files >
-"Plug 'Houl/vim-repmo'       "TODO
-Plug 'ternjs/tern_for_vim', {'do':'npm install'}
-" Plug 'mhinz/vim-startify'
-Plug 'w0rp/ale'
-" Plug 'dojoteef/neomake-autolint' | Plug 'benekastah/neomake'
-Plug 'rust-lang/rust.vim' ,{'for': 'rust'}
+Plug 'Konfekt/FastFold'
+Plug '907th/vim-auto-save'                             " auto save not enabled by default
+" Plug 'vim-scripts/vim-auto-save'
+" smart config {{{
+Plug 'kopischke/vim-stay' " store setting view zo is preserved TODO replace with vim-workspace?
 Plug 'tpope/vim-sleuth'                     " detect tab seting in file
 Plug 'tpope/vim-projectionist' " TODO implement
-Plug 'scrooloose/nerdtree'
-Plug 'Xuyuanp/nerdtree-git-plugin'
-" Plug 'terryma/vim-expand-region' "expand visual selection with +
-" vnoremap _ <Plug>(expand_region_expand)
-" vnoremap + <Plug>(expand_region_shrink)
-" Plug 'mustache/vim-mustache-handlebars' " did never use
-" Plug 'machakann'/vim-columnmove " TODO have to try??
-" Plug 'takac/vim-hardtime'
-" Plug 'rickhowe/diffdchar.vim' " this plugin uses deault mapping
-" Plug 'vim-scripts/vim-auto-save' 
-" Plug 'gelguy/Cmd2.vim'
-" Plug 'jalvesaq/vimcmdline'
-" Plug 'jpalardy/vim-slime'
-" Plug 'Shougo/vimshell.vim'
-" Plug 'ujihisa/repl.vim'
-" Plug 'cazador481/fakeclip.neovim'
-" Plug 'vim-scripts/SearchComplete'
-" Plug 'jszakmeister/vim-togglecursor'
-Plug 'Valodim/vim-zsh-completion'
-Plug 'xolox/vim-reload' | Plug 'xolox/vim-misc'
-" Plug 'LucHermitte/VimFold4C' " had erros
-Plug 'kana/vim-niceblock' " enable IA.. in other visual mode then blcok
-Plug 'machakann/vim-highlightedyank'
-Plug 'troydm/zoomwintab.vim/'
-Plug 'tommcdo/vim-lion' "map  gl<region><pattern> to alliment
-
-" Plug 'metakirby5/codi.vim' # interactive output but never used it :Codi python
-" Plug 'AssailantLF/vim-active-numbers' " only number in active window, is this useful?
-
-Plug 'kopischke/vim-stay' " store setting view zo is preserved TODO replace with vim-workspace?
-Plug 'kopischke/vim-fetch' " you can open file specific line :e file:line:colom
-Plug 'Konfekt/FastFold'
-
-"Plug 'jceb/vim-editqf' " eddit quickfix is not realy stable consider remove
-
 if executable('editorconfig')
     Plug 'editorconfig/editorconfig-vim'
 endif
-Plug 'timakro/vim-copytoggle' " remove everythin that would make copy pase by select hard (F5)
-Plug 'zirrostig/vim-schlepp' " drag with visual cursor
-Plug 'vim-scripts/matchit.zip'
-Plug 'tpope/vim-eunuch' " unix helpers sudowrite,..
-
-" Plug 'arnar/vim-matchopen'
-
-Plug 'jamessan/vim-egnupg'
-
-Plug 'kana/vim-textobj-fold' | Plug 'kana/vim-textobj-user'
-Plug 'glts/vim-textobj-comment' | Plug 'kana/vim-textobj-user'
-" Plug 'vim-scripts/argtextobj.vim' " targest does the same
-Plug 'kana/vim-textobj-entire' " is ie ae
-Plug 'michaeljsmith/vim-indent-object'
-"
+" }}}
+" search and motion {{{
+Plug 'tpope/vim-repeat'
+" Plug 'tpope/vim-surround' " sandwich better?
+"Plug 'machakann/vim-sandwich' " alternative timpope surround
+Plug 'bkad/CamelCaseMotion' " make camel case motion , and <  not ,w ,b ,e ?
 Plug 'terryma/vim-smooth-scroll'
-
-" if has('nvim')
-   " Plug 'benekastahir/neomake'
-" else
-"     Plug 'scrooloose/syntastic' " always use neomake
-" endif
-
-Plug 'keith/tmux.vim' " syntax  highlight tmuxconfig file
-if exists('$TMUX')
-    Plug 'benmills/vimux'
-    Plug 'roxma/vim-tmux-clipboard' | Plug 'tmux-plugins/vim-tmux-focus-events' " TODO how goed does this work
-    Plug 'wellle/tmux-complete.vim' " complete text from tmux buffers
-endif
-Plug 'christoomey/vim-tmux-navigator' " source even when not in tmux becauces it provides windo navigatio in vim
-
-
-Plug 'Matt-Deacalion/vim-systemd-syntax'     , {'for': 'systemd'} " maybe need always loud for detection
+" vim-smooth-scroll {{{
+  noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 0, 2)<CR>
+  noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 0, 2)<CR>
+  noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
+  noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 0, 4)<CR>
+" }}}
+"
 " Plug 'rhysd/clever-f.vim'                                         " repeat last f with f TODO Test
 " let g:clever_f_show_prompt=1
-Plug 'juftinmk/vim-sneak'                                       " f with to char s does not work well with repmo
+Plug 'justinmk/vim-sneak'                                       " f with to char s does not work well with repmo
 let g:sneak#label = 1
 
-Plug 'haya14busa/incsearch.vim'                                   " incremental search  TODO room inprovement TODO should no longer be nesecary in new vim version
+"Plug 'haya14busa/incsearch.vim'                                   " incremental search  TODO room inprovement TODO should no longer be nesecary in new vim version
+
+" Plug 'terryma/vim-expand-region' "expand visual selection with +
+" vnoremap _ <Plug>(expand_region_expand)
+" vnoremap + <Plug>(expand_region_shrink)
+" Plug 'Houl/vim-repmo'       repeat motion "TODO breaks
+" Plug 'gelguy/Cmd2.vim' " search completion
+" Plug 'vim-scripts/SearchComplete'
+" }}}
+" {{{ text object
+Plug 'kana/vim-textobj-fold' | Plug 'kana/vim-textobj-user' " iz az
+Plug 'glts/vim-textobj-comment' | Plug 'kana/vim-textobj-user' " ic ac
+" Plug 'vim-scripts/argtextobj.vim' " targest does the same
+Plug 'wellle/targets.vim' " add extra text opjects an( i' ia
+Plug 'kana/vim-textobj-entire' " is ie ae
+Plug 'michaeljsmith/vim-indent-object' "ai ii aI iI
+" }}}
+" repl {{{
+" Plug 'nelstrom/vim-qargs' " no longer needed with :cdo
+" Plug 'thinca/vim-quickrun' " does run part of file in repl, hard to use use
+" Plug 'rhysd/reply.vim', { 'on': ['Repl', 'ReplAuto'] } " for repl
+" Plug 'jalvesaq/vimcmdline'
+" Plug 'jpalardy/vim-slime'
+" Plug 'Shougo/vimshell.vim' replaced by  Deol.nvim
+" Plug 'ujihisa/repl.vim'
+" Plug 'metakirby5/codi.vim' # interacetive output but never used it :Codi python
+"}}}
+"{{{ bars
+Plug 'junegunn/vim-peekaboo' " show content registers after "
+Plug 'majutsushi/tagbar' , {'on' : 'Tagbar'}
+
+Plug 'scrooloose/nerdtree'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+"
+" Plug 'simnalamburt/vim-mundo'
+" Plug 'sjl/gundo.vim'
+Plug 'mbbill/undotree'",     {'on' : 'UndotreeToggle'}
+"
+if executable('fzf')
+    Plug 'junegunn/fzf',  " double install
+    Plug 'junegunn/fzf.vim'
+endif
+Plug 'kien/ctrlp.vim'
+"}}}
+" spell and grammar {{{
+Plug 'sedm0784/vim-you-autocorrect'                    " automatic autocorrect spell enable with :EnableAutocorrect
+" Plug 'rhysd/vim-grammarous'    " advanced spell checking TODO choose one of the to
+" Plug 'dpelle/vim-LanguageTool' " advanced spellll checking
+" }}}
+" ftp plugins {{{
+
+Plug 'Matt-Deacalion/vim-systemd-syntax'     , {'for': 'systemd'} " maybe need always loud for detection
+Plug 'keith/tmux.vim' " syntax  highlight tmuxconfig file
+Plug 'PProvost/vim-ps1'                                " powershel
+Plug 'posva/vim-vue'                                   "vue.js support
+Plug 'OmniSharp/omnisharp-vim'                         " C#
+Plug 'artur-shaik/vim-javacomplete2'                   " jave competion
+Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }    " go plugin
+Plug 'tobyS/pdv'                                       " php doc
+Plug 'tobyS/vmustache'                                  " mustash plugin als for pdf plugin
+" Plug 'mustache/vim-mustache-handlebars' " did never use "mustach handlebars"
+Plug 'rust-lang/rust.vim' ,{'for': 'rust'}            " rust
+Plug 'sebastianmarkow/deoplete-rust' ,{'for': 'rust'}
+Plug 'hashivim/vim-terraform'                         " terraform
+
+Plug 'Firef0x/PKGBUILD.vim'              , {'for': 'PKGBUILD'}
+Plug 'kovetskiy/sxhkd-vim'
+Plug 'huesersohn/curry.vim' " TODO only cury files >
 Plug 'idris-hackers/idris-vim'            , {'for': 'idris'}
 " Plug 'neovimhaskell/haskell-vim'        , {'for': 'haskell'}
 " Plug 'gilligan/vim-textobj-haskell      , {'for': 'haskell'} | Plug 'kana/vim-textobj-user' " defined textobject haskell fucntion ih. maybe remove almost same as ip -now gitgutter hunk
@@ -173,25 +167,23 @@ Plug 'idris-hackers/idris-vim'            , {'for': 'idris'}
 " Plug 'dag/vim2hs'                       , {'for': 'haskell'}
 " Plug 'itchyny/vim-haskell-indent'       , {'for': 'haskell'}
 " Plug 'chrisdone/hindent' ,                {'for': 'haskell'}
-
-Plug 'ludovicchabant/vim-gutentags'
-Plug 'rob-b/gutenhasktags'
-
-" Plug 'autozimu/LanguageClient-neovim', {
-"     \ 'branch': 'master',
-"     \ 'do': './install.sh'
-"     \ }
 "Plug 'eagletmt/ghcmod-vim'              , {'for': 'haskell'} |  Plug 'Shougo/vimproc.vim' , {'do':'make'}
 Plug 'Twinside/vim-haskellFold'         , {'for': 'haskell'}
 Plug 'Twinside/vim-syntax-haskell-cabal', {'for': 'haskell'}
 " Plug 'dan-t/vim-hsimport'               , {'for': 'haskell'}
 Plug 'Twinside/vim-syntax-haskell-cabal', {'for': 'haskell'} " Plug 'vim-scripts/a.vim'      , {'for': ['c', 'cpp']}
+"Plug 'eagletmt/neco-ghc'                  , {'for': 'haskell'}
 
+Plug 'hari-rangarajan/CCTree' " c call graph
+"
+" Plug 'LucHermitte/VimFold4C' " had erros
 " Plug 'Rip-Rip/clang_complete' , {'for': ['c', 'cpp']} "need some special attion whith new ncurs hat to patch
 " Plug 'xavierd/clang_complete' , {'for': ['c', 'cpp']} "need some special attion whith new ncurs hat to patch
 
 Plug 'peterhoeg/vim-qml' , {'for': 'qml'}
 
+
+" Plug 'gu-fan/InstantRst' " preview rst InstantRst!
 Plug 'LaTeX-Box-Team/LaTeX-Box'  , {'for': 'tex'}
 
 Plug 'vim-pandoc/vim-pandoc'          ", {'for': ['markdown','tex']}
@@ -201,8 +193,106 @@ Plug 'vim-pandoc/vim-pandoc-syntax'   ", {'for': ['markdown','tex']}
 
 " Plug 'nelstrom/vim-markdown-folding' , {'for': 'markdown'}
 "     let g:markdown_fold_style = 'nested'
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+
+Plug 'zchee/deoplete-zsh'
+Plug 'Valodim/vim-zsh-completion'
+
+Plug 'ternjs/tern_for_vim', {'do':'npm install'} " javascript tern
+" }}}
+" completion general{{{
+
+  if exists('$TMUX')
+      Plug 'wellle/tmux-complete.vim' " complete text from tmux buffers
+  endif
+  Plug 'Shougo/neco-syntax'
+  if has('nvim')
+    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+    "Plug 'neovim/nvim-lsp' " dont use this yet
+  else
+    Plug 'Shougo/deoplete.nvim'
+    Plug 'roxma/nvim-yarp'
+    Plug 'roxma/vim-hug-neovim-rpc'
+  endif
+  let g:deoplete#enable_at_startup = 1
+
+  Plug 'sirver/ultisnips'
+  Plug 'honza/vim-snippets'  "ultisnips
+"}}}
+"{{{ linting
+Plug 'w0rp/ale'
+" Plug 'dojoteef/neomake-autolint' | Plug 'benekastah/neomake'
+" Plug 'autozimu/LanguageClient-neovim', {
+"     \ 'branch': 'master',
+"     \ 'do': './install.sh'
+"     \ }
+" }}}
+" {{{ tags
+Plug 'gnattishness/cscope_maps'                        " cscope key  bindings
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'rob-b/gutenhasktags'
 
 " Plug 'xolox/vim-easytags', {'do': 'mkdir ~/.vim/easytags' } | Plug 'xolox/vim-misc'
+" }}}
+" {{{ delimiter plugns
+" Plug 'rstacruz/vim-closer' " does not work whell with indentation and editing existed code
+" Plug 'Raimondi/delimitMate'
+" Plug 'jiangmiao/auto-pairs'
+" Plug 'Townk/vim-autoclose'
+" Plug 'cohama/lexima.vim'
+" Plug 'jiangmiao/auto-pairs'  "TODO Try configure
+Plug 'tpope/vim-ragtag'  "<C-X>/ Last HTML tag closed TODO are better plugins
+" Plug 'andymass/vim-matchup'  " try out
+" Plug 'vim-scripts/Highlight-UnMatched-Brackets' # TODO ttry again
+Plug 'vim-scripts/matchit.zip'
+" Plug 'airblade/vim-matchquote' -- conflict with matchit TODO alternative
+" Plug 'arnar/vim-matchopen'
+" }}}
+"copy paste {{{
+"Plug 'roxma/vim-paste-easy'  "set paste on when pasting
+Plug 'machakann/vim-highlightedyank'
+
+Plug 'svermeulen/vim-yoink'
+" Plug 'maxbrunsfeld/vim-yankstack'
+" Plug 'vim-scripts/YankRing.vim'
+" Plug 'Shougo/neoyank.vim' | Plug 'Shougo/unite.vim' " dont configer correctly
+" Plug 'svermeulen/vim-easyclip'
+"
+Plug 'timakro/vim-copytoggle' " remove everythin that would make copy pase by select hard (F5)
+" Plug 'cazador481/fakeclip.neovim'
+" Plug 'tommcdo/vim-exchange' "cx exchange commoad, did not use can be replace
+" with substiut from easyclip
+"}}}
+
+
+Plug 'itchyny/vim-cursorword' " underline word under cursor
+" Plug 'mhinz/vim-startify' " startup screen
+
+" Plug 'machakann'/vim-columnmove " TODO have to try??
+" Plug 'rickhowe/diffdchar.vim' " this plugin uses deault mapping
+
+" Plug 'jszakmeister/vim-togglecursor'
+" Plug 'xolox/vim-reload' | Plug 'xolox/vim-misc'
+Plug 'kana/vim-niceblock' " enable IA.. in other visual mode then blcok
+Plug 'troydm/zoomwintab.vim/'
+Plug 'tommcdo/vim-lion' "map  gl<region><pattern> to alliment
+
+" Plug 'AssailantLF/vim-active-numbers' " only number in active window, is this useful?
+
+Plug 'kopischke/vim-fetch' " you can open file specific line :e file:line:colom
+
+"Plug 'jceb/vim-editqf' " eddit quickfix is not realy stable consider remove
+
+Plug 'zirrostig/vim-schlepp' " drag with visual cursor
+Plug 'tpope/vim-eunuch' " unix helpers sudowrite,..
+
+Plug 'jamessan/vim-gnupg',   { 'branch': 'main' }
+" if exists('$TMUX')
+    " Plug 'benmills/vimux' "send command to run in tmux
+    "Plug 'roxma/vim-tmux-clipboard' broke
+      " no longer needed|Plug 'tmux-plugins/vim-tmux-focus-events' " TODO how goed does this work
+" endif
+Plug 'christoomey/vim-tmux-navigator' " source even when not in tmux becauces it provides windo navigatio in vim
 
 if &term =~# '^linux'
 else
@@ -210,24 +300,14 @@ else
     Plug 'Yggdroot/indentLine'
 endif
 
-Plug 'bkad/CamelCaseMotion' " make camel case motion , and <  not ,w ,b ,e ?
-
-if executable('fzf')
-    Plug 'junegunn/fzf',  " double install
-    Plug 'junegunn/fzf.vim'
-endif
-
-Plug 'kien/ctrlp.vim'
-
 " Plug 'vim-bufferline'
 Plug 'bling/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
+" {{{ git
 Plug 'tpope/vim-git'
 Plug 'tpope/vim-fugitive'
-
 Plug 'junegunn/gv.vim'
-Plug 'tpope/vim-ragtag'  "<C-X>/ Last HTML tag closed TODO are better plugins
 " Plug 'gregsexton/gitv'
 " Plug 'airblade/vim-gitgutter' " git gutter was slow on large files
 if has('nvim') || has('patch-8.0.902') " replace gitgutter
@@ -235,27 +315,14 @@ if has('nvim') || has('patch-8.0.902') " replace gitgutter
 else
   Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
 endif
-Plug 'Firef0x/PKGBUILD.vim'              , {'for': 'PKGBUILD'}
-"
-Plug 'eagletmt/neco-ghc'                  , {'for': 'haskell'}
-Plug 'Shougo/neco-syntax'
-Plug 'zchee/deoplete-zsh'
+" }}}
+
 if has('nvim')
-
-  "Plug 'neovim/nvim-lsp' " dont use this yet
-
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' } " completion via ale"TODO lookinto  zchee/deoplete-clang  and jave suport
+  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 else
-    " Plug 'Shougo/neocomplcache.vim'
-    " Plug 'JazzCore/neocomplcache-ultisnips'
-  Plug 'Shougo/deoplete.nvim',
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-    " Plug 'Shougo/neocomplete.vim'|  Plug 'Shougo/vimproc.vim' , {'do':'make'}
 endif
 
 Plug 'chrisbra/Recover.vim' "does not work well with neovim
-Plug 'tpope/vim-repeat'
 Plug 'kshenoy/vim-signature' " displayes marks do not use fair much
 
 Plug 'luochen1990/rainbow'
@@ -265,55 +332,35 @@ Plug 'luochen1990/rainbow'
 " Plug 'chriskempson/base16-vim'
 Plug 'lifepillar/vim-solarized8'
 Plug 'altercation/vim-colors-solarized'
-" Plug 'mhinz/vim-janah'
-
-Plug 'honza/vim-snippets'  "ultisnips
-" Plug 'tpope/vim-surround' " sandwich better?
-" Plug 'machakann/vim-sandwich' " alternative timpope surround
+" Plug 'mhinz/vim-janah' " colorscheme
 
 Plug 'godlygeek/tabular' " TODO use one of them
 Plug 'junegunn/vim-easy-align'
 
-Plug 'majutsushi/tagbar' , {'on' : 'Tagbar'}
-
 Plug 'tomtom/tcomment_vim' "add comments gc TODO some conflicet with textObjectcomment
   let g:tcomment_textobject_inlinecommen=''
 
-Plug 'SirVer/ultisnips'
-" Plug 'simnalamburt/vim-mundo'
-" Plug 'sjl/gundo.vim'
-Plug 'mbbill/undotree'",     {'on' : 'UndotreeToggle'}
-Plug 'terryma/vim-multiple-cursors' " not stable, does not work currust rest exit, can be have unexpected
-
-" Plug 'Shougo/denite.nvim'
-Plug 'maxbrunsfeld/vim-yankstack'
-" Plug 'vim-scripts/YankRing.vim'
-Plug 'Shougo/neoyank.vim' | Plug 'Shougo/unite.vim' " dont configer correctly
-" Plug 'svermeulen/vim-easyclip'
+" Plug 'terryma/vim-multiple-cursors' " not stable, does not work currust rest exit, can be have unexpected
 
 Plug 'mileszs/ack.vim' |  Plug 'tpope/vim-dispatch'
-" Plug 'tommcdo/vim-exchange' "cx exchange commoad, did not use can be replace
-" with substiut from easyclip
-Plug 'tpope/vim-abolish'
-
-" Plug 'nelstrom/vim-qargs' " no longer needed with :cdo
-" Plug 'thinca/vim-quickrun' " does run part of file in repl, hard to use use
-Plug 'wellle/targets.vim' " add extra text opjects an( i' ia
-" Plug 'takac/vim-hardtime'
-" Plug 'rstacruz/vim-closer' " does not work whell with indentation and editing existed code
+Plug 'tpope/vim-abolish' " to snake casae crs camelcase crc
 " Plug 'pseewald/vim-anyfold' " TODO not used but devince folding based on indentation
 " Plug 'norcalli/nvim-colorizer.lua' lua require 'colorizer'.setup()
 " Plug 'chrisbra/Colorizer' " highlighting colorcodes
-call plug#end() " }}}
+call plug#end()
+endif  " end UID >= 1000
+" end Plugins }}}
 
 " {{{ true colors " not fully enabled
+
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 if exists('+termguicolors')
   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
   " set termguicolors " does not work well
 endif
-" }}
+" }}}
+
 " {{{ highlighting
 
    augroup synHiglight
@@ -329,7 +376,7 @@ endif
   let g:solarized_termtrans = 1
   " let g:solarized_termcolors=256
   " let g:solarized_termcolors=16
-  if empty($background)
+  if empty($backgroun)
       set background=dark
   else
       execute 'set background='.$background
@@ -478,6 +525,8 @@ endif
     " endfunction "}}}
 " }}}
     set showcmd
+
+    set signcolumn=number
     set number
     " mouse support {{{
     if has('mouse')
@@ -587,7 +636,9 @@ endif
     nmap ga <Plug>(EasyAlign)
 " }}}
 " CamelCaseMotion {{{
-    call camelcasemotion#CreateMotionMappings(',') "}}}
+     call camelcasemotion#CreateMotionMappings(',')
+"}}}
+
 " disable mappings {{{
 
     " nnoremap Z <nop>
@@ -595,14 +646,6 @@ endif
     nnoremap Q <nop>
    " nnoremap '' <nop>
 
-   noremap <UP> <nop>
-   noremap <DOWN> <nop>
-   noremap <LEFT> <nop>
-   noremap <RIGHt> <nop>
-" HardTime  {{{
-    " let g:hardtime_showmsg = 1
-    " au VimEnter * HardTimeOn
-"}}}
 " }}}
 "vim visual drag "{{{
     vmap <up>    <Plug>SchleppUp
@@ -633,23 +676,43 @@ endif
     " nnoremap gV `[v`]
 
 " Yank {{{
+  " vim-yoink {{{
+  nmap <a-p> <plug>(YoinkPostPasteSwapBack)
+  nmap <a-n> <plug>(YoinkPostPasteSwapForward)
 
+  nmap p <plug>(YoinkPaste_p)
+  nmap P <plug>(YoinkPaste_P)
+
+  " Also replace the default gp with yoink paste so we can toggle paste in this case too
+  nmap gp <plug>(YoinkPaste_gp)
+  nm ap  gP <plug>(YoinkPaste_gP)
+  if has('nvim')
+    let g:yoinkSavePersistently = 1 " only works for neovim
+  endif
+  let g:yoinkIncludeDeleteOperations = 1 "is annoying, but better to get used to default vim
+  let g:yoinkSwapClampAtEnds = 0 "cycle swap history
+  " }}}
     "{{yankstack
-
-    let g:yankstack_yank_keys = ['c', 'C', 'd', 'D', 'x', 'X', 'y', 'Y']
-    call yankstack#setup()
-    nmap <M-n> <Plug>yankstack_substitute_newer_paste
-    nmap <A-p> <Plug>yankstack_substitute_older_paste
-    nmap <A-n> <Plug>yankstack_substitute_newer_paste
-    "has to be before remaps yank and past
-    " }}}
+"
+"     let g:yankstack_yank_keys = ['c', 'C', 'd', 'D', 'x', 'X', 'y', 'Y']
+"     call yankstack#setup()
+"  " try https://github.com/maxbrunsfeld/vim-yankstack/issues/39
+"     nmap s <Plug>Sneak_s
+"     nmap S <Plug>Sneak_S
+"     xmap s <Plug>Sneak_s
+"     xmap S <Plug>Sneak_S
+"     nmap <M-n> <Plug>yankstack_substitute_newer_paste
+"     nmap <A-p> <Plug>yankstack_substitute_older_paste
+"     nmap <A-n> <Plug>yankstack_substitute_newer_paste
+"     "hasyato be before remaps yank and past
+"     " }}}
     nnoremap Y y$
-    " set clipboard=unnamedplus
+    " syat clipboard=unnamedplus
 
     " easy-clip {{{
-    " let g:EasyClipShareYanks=1
-    " let g:EasyClipShareYanksDirectory='/tmp'
-    " let g:EasyClipShareYanksFile='vim-easyclip'
+    " lyat g:EasyClipShareYanks=1
+    " lyat g:EasyClipShareYanksDirectory='/tmp'
+    " lyat g:EasyClipShareYanksFile='vim-easyclip'
     "
     " let g:EasyClipUseSubstituteDefaults=1
     " let g:EasyClipUseCutDefaults = 0
@@ -660,11 +723,11 @@ endif
     " }}}
 
     " " YankRing {{{
-    let g:yankring_history_dir='/tmp'
-    let g:yankring_history_file = 'vimYankRing'.$USER
-    function! YRRunAfterMaps()
-        nnoremap Y   :<C-U>YRYankCount 'y$'<CR>
-    endfunction
+    " let g:yankring_history_dir='/tmp'
+    " let g:yankring_history_file = 'vimYankRing'.$USER
+    " function! YRRunAfterMaps()
+    "     nnoremap Y   :<C-U>YRYankCount 'y$'<CR>
+    " endfunction
 "   }}}
 " }}}
 " close vim mappings {{{
@@ -761,6 +824,7 @@ endif
     map k gk
 
 "}}}
+
 " edditqf {{{
      " au BufReadPost quickfix nnoremap <buffer>  dd idd:w<CR>:copen<CR> " delete quickfix item
 " }}}
@@ -801,10 +865,12 @@ else
 endif
 "}}}
 " {{{ syntax checker
+
   " ale{{{
 
 map  <C-i> :ALEHover<CR>
   " }}}
+  "}}}
 " completion {{{
 set completeopt=longest,menuone
 " if has('nvim')
@@ -831,19 +897,13 @@ set completeopt=longest,menuone
     " \ '_': ['ale','tmuxcomplete#complete','file'],
     " \ 'sh': ['ale','tmuxcomplete#complete','file','omni','zsh_completion#Complete'],
     " \})
+  " }}}
 
-" endif
   " ultisnips {{{
   let g:UltiSnipsExpandTrigger='<C-l>'
   let g:UltiSnipsJumpForwardTrigger='<c-j>'
   let g:UltiSnipsJumpBackwardTrigger='<c-k>'
   " }}}
-" }}}
-" vim-smooth-scroll {{{
-  noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 0, 2)<CR>
-  noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 0, 2)<CR>
-  noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
-  noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 0, 4)<CR>
 " }}}
 " {{{ search
   set ignorecase
@@ -854,33 +914,36 @@ set completeopt=longest,menuone
  "This unsets the "last search pattern" register by hitting return
   " nnoremap <silent><CR> :noh<CR><CR>
 "
-" auto stop search highlighting and move to next serach result with tab {{{
-  let g:incsearch#auto_nohlsearch = 1
-  map /  <Plug>(incsearch-forward)
-  map ?  <Plug>(incsearch-backward)
-  map g/ <Plug>(incsearch-stay)
-  map n  <Plug>(incsearch-nohl-n)
-  map N  <Plug>(incsearch-nohl-N)
-  map *  <Plug>(incsearch-nohl-*)
-  map #  <Plug>(incsearch-nohl-#)
-  map g* <Plug>(inceearch-nohl-g*)
-  map g# <Plug>(incsearch-nohl-g#)
+"" auto stop search highlighting and move to next serach result with tab {{{
+"  let g:incsearch#auto_nohlsearch = 1
+"  map /  <Plug>(incsearch-forward)
+"  map ?  <Plug>(incsearch-backward)
+"  map g/ <Plug>(incsearch-stay)
+"  map n  <Plug>(incsearch-nohl-n)
+"  map N  <Plug>(incsearch-nohl-N)
+"  map *  <Plug>(incsearch-nohl-*)
+"  map #  <Plug>(incsearch-nohl-#)
+"  map g* <Plug>(inceearch-nohl-g*)
+"  map g# <Plug>(incsearch-nohl-g#)
+"
+"   augroup incsearch-keymap
+"     autocmd!
+"     autocmd VimEnter * call s:incsearch_keymap()
+"   augroup END
+  " function! s:incsearch_keymap()
+  "   IncSearchNoreMap <Right> <Over>(incsearch-next)
+  "   IncSearchNoreMap <Left>  <Over>(incsearch-prev)
+  "   IncSearchNoreMap <Down>  <Over>(incsearch-scroll-f)
+  "   IncSearchNoreMap <Up>    <Over>(incsearch-scroll-b)
+  " endfunction
 
+  " map ? <Plug>Sneak_s
+  " map F <Plug>Sneak_S
   " map f <Plug>Sneak_f
   " map F <Plug>Sneak_F
   " map t <Plug>Sneak_t
   " map T <Plug>Sneak_T
 
-  augroup incsearch-keymap
-    autocmd!
-    autocmd VimEnter * call s:incsearch_keymap()
-  augroup END
-  function! s:incsearch_keymap()
-    IncSearchNoreMap <Right> <Over>(incsearch-next)
-    IncSearchNoreMap <Left>  <Over>(incsearch-prev)
-    IncSearchNoreMap <Down>  <Over>(incsearch-scroll-f)
-    IncSearchNoreMap <Up>    <Over>(incsearch-scroll-b)
-  endfunction
 " }}}
 " }}}
 " airline {{{
@@ -932,6 +995,7 @@ autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in
   " set tags+=./tags
   let g:easytags_dynamic_files = 1
   let g:easytags_async = 1
+
   let g:easytags_by_filetype = '~/.vim/easytags'
 "}}}
 "}}}
@@ -985,64 +1049,5 @@ let g:indent_guides_guide_size=1
 let g:indent_guides_start_level=1
 let g:indent_guides_enable_on_vim_startup = 1
 "}}}
-" reservie background color" {{{
-function! ReverseBackground()
-if &background==# 'light'
-  set background=dark
-  AirlineTheme powerlineish
-else
-  set background=light
-  AirlineTheme solarized
-endif
-  let s:test='colorscheme '.g:colors_name
-  execute s:test
-endfunction
 
-command! Togglebackground call ReverseBackground()
-noremap <F7> :Togglebackground<CR>
-
-"}}}
-
-let g:rt_cw = ''
-function! RT()
-  ALEGoToDefinition
-  let l:cw = expand('<cword>')
-  try
-    if l:cw != g:rt_cw
-        execute 'tag ' . l:cw
-        call search(l:cw,'c',line('.'))
-    else
-        try
-            execute 'tnext'
-        catch /.*/
-            execute 'trewind'
-        endtry
-        call search(l:cw,'c',line('.'))
-    endif
-    let g:rt_cw = l:cw
-  catch /.*/
-    echo 'no tags on ' . l:cw
-  endtry
-endfunction
-map <C-]> :call RT()<CR>
-"}}
-
-function! <SID>Preserve(command) "{{{
-  let l:line = line('.')
-  let l:colum = col('.')
-  execute a:command
-  call cursor(l:line, l:colum)
-endfunction
-com! StripTrailingWhitespaces call s:Preserve('%s/\s\+$//e')
-" }}
-
-function! <SID>DiffWithSaved() " {{{
-  let l:filetype=&filetype
-  diffthis
-  vnew | r # | normal! 1Gdd
-  diffthis
-  exe 'setlocal bt=nofile bh=wipe nobl noswf ro ft=' . l:filetype
-endfunction
-com! DiffSaved call s:DiffWithSaved()
-" }}}
-
+source /home/rens/.vim/my_functions.vim

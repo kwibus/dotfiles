@@ -3,7 +3,8 @@ if exists('syntax_on')
   syntax reset
 endif
 
-runtime colors/solarized8.vim
+" runtime colors/solarized8.vim
+runtime colors/solarized.vim
 " runtime colors/base16-default.vim
 let g:solarized_diffmode='high'
 let g:colors_name = 'mycolors'
@@ -25,4 +26,11 @@ else
     " highlight IndentGuidesEven ctermbg=white
 endif
 
- highlight IncSearchCursor ctermfg=0 ctermbg=6
+highlight IncSearchCursor ctermfg=0 ctermbg=6
+
+" set higlight spelling error underline not a color
+highlight clear  SpellBad
+highlight SpellBad cterm=underline
+highlight SpellBad gui=undercurl
+
+ highlight SignColumn ctermbg=NONE cterm=NONE guibg=NONE gui=NONE 

@@ -1,6 +1,8 @@
+let b:ale_linters =['gofmt', 'golint', 'gopls', 'govet', 'golangci-lint']
+
 nmap <Leader>v :GoRun<CR>
 nmap <Leader>c :GoBuild<Cr>
-let g:tagbar_type_go = {  
+let g:tagbar_type_go = {
     \ 'ctagstype' : 'go',
     \ 'kinds'     : [
         \ 'p:package',
