@@ -1,11 +1,9 @@
 #! /bin/bash
 
 command="$*"
-
 doctest(){
-    file=$1
-    if [ -x doctest ]
-    then
+    file="$1"
+    if [ -x doctest ]; then
         echo doctest: "$file"
         doctest "$file"
     fi
@@ -17,8 +15,7 @@ haskellspec(){
     minsrc=$(echo "${file/$root}"| sed 's/\/src//g')
     f="$(dirname "$minsrc" )"
     spec=$root/test/$f$fi"Spec.hs"
-    if [ -f "$spec" ]
-    then
+    if [ -f "$spec" ]; then
     echo Hspec: "$file"
     runhaskell "$spec"
     fi
@@ -31,10 +28,11 @@ haskell() {
     cabaltest
 }
 cabaltest(){
-    # echo "$arg"
-    # echo cabal  new-test --  --color=always -j 8 --quickcheck-max-size 100 "$arg"
+
+    cabal build -j -v0 -fno-max-relevant-binds #&& \
+        # cabal test -- --color=always -fno-max-relevant-binds -j 8 --quickcheck-max-size 100 "$arg"
     # cabal new-run test:tests -- -j 4 --quickcheck-max-size 20 --quickcheck-tests 20 -t 3 -q
-    stack test --test-arguments="-j 4 -t 20 --quickcheck-max-size 30 --quickcheck-tests 100  --color=always --hide-successes"
+    # stack test --test-arguments="-j 4 -t 20 --quickcheck-max-size 30 --quickcheck-tests 100  --color=always --hide-successes -fno-max-relevant-binds"
 }
 
 declare -A fileMapHash
@@ -45,30 +43,39 @@ root="$(findProjectRoot.sh)"
 root=${root:=$PWD}
 echo project root: "$root"
 
-inotifywait  --format %w%f --exclude="(.)*/\.(.)*" -mre modify,create "$(pwd)"   | while read File; #--exclude .*
-do
-    md5="$(md5sum "$File" 2> /dev/null )"
-    if [ "${fileMapHash[$File]}" != "$md5" ];
+run_commands () {
+    file="$1"
+
+    if [ -n "$command" ]; then
+        $command
+        continue
+    fi
+    echo "$file"
+    fHaskell=$(echo "$file" |grep -E '(.hs$)|(.lhs$)')
+    if [ "$fHaskell"  !=  "" ]
     then
+        haskell "$file";
+    fi
+    if [ -f makefile ]  || [ -f Makefile ]; then
+        make|| break
+    fi
+
+}
+
+inotifywait  -q --format %w%f --exclude="(.)*/\.(.)*" -mre modify,create "$(pwd)"   | while read file; #--exclude .*
+do
+    md5="$(md5sum "$file" 2> /dev/null )"
+    if [ "${fileMapHash[$file]}" != "$md5" ]; then
+        fileMapHash["$file"]="$md5"
+
         clear
-        fileMapHash["$File"]="$md5"
-        if [ -n $commnnd ]
-        then
-            $command
-            continue
-        fi
-        echo "$File"
-        fHaskell=$(echo "$File" |grep -E '(.hs$)|(.lhs$)')
-        if [ "$fHaskell"  !=  "" ]
-        then
-            haskell "$File";
-        fi
-        if [ -f makefile ]  || [ -f Makefile ]
-        then
-            make|| break
-        fi
+        # echo $file
+
+        window_height=$(tput lines )
+        run_commands $file |head -n "${window_height}"
+        #(run_commands "$file" 1> /dev/null) 2>&1 | head -n "${window_height}"
 
         sleep 1
-     fi
+    fi
 done
 
