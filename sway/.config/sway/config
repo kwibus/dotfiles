@@ -10,6 +10,8 @@
 ### Variables
 #
 # Logo key. Use Mod1 for Alt.
+
+set $lock  'swaylock -efFc 555555'
 set $mod Mod4
 # Home row direction keys, like vim
 set $left h
@@ -17,45 +19,64 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator
-set $term termite -t termite -e /home/rens/scripts/tmx.sh
+# set $term termite -t termite -e /home/rens/scripts/tmx.sh
+# set $term alacritty  -e/home/rens/scripts/tmx.sh
+set $term foot --log-level warning /home/rens/scripts/tmx.sh
+
 # Your preferred application launcher
+
 set $menu albert toggle #dmenu_run
 
 workspace_auto_back_and_forth no
 smart_gaps on
 smart_borders on
 hide_edge_borders smart_no_gaps
+
 gaps inner 4
 gaps outer -4
-focus_on_window_activation focus
+
+# TODO test
+focus_wrapping workspace
+focus_on_window_activation urgent
+force_display_urgency_hint 700
+
 show_marks yes
 
-# gaps vertical 10
-# gaps horizontal 10
-#hide_cursor 4
-### Output configuration
-#
 output * scale 1
 # output * bg /home/rens/Afbeeldingen/Wallpapers/rain.jpg fill
-output * bg /home/rens/Afbeeldingen/Wallpapers/sway.jpg fill
+output * bg /home/rens/Afbeeldingen/Wallpapers/sway-tree.jpg fill
+output * max_render_time 2
 output HDMI-A-2 pos 10,10
 output HDMI-A-2 scale 1.5
+
 set $laptop eDP-1
+output $laptop {
+    pos 0,0
+    adaptive_sync on
+}
 bindswitch --locked lid:on exec sway-disable-if.sh  $laptop
 bindswitch --locked lid:off output $laptop enable
-output *DP-1 pos 0,0
 
-
-#input * xkb_options compose:rctrl
-#input * xkb_options eurosign:5,lv3:ralt_switch¬
-#input "1:1:AT_Translated_Set_2_keyboard" xkb_capslock disabled
-#input "1:1:AT_Translated_Set_2_keyboard" xkb_options caps:disabled
-
-
+ # ,lv3:ralt-alt
 input "*" {
+  # scroll_factor 3
   repeat_delay 300
+  middle_emulation disabled
   repeat_rate 15
-  xkb_options ctrl:nocaps,compose:ralt,eurosign:5,lv3:ralt
+  xkb_options caps:escape_shifted_capslock,compose:ralt,eurosign:5
+  tap enabled
+  drag_lock enabled
+  #dwt disabled
+
+}
+input 1386:887:Wacom_Intuos_BT_S_Pen {
+   accel_profile "flat"
+   pointer_accel 0
+   map_to_output $laptop
+}
+
+input 1386:887:Wacom_Intuos_BT_S_Pad {
+ # mousbuttons 0123
 }
 
 seat * hide_cursor 10000
@@ -65,26 +86,32 @@ seat * hide_cursor 10000
 # output HDMI-A-1 resolution 1920x1080 position 1920,0
 
 focus_follows_mouse no
-mouse_warping container
+mouse_warping output
 ### Key bindings
 #
 # Basics:
 #
-    # start a terminal
+    bindsym $mod+c exec copyq menu
+    bindsym $mod+bracketleft exec copyq next
+    bindsym $mod+bracketright exec copyq next
     bindsym $mod+z [urgent=latest] focus
 
     bindsym $mod+b border toggle
+
+    # start a terminal
     bindsym $mod+Return exec /home/rens/scripts/sway-focus-or-exec.sh $term
     # kill focused window
-    bindsym $mod+Shift+c kill
+    bindsym --no-repeat --inhibited $mod+Shift+c kill
+
+    bindsym Alt+l exec
+
+
+    # bindsym $mod+o exec sway-select.sh
 
     # start your launcher
-    bindsym Alt+l exec swaylock -c 222222
+    bindsym --release $mod+o  exec $menu
+    #bindsym $mod+p exec $menu
 
-    # lcok
-
-    bindsym $mod+o exec sway-select.sh
-    bindsym $mod+p exec $menu
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
     # Despite the name, also works for non-floating windows.
@@ -177,25 +204,27 @@ mouse_warping container
     bindsym $mod+shift+g focus mode_toggle
 
 # stick floating window
-    bindsym $mod+Shift+s sticky toggle
+    bindsym $mod+Shift+s sticky toggle ;  mark --toggle sticky
 
 # move focus to the parent container
     bindsym $mod+a focus parent
     bindsym $mod+Shift+a focus child
 
     bindsym $mod+shift+minus opacity minus 0.1
-  bindsym $mod+shift+equal opacity plus 0.1
-  
-  bindsym $mod+comma  mark --toggle master
+    bindsym $mod+shift+equal opacity plus 0.1
 
-  bindsym $mod+space [workspace="__focused__" con_mark="master"] focus
-  bindsym $mod+Shift+space swap container  with mark master; mark --add master
-  #bindsym $mod+Shift+space [con_mark="slave"] focus;swap container  with mark master ; [con_mark=master] mark slave ; mark --add master
+    bindsym $mod+comma  mark --toggle master
 
-  bindsym $mod+n exec makoctl dismiss --all
+    bindsym $mod+space [workspace="__focused__" con_mark="master"] focus
+    bindsym $mod+Shift+space swap container  with mark master; mark --add master
 
-  bindsym  --whole-window $mod+button6 exec /home/rens/scripts/sway-scale.sh +0.2
-  bindsym  --whole-window $mod+button5 exec /home/rens/scripts/sway-scale.sh -0.2
+#bindsym $mod+Shift+space [con_mark="slave"] focus;swap container  with mark master ; [con_mark=master] mark slave ; mark --add master
+
+    bindsym $mod+n exec makoctl dismiss --all
+
+    bindsym  $mod+Alt+equal scale 1
+    bindsym  $mod+Alt+plus exec /home/rens/scripts/sway-scale.sh +0.2
+    bindsym  $mod+Alt+minus exec /home/rens/scripts/sway-scale.sh -0.2
 #
 # Scratchpad:
 #
@@ -238,9 +267,15 @@ bindsym $mod+r mode "resize"
 # multimedia
 #
 
+bindsym $mod+t input type:touchpad events toggle enabled disabled
+bindsym XF86TouchpadToggle input type:touchpad events toggle enabled disabled
+
 bindsym  XF86Mail exe thunderbird
 bindsym  XF86Explorer exe thunar
 bindsym  XF86Calculator exec gnome-calculator
+
+bindsym  XF86Display exec wdisplays
+bindsym  $mod+p  exec wdisplays
 
 bindsym --locked XF86AudioPrev exec player.sh prev
 bindsym --locked $mod+Ctrl+Left  exec player.sh prev
@@ -262,16 +297,31 @@ bindsym --locked XF86MonBrightnessUp exec light -A 10  && light -G
 bindsym --locked XF86KbdBrightnessDown exec light -s sysfs/leds/tpacpi::kbd_backlight -U 50
 bindsym --locked XF86KbdBrightnessUp exec light -s sysfs/leds/tpacpi::kbd_backlight -A 50
 
-bindsym --release Print exec grim -g \"$(slurp)\" - | tee /home/rens/screenshot_$(date +%F+%T).png | wl-copy
+bindsym --release Print exec grim -g \"$(slurp)\"  /home/rens/screenshot_$(date +%F+%T).png
 
-bindsym --release Shift+Print exec  wf-recorder -g "$(slurp)" -f /home/rens/screenrecoding_$(date +%F+%T).mp4
+bindsym --release $mod+Shift+Print exec  wf-recorder -g "$(slurp)" -f /home/rens/screenrecoding_$(date +%F+%T).mp4
 
-bindsym Ctrl+Alt+l exec swaylock -eFc 555555
+bindsym Ctrl+Alt+l exec $lock
 #
 # Status Bar:
 for_window [title="^Syncthing Tray( \(.*\))?$"] floating enable, border none, resize set 450 400, move position cursor, move down 24px
 for_window [shell=".*"] title_format "%title :: %shell"
 for_window [app_id="lxqt-policykit-agent"] floating enable
+for_window [title="^CopyQ"] floating enable, border none, resize set 450 320, move position 1500 0,focus prev
+for_window [app_id="gnome-calculator"] floating enable
+
+for_window [app_id="keepassxc"] floating enable
+for_window [title="^File Operation Progress$"] floating enable   # thunar
+for_window [class="Lxappearance"] floating enable
+for_window [app_id="nm-connection-editor"] floating enable
+for_window [title="^popup_"] floating enable, border none,  sticky enable
+for_window [app_id="^popup_"] floating enable, border none, sticky enable
+
+for_window [app_id="(?i)thunar"] floating enable
+for_window [window_role="GtkFileChooserDialog"] {
+    resize set 800 600
+    move position center
+}
 for_window [app_id="waybar" floating] {
     move position cursor
     move down 24px # adjust if some menus still don't fit
@@ -288,29 +338,38 @@ bar {
 #     #tray_output primary LVDS
 # }
 }
+exec copyq
 
-exec read-gtk3-settings.sh
+
+# exec read-gtk3-settings.sh # no longer needed with nwg-look
 
 exec lxqt-policykit-agent
-exec /usr/lib/kdeconnectd
-exec indicator-kdeconnect
-exec albert
+exec sh -c "exec albert &>/dev/null"
 exec udiskie -n -s -A --appindicator
-
-exec mako --default-timeout 9000
-exec xrdb ~/.config/X11/Xresources
+exec batsignal -i
+exec mako -c ~/.config/mako/config
+#exec xrdb ~/.config/X11/Xresources
 exec nm-applet --indicator
 exec blueman-applet
 
 exec swayidle -w\
- timeout 650 'swaylock -efFc 555555'\
+ timeout 650 $lock\
  timeout 600 'swaymsg "output * dpms off"'\
       resume 'swaymsg "output * dpms on"'\
- before-sleep 'swaylock -efFc 555555'\
+ before-sleep $lock \
+  # TODO playerctl pause -a
 
 # exec mkfifo $SWAYSOCK.wob && tail -f $SWAYSOCK.wob | wob
-exec /usr/lib/xdg-desktop-portal-wlr -l INFO -r
+#exec /usr/lib/xdg-desktop-portal-wlr -l INFO -r
 exec gammastep-indicator  -m wayland -c ~/.config/redshift.conf -v
 exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 exec systemctl start --user xdg-desktop-portal
+
+#exec /var/lib/portmaster/updates/linux_amd64/notifier/portmaster-notifier_v0-2-3
+
 exec sleep 10 && syncthingtray --wait
+#exec pkill kdeconnectd && sleep 5  && /usr/lib/kdeconnectd -platform offscreen --replace
+#exec sleep 10 && indicator-kdeconnect
+# exec sleep 10 && /usr/bin/kdeconnect-indicator
+
+exec test $left test

@@ -3,7 +3,7 @@ next=${1:-1}
 [ x$1 == xprevious ] && next=0
 layout=$(swaymsg -t get_workspaces|jq '.[].layout')
 case $layout in
-    '"stacked"') 
+    '"stacked"')
         direction=Down
         [ "$next" -eq 0 ] && direction=UP
     ;;
