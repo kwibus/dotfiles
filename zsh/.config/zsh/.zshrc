@@ -77,7 +77,8 @@ export REPORTTIME=30
 # Helps avoid mistakes like 'rm * o' when 'rm *.o' was intended
 setopt RM_STAR_WAIT
 
-export VDPAU_DRIVER=va_gl
+#export VDPAU_DRIVER=va_gl
+#export VDPAU_DRIVER=radeonsi
 
 # bindkey "^I" menu-expand-or-complete
 
@@ -92,8 +93,12 @@ zstyle ':completion:*' cache-path $XDG_CACHE_HOME/zsh
 export GOPATH=$HOME/.local/godir
 PATH=$HOME/scripts:$HOME/.local/bin:$PATH
 export PATH=$GOROOT/bin:$GOPATH/bin:$PATH
-
-export SWAYSOCK=/run/user/$(id -u)/sway-ipc.$(id -u).$(pgrep -x sway).sock
+if sway_pid=$(pgrep -x sway); then
+    export SWAYSOCK=/run/user/$(id -u)/sway-ipc.$(id -u)."$sway_pid".sock
+    unset sway_pid
+else
+    unset SWAYSOCK
+fi
 export SUDO_ASKPASS=/usr/lib/ssh/ssh-askpass
 export EDITOR="nvim"
 export SYSTEMD_EDITOR="nvim"
@@ -115,9 +120,11 @@ alias -r x='startx "$XINITRC"'
 alias -r info='info --vi-keys'
 alias -r rm='rm -i'
 alias -r mv='mv -i'
-alias -r cp='cp -i'
+alias -r cp='cp -i --sparse=always --reflink=auto'
 
+alias -r diff='diff --color=auto'
 alias -r tp='trash-put'
+alias -r ip='ip -color=auto'
 alias -r grep='grep --color=auto'
 alias -r ls='ls --color=auto -h'
 alias  dirs='dirs -v'
@@ -215,7 +222,7 @@ GENCOMPL_FPATH="$ZDOTDIR"/gencomplete
 include "$ZDOTDIR"/zsh-completion-generator/zsh-completion-generator.plugin.zsh
 
 autoload -Uz compinit bashcompinit
-compinit -d $XDG_CACHE_HOME/zsh
+compinit -d $XDG_CACHE_HOME/zsh/dump
 bashcompinit
 include /opt/google-cloud-sdk/completion.zsh.inc
 include /usr/bin/aws_zsh_completer.sh
@@ -228,8 +235,19 @@ include /usr/bin/aws_zsh_completer.sh
     { which minikube && test ! $(find _minikube -mtime -20) } &> /dev/null && minikube completion zsh > _minikube
 )
 include $ZDOTDIR/git-extras-completion.zsh
+include /opt/azure-cli/az.completion
 
 include /usr/share/undistract-me/long-running.bash notify_when_long_running_commands_finish_install
+
+
+auto_pip_venv (){
+
+  if [[ -f venv/bin/activate ]] ; then
+    source venv/bin/activate
+  fi
+
+}
+chpwd_functions+=(auto_pip_venv)
 
 # GOPATHSTART="$GOPATH"
 #
