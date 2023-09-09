@@ -1,10 +1,13 @@
 # general
+.cache
 todo
+TODO.md
 error
 old/
 backup/
 unused
 notes
+NOTES.md
 # vim
 *.sw[a-z]
 tags
@@ -25,3 +28,4 @@ coverages
 
 # python
 venv
+

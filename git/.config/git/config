@@ -9,6 +9,7 @@
 	prompt = true
 [alias]
 	d = difftool
+	graph = log --graph --oneline --all --pretty=format:\"%C(yellow)%h %ar %C(auto)%d %Creset %s , %Cblue%cn\"
 [push]
 	default = simple
 [core]
@@ -22,6 +23,7 @@
 	conflictstyle = diff3
 [init]
 	templatedir = ~/.config/git/templates
+	defaultBranch = main
 
 [merge]
   tool = nvim
@@ -30,8 +32,15 @@
 [mergetool "nvim"]
   cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
 
-[merge] tool = mymeld 
-    conflictstyle = diff3 
-[mergetool "mymeld"] cmd = meld $LOCAL $BASE $REMOTE --output $MERGED 
+[merge] tool = mymeld
+    conflictstyle = diff3
+[mergetool "mymeld"] cmd = meld $LOCAL $BASE $REMOTE --output $MERGED
 [pull]
 	ff = only
+[safe]
+	directory = /srv/http/moodle
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
