@@ -78,7 +78,7 @@ export REPORTTIME=30
 setopt RM_STAR_WAIT
 
 #export VDPAU_DRIVER=va_gl
-#export VDPAU_DRIVER=radeonsi
+export VDPAU_DRIVER=radeonsi
 
 # bindkey "^I" menu-expand-or-complete
 
@@ -90,6 +90,10 @@ zstyle ':completion:*' rehash true
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path $XDG_CACHE_HOME/zsh
 
+autoload -Uz compinit bashcompinit
+compinit -d $XDG_CACHE_HOME/zsh/dump
+bashcompinit
+
 export GOPATH=$HOME/.local/godir
 PATH=$HOME/scripts:$HOME/.local/bin:$PATH
 export PATH=$GOROOT/bin:$GOPATH/bin:$PATH
@@ -99,6 +103,9 @@ if sway_pid=$(pgrep -x sway); then
 else
     unset SWAYSOCK
 fi
+HYPRLAND_INSTANCE_SIGNATURE="$(ls -1t /tmp/hypr |tail -1)"  2>/dev/null
+export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
+# export SSH_AUTH_SOCK=/run/user/1000/gnupg/S.gpg-agent.ssh  # TODO test
 export SUDO_ASKPASS=/usr/lib/ssh/ssh-askpass
 export EDITOR="nvim"
 export SYSTEMD_EDITOR="nvim"
@@ -161,14 +168,15 @@ include () {
     fi
 }
 
-include /usr/share/autojump/autojump.zsh
+#include /usr/share/autojump/autojump.zsh
+eval "$(zoxide init zsh)"
 include /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 include /usr/share/doc/pkgfile/command-not-found.zsh
 
 include "$ZDOTDIR"/cabalpromt.zsh 'cabal_pr="sandbox_prompt"'
 include "$ZDOTDIR"/gitpromt.zsh 'git_pr="__git_prompt"'
 include "$ZDOTDIR"/conda.zsh
-
+# include /usr/share/zsh/plugins/zsh-autocomplete/zsh-autocomplete.plugin.zsh
 setopt promptsubst
 
 leftHeader=\
@@ -221,10 +229,9 @@ GENCOMPL_FPATH="$ZDOTDIR"/gencomplete
 # GENCOMPL_PY=python3
 include "$ZDOTDIR"/zsh-completion-generator/zsh-completion-generator.plugin.zsh
 
-autoload -Uz compinit bashcompinit
-compinit -d $XDG_CACHE_HOME/zsh/dump
-bashcompinit
-include /opt/google-cloud-sdk/completion.zsh.inc
+
+#include ~/Downloads/google-cloud-sdk/completion.zsh.inc
+include /opt/google-cloud-cli/completion.zsh.inc
 include /usr/bin/aws_zsh_completer.sh
 # eval "$(_MOLECULE_COMPLETE=source molecule)"
 
@@ -240,13 +247,13 @@ include /opt/azure-cli/az.completion
 include /usr/share/undistract-me/long-running.bash notify_when_long_running_commands_finish_install
 
 
-auto_pip_venv (){
-
-  if [[ -f venv/bin/activate ]] ; then
-    source venv/bin/activate
-  fi
-
-}
+#auto_pip_venv (){
+#
+#  if [[ -f venv/bin/activate ]] ; then
+#    source venv/bin/activate
+#  fi
+#
+#}
 chpwd_functions+=(auto_pip_venv)
 
 # GOPATHSTART="$GOPATH"
