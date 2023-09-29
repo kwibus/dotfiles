@@ -11,7 +11,7 @@
 #
 # Logo key. Use Mod1 for Alt.
 
-set $lock  'swaylock -efFc 555555'
+set $lock  swaylock # configerd with $XDG_CONFIG_HOME/swaylock/config
 set $mod Mod4
 # Home row direction keys, like vim
 set $left h
@@ -25,7 +25,11 @@ set $term foot --log-level warning /home/rens/scripts/tmx.sh
 
 # Your preferred application launcher
 
-set $menu albert toggle #dmenu_run
+# set $menu dmenu_run
+# set $menu albert toggle #dmenu_run
+# set $menu ulauncher-toggle
+set $menu wofi --show drun --allow-images --insensitive   --columns 4 --no-actions
+
 
 workspace_auto_back_and_forth no
 smart_gaps on
@@ -45,7 +49,7 @@ show_marks yes
 output * scale 1
 # output * bg /home/rens/Afbeeldingen/Wallpapers/rain.jpg fill
 output * bg /home/rens/Afbeeldingen/Wallpapers/sway-tree.jpg fill
-output * max_render_time 2
+output * max_render_time 10
 output HDMI-A-2 pos 10,10
 output HDMI-A-2 scale 1.5
 
@@ -54,8 +58,9 @@ output $laptop {
     pos 0,0
     adaptive_sync on
 }
-bindswitch --locked lid:on exec sway-disable-if.sh  $laptop
-bindswitch --locked lid:off output $laptop enable
+#bindswitch --reload --locked lid:on output $laptop disable
+bindswitch --reload --locked lid:on exec sway-disable-if.sh  $laptop
+bindswitch --reload --locked lid:off output $laptop enable
 
  # ,lv3:ralt-alt
 input "*" {
@@ -91,25 +96,24 @@ mouse_warping output
 #
 # Basics:
 #
-    bindsym $mod+c exec copyq menu
-    bindsym $mod+bracketleft exec copyq next
-    bindsym $mod+bracketright exec copyq next
-    bindsym $mod+z [urgent=latest] focus
+    # does not work well
+    # bindsym $mod+c exec ydotool click 0xC0 -r 100 -D 200
+    # bindsym --release $mod+c  exec  pkill -x ydotool
+
+    bindsym $mod+z [urgent=latest] focus # consider swayr
 
     bindsym $mod+b border toggle
 
     # start a terminal
-    bindsym $mod+Return exec /home/rens/scripts/sway-focus-or-exec.sh $term
+    bindsym $mod+Return exec /home/rens/scripts/sway-focus-or-exec.sh $term # consider swayr
     # kill focused window
     bindsym --no-repeat --inhibited $mod+Shift+c kill
 
-    bindsym Alt+l exec
+    #bindsym Alt+l exec
 
-
-    # bindsym $mod+o exec sway-select.sh
 
     # start your launcher
-    bindsym --release $mod+o  exec $menu
+    bindsym  $mod+o  exec $menu
     #bindsym $mod+p exec $menu
 
     # Drag floating windows by holding down $mod and left mouse button.
@@ -123,19 +127,20 @@ mouse_warping output
     bindsym $mod+Shift+r reload
 
     # # restart sway inplace (preserves your layout/session, can be used to upgrade sway)
-    # bindsym $mod+Shift+r restart
+    # bindsym $mod+Alt+r restart # does not work
 
     # exit sway (logs you out of your wayland session)
     bindsym $mod+Shift+q exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+
 # Moving around:
 #
-    # Move your focus around with $mod+[h|j|k|l], like vim
 
     bindsym $mod+Tab exec sway-next.sh
     bindsym $mod+Shift+Tab exec sway-next.sh previous
     bindsym Alt+Tab exec sway-next.sh
     bindsym Alt+Shift+Tab exec sway-next.sh previous
 
+    # Move your focus around with $mod+[h|j|k|l], like vim
     bindsym $mod+h focus left
     bindsym $mod+j focus down
     bindsym $mod+k focus up
@@ -220,7 +225,8 @@ mouse_warping output
 
 #bindsym $mod+Shift+space [con_mark="slave"] focus;swap container  with mark master ; [con_mark=master] mark slave ; mark --add master
 
-    bindsym $mod+n exec makoctl dismiss --all
+    # bindsym $mod+n exec makoctl dismiss --all
+    bindsym $mod+n exec swaync-client --toggle-panel
 
     bindsym  $mod+Alt+equal scale 1
     bindsym  $mod+Alt+plus exec /home/rens/scripts/sway-scale.sh +0.2
@@ -287,12 +293,15 @@ bindsym  --locked XF86AudioStop  exec player.sh toggle
 bindsym  --locked XF86AudioPlay exec player.sh toggle
 bindsym  --locked $mod+Ctrl+Down  exec player.sh toggle
 
-bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
-bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
-bindsym --locked XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+# bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+# bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+# bindsym --locked XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym --locked XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+bindsym --locked XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- -l 1.2
+bindsym --locked XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ -l 1.2
 
-bindsym --locked XF86MonBrightnessDown exec light -U 10  && light -G
-bindsym --locked XF86MonBrightnessUp exec light -A 10  && light -G
+bindsym --locked XF86MonBrightnessDown exec light -U 10
+bindsym --locked XF86MonBrightnessUp exec light -A 10
 
 bindsym --locked XF86KbdBrightnessDown exec light -s sysfs/leds/tpacpi::kbd_backlight -U 50
 bindsym --locked XF86KbdBrightnessUp exec light -s sysfs/leds/tpacpi::kbd_backlight -A 50
@@ -309,7 +318,7 @@ for_window [shell=".*"] title_format "%title :: %shell"
 for_window [app_id="lxqt-policykit-agent"] floating enable
 for_window [title="^CopyQ"] floating enable, border none, resize set 450 320, move position 1500 0,focus prev
 for_window [app_id="gnome-calculator"] floating enable
-
+for_window [app_id="ulauncher"] border none
 for_window [app_id="keepassxc"] floating enable
 for_window [title="^File Operation Progress$"] floating enable   # thunar
 for_window [class="Lxappearance"] floating enable
@@ -338,38 +347,37 @@ bar {
 #     #tray_output primary LVDS
 # }
 }
-exec copyq
+#exec copyq
 
 
 # exec read-gtk3-settings.sh # no longer needed with nwg-look
 
 exec lxqt-policykit-agent
-exec sh -c "exec albert &>/dev/null"
+# exec ulauncher
+# exec sh -c "exec albert &>/dev/null"
 exec udiskie -n -s -A --appindicator
 exec batsignal -i
-exec mako -c ~/.config/mako/config
+# exec mako -c ~/.config/mako/config
+exec swaync
 #exec xrdb ~/.config/X11/Xresources
 exec nm-applet --indicator
 exec blueman-applet
 
-exec swayidle -w\
- timeout 650 $lock\
- timeout 600 'swaymsg "output * dpms off"'\
-      resume 'swaymsg "output * dpms on"'\
- before-sleep $lock \
+exec swayidle
   # TODO playerctl pause -a
 
 # exec mkfifo $SWAYSOCK.wob && tail -f $SWAYSOCK.wob | wob
 #exec /usr/lib/xdg-desktop-portal-wlr -l INFO -r
 exec gammastep-indicator  -m wayland -c ~/.config/redshift.conf -v
-exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway DISPLAY SWAYSOCK
 exec systemctl start --user xdg-desktop-portal
 
 #exec /var/lib/portmaster/updates/linux_amd64/notifier/portmaster-notifier_v0-2-3
 
-exec sleep 10 && syncthingtray --wait
-#exec pkill kdeconnectd && sleep 5  && /usr/lib/kdeconnectd -platform offscreen --replace
+exec syncthing-gtk -m
+# exec sleep 10 && syncthingtray --wait
+exec sleep 5 && /usr/lib/kdeconnectd -platform offscreen --replace
+exec  sleep 10 && kdeconnect-indicator
 #exec sleep 10 && indicator-kdeconnect
 # exec sleep 10 && /usr/bin/kdeconnect-indicator
-
-exec test $left test
+exec usbguard-applet-qt

@@ -1,0 +1,4 @@
+show-failed-attempts
+# daemonize
+color=005555
+ignore-empty-password
