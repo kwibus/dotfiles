@@ -1,4 +1,5 @@
-let b:ale_linters =['gofmt', 'golint', 'gopls', 'govet', 'golangci-lint']
+let b:ale_linters =['gofmt', 'golint', 'gopls', 'govet'] ", 'golangci-lint']
+" let b:ale_linters =['gofmt', 'golint', 'gopls', 'govet', 'golangci-lint']
 
 nmap <Leader>v :GoRun<CR>
 nmap <Leader>c :GoBuild<Cr>

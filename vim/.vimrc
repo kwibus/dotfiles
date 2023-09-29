@@ -1,7 +1,6 @@
 "" REMEBER bear for  c/c++
 " general TODO's {{{
 " TODO ALE does not support checkbashisme
-" TODO improve or eplace repmo
 " TODO switch to test shortcut
 " TODO remove unused
 " TODO maybe add Cscope
@@ -13,7 +12,6 @@
 " TODO delay vimdiff{put/get}  fold so you can see result
 " TODO haddock comments highlight in vim
 " TODO haskell syntax checker pedantic
-" TODO StripTrailingWhitespaces on serten file types
 "}}}
 set secure
 filetype plugin on
@@ -23,6 +21,7 @@ filetype indent on
 
 syntax enable
 
+set nofixendofline
 set encoding=utf-8
 scriptencoding utf-8
 " let g:python3_host_prog = "/usr/bin/python3"
@@ -76,10 +75,23 @@ endif
 " search and motion {{{
 Plug 'tpope/vim-repeat'
 " Plug 'tpope/vim-surround' " sandwich better?
-"Plug 'machakann/vim-sandwich' " alternative timpope surround
+Plug 'machakann/vim-sandwich' " alternative timpope surround
+let g:sandwich_no_default_key_mappings = 1
+nmap cs <Plug>(sandwich-replace)
+xmap cs <Plug>(sandwich-replace)
+nmap csb <Plug>(sandwich-replace-auto)
+" omap ib <Plug>(textobj-sandwich-auto-i) # user target for that
+" xmap ib <Plug>(textobj-sandwich-auto-i)
+" omap ab <Plug>(textobj-sandwich-auto-a)
+" xmap ab <Plug>(textobj-sandwich-auto-a)
+" omap is <Plug>(textobj-sandwich-query-i)
+" xmap is <Plug>(textobj-sandwich-query-i)
+" omap as <Plug>(textobj-sandwich-query-a)
+" xmap as <Plug>(textobj-sandwich-query-a)
 Plug 'bkad/CamelCaseMotion' " make camel case motion , and <  not ,w ,b ,e ?
-Plug 'terryma/vim-smooth-scroll'
+
 " vim-smooth-scroll {{{
+Plug 'terryma/vim-smooth-scroll'
   noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 0, 2)<CR>
   noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 0, 2)<CR>
   noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
@@ -88,7 +100,7 @@ Plug 'terryma/vim-smooth-scroll'
 "
 " Plug 'rhysd/clever-f.vim'                                         " repeat last f with f TODO Test
 " let g:clever_f_show_prompt=1
-Plug 'justinmk/vim-sneak'                                       " f with to char s does not work well with repmo
+Plug 'justinmk/vim-sneak'
 let g:sneak#label = 1
 
 "Plug 'haya14busa/incsearch.vim'                                   " incremental search  TODO room inprovement TODO should no longer be nesecary in new vim version
@@ -134,19 +146,21 @@ if executable('fzf')
     Plug 'junegunn/fzf.vim'
 endif
 Plug 'kien/ctrlp.vim'
+Plug 'christoomey/vim-tmux-navigator' " source even when not in tmux becauces it provides windo navigatio in vim
 "}}}
 " spell and grammar {{{
-Plug 'sedm0784/vim-you-autocorrect'                    " automatic autocorrect spell enable with :EnableAutocorrect
-" Plug 'rhysd/vim-grammarous'    " advanced spell checking TODO choose one of the to
+" Plug 'sedm0784/vim-you-autocorrect'                    " automatic autocorrect spell enable with :EnableAutocorrect
+" Plug 'rhysd/vim-grammarous'    " advanced spell checking
 " Plug 'dpelle/vim-LanguageTool' " advanced spellll checking
 " }}}
 " ftp plugins {{{
-
+Plug 'nfnty/vim-nftables'
+Plug 'fisadev/vim-isort'                    , {'for': 'python' }
 Plug 'Matt-Deacalion/vim-systemd-syntax'     , {'for': 'systemd'} " maybe need always loud for detection
 Plug 'keith/tmux.vim' " syntax  highlight tmuxconfig file
 Plug 'PProvost/vim-ps1'                                " powershel
 Plug 'posva/vim-vue'                                   "vue.js support
-Plug 'OmniSharp/omnisharp-vim'                         " C#
+" Plug 'OmniSharp/omnisharp-vim'                         " C#
 Plug 'artur-shaik/vim-javacomplete2'                   " jave competion
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }    " go plugin
 Plug 'tobyS/pdv'                                       " php doc
@@ -163,7 +177,6 @@ Plug 'idris-hackers/idris-vim'            , {'for': 'idris'}
 " Plug 'neovimhaskell/haskell-vim'        , {'for': 'haskell'}
 " Plug 'gilligan/vim-textobj-haskell      , {'for': 'haskell'} | Plug 'kana/vim-textobj-user' " defined textobject haskell fucntion ih. maybe remove almost same as ip -now gitgutter hunk
 " Plug 'kana/vim-filetype-haskell'        , {'for': 'haskell'}
-" Plug 'mkasa/lushtags'                   , {'for': 'haskell', 'do': 'cabal sandbox init && cabal install'}
 " Plug 'dag/vim2hs'                       , {'for': 'haskell'}
 " Plug 'itchyny/vim-haskell-indent'       , {'for': 'haskell'}
 " Plug 'chrisdone/hindent' ,                {'for': 'haskell'}
@@ -186,7 +199,7 @@ Plug 'peterhoeg/vim-qml' , {'for': 'qml'}
 " Plug 'gu-fan/InstantRst' " preview rst InstantRst!
 Plug 'LaTeX-Box-Team/LaTeX-Box'  , {'for': 'tex'}
 
-Plug 'vim-pandoc/vim-pandoc'          ", {'for': ['markdown','tex']}
+"Plug 'vim-pandoc/vim-pandoc'          ", {'for': ['markdown','tex']} " broken
 let g:pandoc#modules#disabled=['chdir']
 Plug 'vim-pandoc/vim-pandoc-syntax'   ", {'for': ['markdown','tex']}
 " Plug 'pyarmak/vim-pandoc-live-preview' ", {'for': ['markdown','tex']} -- does this work?
@@ -206,6 +219,8 @@ Plug 'ternjs/tern_for_vim', {'do':'npm install'} " javascript tern
       Plug 'wellle/tmux-complete.vim' " complete text from tmux buffers
   endif
   Plug 'Shougo/neco-syntax'
+  Plug 'petobens/poet-v'
+  Plug 'deoplete-plugins/deoplete-jedi'
   if has('nvim')
     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
     "Plug 'neovim/nvim-lsp' " dont use this yet
@@ -214,13 +229,11 @@ Plug 'ternjs/tern_for_vim', {'do':'npm install'} " javascript tern
     Plug 'roxma/nvim-yarp'
     Plug 'roxma/vim-hug-neovim-rpc'
   endif
-  let g:deoplete#enable_at_startup = 1
-
   Plug 'sirver/ultisnips'
   Plug 'honza/vim-snippets'  "ultisnips
 "}}}
 "{{{ linting
-Plug 'w0rp/ale'
+  Plug 'w0rp/ale'
 " Plug 'dojoteef/neomake-autolint' | Plug 'benekastah/neomake'
 " Plug 'autozimu/LanguageClient-neovim', {
 "     \ 'branch': 'master',
@@ -230,7 +243,8 @@ Plug 'w0rp/ale'
 " {{{ tags
 Plug 'gnattishness/cscope_maps'                        " cscope key  bindings
 Plug 'ludovicchabant/vim-gutentags'
-Plug 'rob-b/gutenhasktags'
+Plug 'rob-b/gutenhasktags' , {'for': 'haskell'}
+" Plug 'mkasa/lushtags'                   , {'for': 'haskell', 'do': 'cabal sandbox init && cabal install'}
 
 " Plug 'xolox/vim-easytags', {'do': 'mkdir ~/.vim/easytags' } | Plug 'xolox/vim-misc'
 " }}}
@@ -251,7 +265,12 @@ Plug 'vim-scripts/matchit.zip'
 "copy paste {{{
 "Plug 'roxma/vim-paste-easy'  "set paste on when pasting
 Plug 'machakann/vim-highlightedyank'
-
+if !exists('##TextYankPost')
+  nmap y <Plug>(highlightedyank)
+  xmap y <Plug>(highlightedyank)
+  omap y <Plug>(highlightedyank)
+endif
+" Plug 'kana/vim-fakeclip'
 Plug 'svermeulen/vim-yoink'
 " Plug 'maxbrunsfeld/vim-yankstack'
 " Plug 'vim-scripts/YankRing.vim'
@@ -263,10 +282,28 @@ Plug 'timakro/vim-copytoggle' " remove everythin that would make copy pase by se
 " Plug 'tommcdo/vim-exchange' "cx exchange commoad, did not use can be replace
 " with substiut from easyclip
 "}}}
-
-
+"{{{ theming
 Plug 'itchyny/vim-cursorword' " underline word under cursor
 " Plug 'mhinz/vim-startify' " startup screen
+" Plug 'vim-bufferline'
+Plug 'bling/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'kshenoy/vim-signature' " displayes marks do not use fair much
+
+Plug 'luochen1990/rainbow'
+" Plug 'kien/rainbow_parentheses.vim'
+
+" Plug 'sjl/badwolf'
+" Plug 'chriskempson/base16-vim'
+Plug 'lifepillar/vim-solarized8'
+Plug 'altercation/vim-colors-solarized'
+" Plug 'mhinz/vim-janah' " colorscheme
+if &term =~# '^linux'
+else
+    " Plug 'nathanaelkane/vim-indent-guides' " show bars to hint indetation level
+    Plug 'Yggdroot/indentLine'
+endif
+"}}}
 
 " Plug 'machakann'/vim-columnmove " TODO have to try??
 " Plug 'rickhowe/diffdchar.vim' " this plugin uses deault mapping
@@ -274,42 +311,38 @@ Plug 'itchyny/vim-cursorword' " underline word under cursor
 " Plug 'jszakmeister/vim-togglecursor'
 " Plug 'xolox/vim-reload' | Plug 'xolox/vim-misc'
 Plug 'kana/vim-niceblock' " enable IA.. in other visual mode then blcok
-Plug 'troydm/zoomwintab.vim/'
-Plug 'tommcdo/vim-lion' "map  gl<region><pattern> to alliment
+" Plug 'troydm/zoomwintab.vim/'
+" Plug 'tommcdo/vim-lion' "map  gl<region><pattern> to alliment
+Plug 'kg8m/vim-simple-align' " aligin <inrange> SimpleAlign delimiter
+" Plug 'godlygeek/tabular'
+" Plug 'junegunn/vim-easy-align'
+Plug 'tomtom/tcomment_vim' "add comments gc TODO some conflicet with textObjectcomment
+  let g:tcomment_textobject_inlinecommen=''
 
+" Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
 " Plug 'AssailantLF/vim-active-numbers' " only number in active window, is this useful?
 
 Plug 'kopischke/vim-fetch' " you can open file specific line :e file:line:colom
 
 "Plug 'jceb/vim-editqf' " eddit quickfix is not realy stable consider remove
 
-Plug 'zirrostig/vim-schlepp' " drag with visual cursor
+" Plug 'zirrostig/vim-schlepp' " drag with visual cursor
 Plug 'tpope/vim-eunuch' " unix helpers sudowrite,..
 
-Plug 'jamessan/vim-gnupg',   { 'branch': 'main' }
+" Plug 'jamessan/vim-gnupg',   { 'branch': 'main' }
 " if exists('$TMUX')
     " Plug 'benmills/vimux' "send command to run in tmux
     "Plug 'roxma/vim-tmux-clipboard' broke
       " no longer needed|Plug 'tmux-plugins/vim-tmux-focus-events' " TODO how goed does this work
 " endif
-Plug 'christoomey/vim-tmux-navigator' " source even when not in tmux becauces it provides windo navigatio in vim
 
-if &term =~# '^linux'
-else
-    " Plug 'nathanaelkane/vim-indent-guides' " show bars to hint indetation level
-    Plug 'Yggdroot/indentLine'
-endif
-
-" Plug 'vim-bufferline'
-Plug 'bling/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
 
 " {{{ git
 Plug 'tpope/vim-git'
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
 " Plug 'gregsexton/gitv'
-" Plug 'airblade/vim-gitgutter' " git gutter was slow on large files
+Plug 'airblade/vim-gitgutter' " git gutter was slow on large files
 if has('nvim') || has('patch-8.0.902') " replace gitgutter
   Plug 'mhinz/vim-signify'
 else
@@ -323,25 +356,10 @@ else
 endif
 
 Plug 'chrisbra/Recover.vim' "does not work well with neovim
-Plug 'kshenoy/vim-signature' " displayes marks do not use fair much
 
-Plug 'luochen1990/rainbow'
-" Plug 'kien/rainbow_parentheses.vim'
 
-" Plug 'sjl/badwolf'
-" Plug 'chriskempson/base16-vim'
-Plug 'lifepillar/vim-solarized8'
-Plug 'altercation/vim-colors-solarized'
-" Plug 'mhinz/vim-janah' " colorscheme
-
-Plug 'godlygeek/tabular' " TODO use one of them
-Plug 'junegunn/vim-easy-align'
-
-Plug 'tomtom/tcomment_vim' "add comments gc TODO some conflicet with textObjectcomment
-  let g:tcomment_textobject_inlinecommen=''
 
 " Plug 'terryma/vim-multiple-cursors' " not stable, does not work currust rest exit, can be have unexpected
-
 Plug 'mileszs/ack.vim' |  Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-abolish' " to snake casae crs camelcase crc
 " Plug 'pseewald/vim-anyfold' " TODO not used but devince folding based on indentation
@@ -495,7 +513,6 @@ endif
   " command! ClearQuickfixList cexpr []
 " }}}
 " backup {{{
-    "TODO need fix
     set  backupdir=$HOME/.vim/backup//
     let g:myvar = strftime('(%y%m%d)%Hh%M')
     let g:myvar = 'set backupext=_'. g:myvar
@@ -529,22 +546,26 @@ endif
     set signcolumn=number
     set number
     " mouse support {{{
-    if has('mouse')
-      set mouse=a
-    endif
+    " if has('mouse')
+    set mouse=a
+    " endif
 
     if has('mouse_sgr')
       set ttymouse=sgr
     endif
 
-    " set ttymouse=xterm2 TODO why did i disable this
     "}}}
     set title
     set cursorline
     set list
-    set listchars=tab:▸\ ,eol:¬,trail:_,extends:#,nbsp:.
+    set listchars=tab:▸\ ,trail:_,extends:#,nbsp:.
+    " set listchars=tab:▸\ ,eol:¬,trail:_,extends:#,nbsp:.
 
     set conceallevel=0
+    " let g:indentLine_setConceal=0
+    let g:pandoc#syntax#conceal#use=0
+    let g:markdown_syntax_conceal=0
+    let g:vim_json_conceal=0
 
     set timeoutlen=4000 ttimeoutlen=0 " solves delay escp
 
@@ -562,10 +583,10 @@ endif
     "autocmd! InsertLeave * call cursor([getpos('.')[1], getpos('.')[2]+1]) " dont move curror on exit
 
     set virtualedit=block,onemore
-    set lazyredraw "TODO test if this helps
+    " set lazyredraw "TODO test if this helps
     set ttyfast
-    set splitright " TODO dont konw if i still like this
-    set splitbelow
+    " set splitright " TODO dont konw if i still like this
+    " set splitbelow
     set wildmenu
     set wildmode=list,full
 
@@ -626,14 +647,16 @@ endif
   " nnoremap + <C-a>
 " zoomwintab {{{
   let g:zoomwintab_remap=0
-  map <C-W>z :ZoomWinTabToggle<CR>
+
+  map <C-W>z <C-W>o
+  " map <C-W>z :ZoomWinTabToggle<CR>
 "}}}
 " EasyAlign {{{
-    " Start interactive EasyAlign in visual mode (e.g. vipga)
-    xmap ga <Plug>(EasyAlign)
-
-    " Start interactive EasyAlign for a motion/text object (e.g. gaip)
-    nmap ga <Plug>(EasyAlign)
+    " " Start interactive EasyAlign in visual mode (e.g. vipga)
+    " xmap ga <Plug>(EasyAlign)
+    "
+    " " Start interactive EasyAlign for a motion/text object (e.g. gaip)
+    " nmap ga <Plug>(EasyAlign)
 " }}}
 " CamelCaseMotion {{{
      call camelcasemotion#CreateMotionMappings(',')
@@ -647,11 +670,11 @@ endif
    " nnoremap '' <nop>
 
 " }}}
-"vim visual drag "{{{
-    vmap <up>    <Plug>SchleppUp
-    vmap <down>  <Plug>SchleppDown
-    vmap <left>  <Plug>SchleppLeft
-    vmap <right> <Plug>SchleppRight
+" "vim visual drag "{{{
+"     vmap <up>    <Plug>SchleppUp
+"     vmap <down>  <Plug>SchleppDown
+"     vmap <left>  <Plug>SchleppLeft
+"     vmap <right> <Plug>SchleppRight
 
     map <X1Mouse> <C-o>
     map <X2Mouse> <C-i>
@@ -676,7 +699,7 @@ endif
     " nnoremap gV `[v`]
 
 " Yank {{{
-  " vim-yoink {{{
+  "vim-yoink {{{
   nmap <a-p> <plug>(YoinkPostPasteSwapBack)
   nmap <a-n> <plug>(YoinkPostPasteSwapForward)
 
@@ -697,25 +720,25 @@ endif
 "     let g:yankstack_yank_keys = ['c', 'C', 'd', 'D', 'x', 'X', 'y', 'Y']
 "     call yankstack#setup()
 "  " try https://github.com/maxbrunsfeld/vim-yankstack/issues/39
-"     nmap s <Plug>Sneak_s
-"     nmap S <Plug>Sneak_S
-"     xmap s <Plug>Sneak_s
-"     xmap S <Plug>Sneak_S
+    " nmap s <Plug>Sneak_s
+    " nmap S <Plug>Sneak_S
+    " xmap s <Plug>Sneak_s
+    " xmap S <Plug>Sneak_S
 "     nmap <M-n> <Plug>yankstack_substitute_newer_paste
 "     nmap <A-p> <Plug>yankstack_substitute_older_paste
 "     nmap <A-n> <Plug>yankstack_substitute_newer_paste
 "     "hasyato be before remaps yank and past
 "     " }}}
     nnoremap Y y$
-    " syat clipboard=unnamedplus
+    set clipboard=unnamedplus
 
     " easy-clip {{{
-    " lyat g:EasyClipShareYanks=1
-    " lyat g:EasyClipShareYanksDirectory='/tmp'
-    " lyat g:EasyClipShareYanksFile='vim-easyclip'
-    "
-    " let g:EasyClipUseSubstituteDefaults=1
-    " let g:EasyClipUseCutDefaults = 0
+    let g:EasyClipShareYanks=1
+    let g:EasyClipShareYanksDirectory='/tmp'
+    let g:EasyClipShareYanksFile='vim-easyclip'
+
+    let g:EasyClipUseSubstituteDefaults=1
+    let g:EasyClipUseCutDefaults = 0
 
     " nmap yd <Plug>MoveMotionPlug
     " xmap yd <Plug>MoveMotionXPlug
@@ -784,26 +807,27 @@ endif
 
 " multicusor " {{{
    let g:ctrlp_map = '<F12>'
-
-   let g:multi_cursor_start_key='<F6>'
+   "
+   let g:multi_cursor_use_default_mapping=0
+   let g:multi_cursor_start_word_key='<F6>'
    let g:multi_cursor_next_key='<C-n>'
    let g:multi_cursor_prev_key='<C-p>'
    let g:multi_cursor_skip_key='<C-x>'
    let g:multi_cursor_quit_key='<Esc>'
 
-       " Called once right before you start selecting multiple cursors
-       function! Multiple_cursors_before()
-         if exists(':NeoCompleteLock')==2
-           exe 'NeoCompleteLock'
-         endif
-       endfunction
-
-       " Called once only when the multiple selection is canceled (default <Esc>)
-       function! Multiple_cursors_after()
-         if exists(':NeoCompleteUnlock')==2
-           exe 'NeoCompleteUnlock'
-         endif
-       endfunction
+   " " Called once right before you start selecting multiple cursors
+   " function! Multiple_cursors_before()
+   "   if exists(':NeoCompleteLock')==2
+   "     exe 'NeoCompleteLock'
+   "   endif
+   " endfunction
+   "
+   " " Called once only when the multiple selection is canceled (default <Esc>)
+   " function! Multiple_cursors_after()
+   "   if exists(':NeoCompleteUnlock')==2
+   "     exe 'NeoCompleteUnlock'
+   "   endif
+   " endfunction
 "}}}
 
 "}}}
@@ -869,13 +893,23 @@ endif
   " ale{{{
 
 map  <C-i> :ALEHover<CR>
+let g:ale_echo_msg_format = '%linter%: %s'
   " }}}
   "}}}
 " completion {{{
+
 set completeopt=longest,menuone
 " if has('nvim')
 
   " Use deoplete. {{{
+  inoremap <silent><expr> <C-l>
+        \ pumvisible() ? "\<C-n>" :
+        \ <SID>check_back_space() ? "\<TAB>" :
+        \ deoplete#manual_complete()
+  function! s:check_back_space() abort "{{{
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~ '\s'
+  endfunction"}}}
     " call deoplete#enable_logging('DEBUG', 'deoplete.log')
 
     let g:deoplete#enable_at_startup = 1
@@ -883,24 +917,28 @@ set completeopt=longest,menuone
     "   let g:deoplete#omni#input_patterns = {}
     " endif
 
-    " inoremap <silent><expr> <TAB>
-        "       \ pumvisible() ? "\<C-n>" :
-        "       \ <SID>check_back_space() ? "\<TAB>" :
-        "       \ deoplete#manual_complete()
-        "       function! s:check_back_space() abort "{{{
-        "         let col = col('.') - 1
-        "         return !col || getline('.')[col - 1]  =~ '\s'
-        "   endfunction "}}}
-
     " add completion ALE completion
-    " call deoplete#custom#option('sources', {
-    " \ '_': ['ale','tmuxcomplete#complete','file'],
-    " \ 'sh': ['ale','tmuxcomplete#complete','file','omni','zsh_completion#Complete'],
-    " \})
+    let g:tmuxcomplete#trigger = ''
+    let g:ale_completion_enabled = 1
+    call deoplete#custom#var('omni', 'functions', {
+    \ 'sh': ['zsh_completion#Complete']
+    \})
+
+    call deoplete#custom#var('omni', 'input_patterns', {
+    \ 'sh': '.*',
+    \})
+    call deoplete#custom#option('sources', {
+    \ 'sh': ['ale','tmux-complete','file','omni','zsh'],
+    \ 'zsh': ['ale','tmux-complete','file','omni','zsh'],
+    \ 'python': ['jedi'],
+    \})
+
+    " \ '_': ['ale','omni','tmux-complete','file','zsh'],
+    " \ 'python': ['ale','tmux-complete','file','omni','jedi'],
   " }}}
 
   " ultisnips {{{
-  let g:UltiSnipsExpandTrigger='<C-l>'
+  " let g:UltiSnipsExpandTrigger='<C-l>'
   let g:UltiSnipsJumpForwardTrigger='<c-j>'
   let g:UltiSnipsJumpBackwardTrigger='<c-k>'
   " }}}
@@ -1003,13 +1041,13 @@ autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in
   autocmd! BufNewFile,BufRead *.git/COMMIT_EDITMSG set ft=gitcommit
 " git gutter {{{
   " let g:gitgutter_escape_grep = 1 " TODO i think this no longer needed
-  " nmap ]h <Plug>(GitGutterNextHunk)
-  " nmap [h <Plug>(GitGutterPrevHunk)
-  "
-  " omap ih <Plug>(GitGutterTextObjectInnerPending)
-  " omap ah <Plug>(GitGutterTextObjectOuterPending)
-  " xmap ih <Plug>(GitGutterTextObjectInnerVisual)
-  " xmap ah <Plug>(GitGutterTextObjectOuterVisual)
+  nmap ]h <Plug>(GitGutterNextHunk)
+  nmap [h <Plug>(GitGutterPrevHunk)
+
+  omap ih <Plug>(GitGutterTextObjectInnerPending)
+  omap ah <Plug>(GitGutterTextObjectOuterPending)
+  xmap ih <Plug>(GitGutterTextObjectInnerVisual)
+  xmap ah <Plug>(GitGutterTextObjectOuterVisual)
 "}}}
 " vim-signify  (git hunk signs){{{
       autocmd User SignifyHunk call s:show_current_hunk()
@@ -1050,4 +1088,6 @@ let g:indent_guides_start_level=1
 let g:indent_guides_enable_on_vim_startup = 1
 "}}}
 
+highlight ExtraWhitespace gui=underline cterm=underline
+match ExtraWhitespace /\s\+\%#\@<!$/
 source /home/rens/.vim/my_functions.vim
