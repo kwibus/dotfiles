@@ -1,16 +1,5 @@
-# Default config for sway
-#
-# Copy this to ~/.config/sway/config and edit it to your liking.
-#
-# Read `man 5 sway` for a complete reference.
-#
-# Sway is a work in progress. Some of these defaults are currently unimplemented.
-
-
 ### Variables
 #
-# Logo key. Use Mod1 for Alt.
-
 set $lock  swaylock # configerd with $XDG_CONFIG_HOME/swaylock/config
 set $mod Mod4
 # Home row direction keys, like vim
@@ -21,7 +10,8 @@ set $right l
 # Your preferred terminal emulator
 # set $term termite -t termite -e /home/rens/scripts/tmx.sh
 # set $term alacritty  -e/home/rens/scripts/tmx.sh
-set $term foot --log-level warning /home/rens/scripts/tmx.sh
+# set $term foot --log-level warning /home/rens/scripts/tmx.sh
+set $term kitty /home/rens/scripts/tmx.sh
 
 # Your preferred application launcher
 
@@ -46,32 +36,49 @@ force_display_urgency_hint 700
 
 show_marks yes
 
-output * scale 1
-# output * bg /home/rens/Afbeeldingen/Wallpapers/rain.jpg fill
-output * bg /home/rens/Afbeeldingen/Wallpapers/sway-tree.jpg fill
-output * max_render_time 10
-output HDMI-A-2 pos 10,10
-output HDMI-A-2 scale 1.5
-
 set $laptop eDP-1
 output $laptop {
+    scale 1
     pos 0,0
+
+    bg /home/rens/Afbeeldingen/Wallpapers/background fill
+
     adaptive_sync on
+    max_render_time 10
+}
+output HDMI-A-2 {
+    pos 10,10
+    scale 1.5
+}
+output 'LG Electronics LG HDR WQHD 0x0000DBEA' {
+    scale 2
 }
 #bindswitch --reload --locked lid:on output $laptop disable
 bindswitch --reload --locked lid:on exec sway-disable-if.sh  $laptop
 bindswitch --reload --locked lid:off output $laptop enable
 
- # ,lv3:ralt-alt
+input "type:keyboard" {
+  xkb_layout "us"
+ # xkb_variant "intl"
+  xkb_options caps:escape_shifted_capslock,compose:ralt,eurosign:5
+}
+
+# laptop keybard
+input "1:1:AT_Translated_Set_2_keyboard" {
+
+  #xkb_variant "intl"
+}
+
 input "*" {
   # scroll_factor 3
   repeat_delay 300
   middle_emulation disabled
   repeat_rate 15
-  xkb_options caps:escape_shifted_capslock,compose:ralt,eurosign:5
   tap enabled
   drag_lock enabled
+  middle_emulation enabled
   #dwt disabled
+  #tap_button_map lrm
 
 }
 input 1386:887:Wacom_Intuos_BT_S_Pen {
@@ -111,9 +118,8 @@ mouse_warping output
 
     #bindsym Alt+l exec
 
-
     # start your launcher
-    bindsym  $mod+o  exec $menu
+    bindsym $mod+o exec $menu
     #bindsym $mod+p exec $menu
 
     # Drag floating windows by holding down $mod and left mouse button.
@@ -139,7 +145,10 @@ mouse_warping output
     bindsym $mod+Shift+Tab exec sway-next.sh previous
     bindsym Alt+Tab exec sway-next.sh
     bindsym Alt+Shift+Tab exec sway-next.sh previous
-
+    bindsym $mod+x+Right exec variety --next
+    bindsym $mod+x+Left exec variety --previous
+    bindsym $mod+x+Down exec variety --move-to-favorites
+    bindsym $mod+x+UP exec variety --trash
     # Move your focus around with $mod+[h|j|k|l], like vim
     bindsym $mod+h focus left
     bindsym $mod+j focus down
@@ -171,25 +180,25 @@ mouse_warping output
 # Workspaces:
 #
     # switch to workspace
-    bindsym $mod+Shift+1 move window to workspace  1
-    bindsym $mod+Shift+2 move window to workspace  2
-    bindsym $mod+Shift+3 move window to workspace  3
-    bindsym $mod+Shift+4 move window to workspace  4
-    bindsym $mod+Shift+5 move window to workspace  5
-    bindsym $mod+Shift+6 move window to workspace  6
-    bindsym $mod+Shift+7 move window to workspace  7
-    bindsym $mod+Shift+8 move window to workspace  8
-    bindsym $mod+Shift+9 move window to workspace  9
+    bindsym $mod+Shift+1 move window to workspace number 1
+    bindsym $mod+Shift+2 move window to workspace number 2
+    bindsym $mod+Shift+3 move window to workspace number 3
+    bindsym $mod+Shift+4 move window to workspace number 4
+    bindsym $mod+Shift+5 move window to workspace number 5
+    bindsym $mod+Shift+6 move window to workspace number 6
+    bindsym $mod+Shift+7 move window to workspace number 7
+    bindsym $mod+Shift+8 move window to workspace number 8
+    bindsym $mod+Shift+9 move window to workspace number 9
 
-    bindsym $mod+1 workspace 1
-    bindsym $mod+2 workspace 2
-    bindsym $mod+3 workspace 3
-    bindsym $mod+4 workspace 4
-    bindsym $mod+5 workspace 5
-    bindsym $mod+6 workspace 6
-    bindsym $mod+7 workspace 7
-    bindsym $mod+8 workspace 8
-    bindsym $mod+9 workspace 9
+    bindsym $mod+1 workspace number 1
+    bindsym $mod+2 workspace number 2
+    bindsym $mod+3 workspace number 3
+    bindsym $mod+4 workspace number 4
+    bindsym $mod+5 workspace number 5
+    bindsym $mod+6 workspace number 6
+    bindsym $mod+7 workspace number 7
+    bindsym $mod+8 workspace number 8
+    bindsym $mod+9 workspace number 9
 
     bindsym $mod+v split t
 
@@ -208,10 +217,10 @@ mouse_warping output
     # Swap focus between the tiling area and the floating area
     bindsym $mod+shift+g focus mode_toggle
 
-# stick floating window
+    # stick floating window
     bindsym $mod+Shift+s sticky toggle ;  mark --toggle sticky
 
-# move focus to the parent container
+    # move focus to the parent container
     bindsym $mod+a focus parent
     bindsym $mod+Shift+a focus child
 
@@ -227,6 +236,7 @@ mouse_warping output
 
     # bindsym $mod+n exec makoctl dismiss --all
     bindsym $mod+n exec swaync-client --toggle-panel
+    bindsym $mod+shift+n exec swaync-client --close-all
 
     bindsym  $mod+Alt+equal scale 1
     bindsym  $mod+Alt+plus exec /home/rens/scripts/sway-scale.sh +0.2
@@ -268,7 +278,22 @@ mode "resize" {
     bindsym Escape mode "default"
 }
 bindsym $mod+r mode "resize"
+mode "present" {
+    # command starts mirroring
+    bindsym m mode "default"; exec wl-present mirror
+    # these commands modify an already running mirroring window
+    bindsym o mode "default"; exec wl-present set-output
+    bindsym r mode "default"; exec wl-present set-region
+    bindsym Shift+r mode "default"; exec wl-present unset-region
+    bindsym s mode "default"; exec wl-present set-scaling
+    bindsym f mode "default"; exec wl-present toggle-freeze
+    bindsym c mode "default"; exec wl-present custom
 
+    # return to default mode
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+shift+p mode "present"
 #
 # multimedia
 #
@@ -300,19 +325,23 @@ bindsym --locked XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
 bindsym --locked XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- -l 1.2
 bindsym --locked XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ -l 1.2
 
-bindsym --locked XF86MonBrightnessDown exec light -U 10
-bindsym --locked XF86MonBrightnessUp exec light -A 10
+bindsym --locked XF86MonBrightnessDown exec brightnessctl set -- -10%
+bindsym --locked XF86MonBrightnessUp exec brightnessctl set -- +10%
 
-bindsym --locked XF86KbdBrightnessDown exec light -s sysfs/leds/tpacpi::kbd_backlight -U 50
-bindsym --locked XF86KbdBrightnessUp exec light -s sysfs/leds/tpacpi::kbd_backlight -A 50
+# bindsym --locked XF86KbdBrightnessDown exec light -s sysfs/leds/tpacpi::kbd_backlight -U 50
+# bindsym --locked XF86KbdBrightnessUp exec light -s sysfs/leds/tpacpi::kbd_backlight -A 50
 
 bindsym --release Print exec grim -g \"$(slurp)\"  /home/rens/screenshot_$(date +%F+%T).png
+bindsym $mod+Print exec flameshot gui
 
 bindsym --release $mod+Shift+Print exec  wf-recorder -g "$(slurp)" -f /home/rens/screenrecoding_$(date +%F+%T).mp4
 
 bindsym Ctrl+Alt+l exec $lock
 #
 # Status Bar:
+no_focus [title="im-emoji-picker"]
+
+
 for_window [title="^Syncthing Tray( \(.*\))?$"] floating enable, border none, resize set 450 400, move position cursor, move down 24px
 for_window [shell=".*"] title_format "%title :: %shell"
 for_window [app_id="lxqt-policykit-agent"] floating enable
@@ -369,15 +398,23 @@ exec swayidle
 # exec mkfifo $SWAYSOCK.wob && tail -f $SWAYSOCK.wob | wob
 #exec /usr/lib/xdg-desktop-portal-wlr -l INFO -r
 exec gammastep-indicator  -m wayland -c ~/.config/redshift.conf -v
-exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway DISPLAY SWAYSOCK
+# dont know if this is redundant
+exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+# exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY DISPLAY SWAYSOCK
+include /etc/sway/config.d/*
+
 exec systemctl start --user xdg-desktop-portal
 
 #exec /var/lib/portmaster/updates/linux_amd64/notifier/portmaster-notifier_v0-2-3
 
-exec syncthing-gtk -m
+exec_always syncthingtray-qt6 --replace --wait
 # exec sleep 10 && syncthingtray --wait
-exec sleep 5 && /usr/lib/kdeconnectd -platform offscreen --replace
-exec  sleep 10 && kdeconnect-indicator
+exec_always sleep 5 && /usr/lib/kdeconnectd -platform offscreen --replace
+exec_always  sleep 10 && kdeconnect-indicator
 #exec sleep 10 && indicator-kdeconnect
 # exec sleep 10 && /usr/bin/kdeconnect-indicator
-exec usbguard-applet-qt
+exec usbguard-qt
+exec variety
+exec keepassxc
+#exec_always /usr/lib/fcitx5-wayland-launcher
+

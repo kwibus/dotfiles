@@ -1,4 +1,4 @@
 show-failed-attempts
 # daemonize
 color=005555
-ignore-empty-password
+#ignore-empty-password does not work well with fingerprint

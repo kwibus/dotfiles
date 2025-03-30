@@ -20,9 +20,12 @@ let g:pandoc#command#autoexec_command = 'Pandoc pdf -o /tmp/vim-pandoc-out.pdf'
 " endfunction
 
 " markdown complestion deoplete
-call deoplete#custom#var('omni', 'input_patterns', {
-\ 'pandoc': '@'
-\})
+"call deoplete#custom#var('omni', 'input_patterns', {
+"\ 'pandoc': '@'
+"\})
 
 let g:pandoc#syntax#conceal#use=0
 let g:livepreview_previewer = 'zathura'
+
+let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'terraform']
+

@@ -14,11 +14,24 @@ SDL_VIDEODRIVER=wayland
 #Java
 _JAVA_AWT_WM_NONREPARENTING=1
 
-XDG_SESSION_TYPE=wayland
 
 MOZ_ENABLE_WAYLAND=1
+
+XDG_SESSION_TYPE=wayland
 XDG_CURRENT_DESKTOP=sway
+XDG_SESSION_DESKTOP=sway
+
+ECORE_EVAS_ENGINE=wayland_egl
+ELM_ENGINE=wayland_egl
+# test nvideo gpu
+#DRI_PRIME=0
+#WLR_DRM_DEVICES=/dev/dri/card0:/dev/dri/card1
+GTK_IM_MODULE=fcitx
+QT_IM_MODULE=fcitx
+XMODIFIERS=@im=fcitx
+
+
 
 #test vulkan
-#WLR_RENDERER=vulkan
+WLR_RENDERER=vulkan
 #WLR_DRM_NO_ATOMIC=0

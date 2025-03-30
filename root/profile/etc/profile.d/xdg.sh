@@ -1,4 +1,6 @@
 #! /bin/bash
+export XDG_DATA_DIRS="/usr/local/share:/usr/share:$XDG_DATA_DIRS"
+export XDG_CONFIG_DIRS="/etc/xdg:$XDG_CONFIG_DIRS"
 
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CACHE_HOME="$HOME"/.cache

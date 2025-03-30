@@ -28,4 +28,6 @@ coverages
 
 # python
 venv
-
+.mypy_cache
+__pycache__
+.dmypy.json

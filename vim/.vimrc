@@ -1,13 +1,14 @@
-"" REMEBER bear for  c/c++
+"" REMEMBER bear for  c/c++
 " general TODO's {{{
+" TODO underline support
 " TODO ALE does not support checkbashisme
 " TODO switch to test shortcut
 " TODO remove unused
 " TODO maybe add Cscope
-" TODO maybe fold quickfix / remove quickfix entrys
-" TODO find a way to spelcheck camelcase snake case ..
+" TODO maybe fold quickfix / remove quickfix entries
+" TODO find a way to spellcheck camel case snake case ..
 " TODO tags
-" TODO sorting completion  , complet biggest commue / remove duplecats
+" TODO sorting completion  , complete biggest common / remove duplicates
 " TODO add histories to completion
 " TODO delay vimdiff{put/get}  fold so you can see result
 " TODO haddock comments highlight in vim
@@ -25,7 +26,7 @@ set nofixendofline
 set encoding=utf-8
 scriptencoding utf-8
 " let g:python3_host_prog = "/usr/bin/python3"
-"instal " {{{
+"install " {{{
 
 function! EnsureDir (dir)
   if !isdirectory(a:dir)
@@ -56,17 +57,23 @@ endfunction
 " call Install()
 command! Install call Install()
 "}}}
+
+augroup myvimrc
+    au!
+    au BufWritePost .vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc,init.vim,init.lua so $MYVIMRC | if has('gui_running') | so $MYGVIMRC | endif
+augroup END
 " Plugins {{{
 if expand('$UID') >= 1000
 call plug#begin()
-
+" Plug 'nvim-treesitter/nvim-treesitter-context'
+" Plug 'dstein64/nvim-scrollview'
 Plug 'vim-scripts/LargeFile'
-Plug 'Konfekt/FastFold'
+" Plug 'Konfekt/FastFold'
 Plug '907th/vim-auto-save'                             " auto save not enabled by default
 " Plug 'vim-scripts/vim-auto-save'
 " smart config {{{
 Plug 'kopischke/vim-stay' " store setting view zo is preserved TODO replace with vim-workspace?
-Plug 'tpope/vim-sleuth'                     " detect tab seting in file
+Plug 'tpope/vim-sleuth'                     " detect tab setting in file
 Plug 'tpope/vim-projectionist' " TODO implement
 if executable('editorconfig')
     Plug 'editorconfig/editorconfig-vim'
@@ -75,12 +82,12 @@ endif
 " search and motion {{{
 Plug 'tpope/vim-repeat'
 " Plug 'tpope/vim-surround' " sandwich better?
-Plug 'machakann/vim-sandwich' " alternative timpope surround
-let g:sandwich_no_default_key_mappings = 1
-nmap cs <Plug>(sandwich-replace)
-xmap cs <Plug>(sandwich-replace)
-nmap csb <Plug>(sandwich-replace-auto)
-" omap ib <Plug>(textobj-sandwich-auto-i) # user target for that
+Plug 'machakann/vim-sandwich' " alternative tpope surround
+" let g:sandwich_no_default_key_mappings = 1
+" nmap cs <Plug>(sandwich-replace)
+" xmap cs <Plug>(sandwich-replace)
+" nmap csb <Plug>(sandwich-replace-auto)
+" omap ib <Plug>(textobj-sandwich-auto-i) " user target for that
 " xmap ib <Plug>(textobj-sandwich-auto-i)
 " omap ab <Plug>(textobj-sandwich-auto-a)
 " xmap ab <Plug>(textobj-sandwich-auto-a)
@@ -93,6 +100,7 @@ Plug 'bkad/CamelCaseMotion' " make camel case motion , and <  not ,w ,b ,e ?
 " vim-smooth-scroll {{{
 Plug 'terryma/vim-smooth-scroll'
   noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 0, 2)<CR>
+
   noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 0, 2)<CR>
   noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
   noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 0, 4)<CR>
@@ -103,7 +111,7 @@ Plug 'terryma/vim-smooth-scroll'
 Plug 'justinmk/vim-sneak'
 let g:sneak#label = 1
 
-"Plug 'haya14busa/incsearch.vim'                                   " incremental search  TODO room inprovement TODO should no longer be nesecary in new vim version
+"Plug 'haya14busa/incsearch.vim' " incremental search  TODO room improvement TODO should no longer be necessary in new vim version
 
 " Plug 'terryma/vim-expand-region' "expand visual selection with +
 " vnoremap _ <Plug>(expand_region_expand)
@@ -115,8 +123,9 @@ let g:sneak#label = 1
 " {{{ text object
 Plug 'kana/vim-textobj-fold' | Plug 'kana/vim-textobj-user' " iz az
 Plug 'glts/vim-textobj-comment' | Plug 'kana/vim-textobj-user' " ic ac
-" Plug 'vim-scripts/argtextobj.vim' " targest does the same
-Plug 'wellle/targets.vim' " add extra text opjects an( i' ia
+" Plug 'vim-scripts/argtextobj.vim' " target does the same
+" Plug 'wellle/targets.vim' " add extra text objects an( i' ia  # removed conflict with nice block
+"
 Plug 'kana/vim-textobj-entire' " is ie ae
 Plug 'michaeljsmith/vim-indent-object' "ai ii aI iI
 " }}}
@@ -128,12 +137,23 @@ Plug 'michaeljsmith/vim-indent-object' "ai ii aI iI
 " Plug 'jpalardy/vim-slime'
 " Plug 'Shougo/vimshell.vim' replaced by  Deol.nvim
 " Plug 'ujihisa/repl.vim'
-" Plug 'metakirby5/codi.vim' # interacetive output but never used it :Codi python
+" Plug 'metakirby5/codi.vim' # interactive output but never used it :Codi python
 "}}}
 "{{{ bars
 Plug 'junegunn/vim-peekaboo' " show content registers after "
-Plug 'majutsushi/tagbar' , {'on' : 'Tagbar'}
+" Plug 'majutsushi/tagbar' , {'on' : 'Tagbar'}
+Plug 'liuchengxu/vista.vim'
+function! NearestMethodOrFunction() abort
+  return get(b:, 'vista_nearest_method_or_function', '')
+endfunction
 
+set statusline+=%{NearestMethodOrFunction()}
+
+" By default vista.vim never run if you don't call it explicitly.
+"
+" If you want to show the nearest function in your status line automatically,
+" you can add the following line to your vimrc
+autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
 Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 "
@@ -146,36 +166,40 @@ if executable('fzf')
     Plug 'junegunn/fzf.vim'
 endif
 Plug 'kien/ctrlp.vim'
-Plug 'christoomey/vim-tmux-navigator' " source even when not in tmux becauces it provides windo navigatio in vim
+Plug 'nvim-telescope/telescope.nvim'  | Plug 'nvim-lua/plenary.nvim'
+
+Plug 'christoomey/vim-tmux-navigator' " source even when not in tmux because it provides window navigation in vim
 "}}}
 " spell and grammar {{{
 " Plug 'sedm0784/vim-you-autocorrect'                    " automatic autocorrect spell enable with :EnableAutocorrect
 " Plug 'rhysd/vim-grammarous'    " advanced spell checking
-" Plug 'dpelle/vim-LanguageTool' " advanced spellll checking
+" Plug 'dpelle/vim-LanguageTool' " advanced spell checking
 " }}}
 " ftp plugins {{{
 Plug 'nfnty/vim-nftables'
 Plug 'fisadev/vim-isort'                    , {'for': 'python' }
 Plug 'Matt-Deacalion/vim-systemd-syntax'     , {'for': 'systemd'} " maybe need always loud for detection
-Plug 'keith/tmux.vim' " syntax  highlight tmuxconfig file
-Plug 'PProvost/vim-ps1'                                " powershel
+Plug 'keith/tmux.vim' " syntax  highlight tmux config file
+Plug 'PProvost/vim-ps1'                                " powershell
 Plug 'posva/vim-vue'                                   "vue.js support
 " Plug 'OmniSharp/omnisharp-vim'                         " C#
-Plug 'artur-shaik/vim-javacomplete2'                   " jave competion
+Plug 'artur-shaik/vim-javacomplete2'                   " java completion
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }    " go plugin
 Plug 'tobyS/pdv'                                       " php doc
-Plug 'tobyS/vmustache'                                  " mustash plugin als for pdf plugin
-" Plug 'mustache/vim-mustache-handlebars' " did never use "mustach handlebars"
+Plug 'tobyS/vmustache'                                  " mustache plugin also for pdf plugin
+" Plug 'mustache/vim-mustache-handlebars' " did never use "mustache handlebars"
 Plug 'rust-lang/rust.vim' ,{'for': 'rust'}            " rust
-Plug 'sebastianmarkow/deoplete-rust' ,{'for': 'rust'}
+" Plug 'sebastianmarkow/deoplete-rust' ,{'for': 'rust'}
 Plug 'hashivim/vim-terraform'                         " terraform
 
 Plug 'Firef0x/PKGBUILD.vim'              , {'for': 'PKGBUILD'}
+Plug 'towolf/vim-helm'
 Plug 'kovetskiy/sxhkd-vim'
-Plug 'huesersohn/curry.vim' " TODO only cury files >
+Plug 'huesersohn/curry.vim'               , {'for': 'curry'}
 Plug 'idris-hackers/idris-vim'            , {'for': 'idris'}
 " Plug 'neovimhaskell/haskell-vim'        , {'for': 'haskell'}
-" Plug 'gilligan/vim-textobj-haskell      , {'for': 'haskell'} | Plug 'kana/vim-textobj-user' " defined textobject haskell fucntion ih. maybe remove almost same as ip -now gitgutter hunk
+" defined textobject haskell function ih. maybe remove almost same as ip -now gitgutter hunk
+" Plug 'gilligan/vim-textobj-haskell      , {'for': 'haskell'} | Plug 'kana/vim-textobj-user' "
 " Plug 'kana/vim-filetype-haskell'        , {'for': 'haskell'}
 " Plug 'dag/vim2hs'                       , {'for': 'haskell'}
 " Plug 'itchyny/vim-haskell-indent'       , {'for': 'haskell'}
@@ -189,9 +213,9 @@ Plug 'Twinside/vim-syntax-haskell-cabal', {'for': 'haskell'} " Plug 'vim-scripts
 
 Plug 'hari-rangarajan/CCTree' " c call graph
 "
-" Plug 'LucHermitte/VimFold4C' " had erros
-" Plug 'Rip-Rip/clang_complete' , {'for': ['c', 'cpp']} "need some special attion whith new ncurs hat to patch
-" Plug 'xavierd/clang_complete' , {'for': ['c', 'cpp']} "need some special attion whith new ncurs hat to patch
+" Plug 'LucHermitte/VimFold4C' " had errors
+" Plug 'Rip-Rip/clang_complete' , {'for': ['c', 'cpp']} "need some special action with new ncurses hat to patch
+" Plug 'xavierd/clang_complete' , {'for': ['c', 'cpp']} "need some special action with new ncurses hat to patch
 
 Plug 'peterhoeg/vim-qml' , {'for': 'qml'}
 
@@ -200,40 +224,100 @@ Plug 'peterhoeg/vim-qml' , {'for': 'qml'}
 Plug 'LaTeX-Box-Team/LaTeX-Box'  , {'for': 'tex'}
 
 "Plug 'vim-pandoc/vim-pandoc'          ", {'for': ['markdown','tex']} " broken
-let g:pandoc#modules#disabled=['chdir']
-Plug 'vim-pandoc/vim-pandoc-syntax'   ", {'for': ['markdown','tex']}
+" let g:pandoc#modules#disabled=['chdir']
+" Plug 'vim-pandoc/vim-pandoc-syntax'   ", {'for': ['markdown','tex']}
 " Plug 'pyarmak/vim-pandoc-live-preview' ", {'for': ['markdown','tex']} -- does this work?
 
 " Plug 'nelstrom/vim-markdown-folding' , {'for': 'markdown'}
 "     let g:markdown_fold_style = 'nested'
+Plug 'tpope/vim-markdown'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 
-Plug 'zchee/deoplete-zsh'
+" Plug 'zchee/deoplete-zsh'
 Plug 'Valodim/vim-zsh-completion'
 
-Plug 'ternjs/tern_for_vim', {'do':'npm install'} " javascript tern
+" Plug 'ternjs/tern_for_vim', {'do':'npm install'} " javascript tern
 " }}}
 " completion general{{{
 
   if exists('$TMUX')
-      Plug 'wellle/tmux-complete.vim' " complete text from tmux buffers
+      " Plug 'wellle/tmux-complete.vim' " complete text from tmux buffers
   endif
-  Plug 'Shougo/neco-syntax'
+  " Plug 'Shougo/neco-syntax'
   Plug 'petobens/poet-v'
-  Plug 'deoplete-plugins/deoplete-jedi'
-  if has('nvim')
-    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-    "Plug 'neovim/nvim-lsp' " dont use this yet
-  else
-    Plug 'Shougo/deoplete.nvim'
-    Plug 'roxma/nvim-yarp'
-    Plug 'roxma/vim-hug-neovim-rpc'
-  endif
-  Plug 'sirver/ultisnips'
-  Plug 'honza/vim-snippets'  "ultisnips
+  " Plug 'deoplete-plugins/deoplete-jedi'
+  " if has('nvim')
+  "   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+
+    " Plug 'prabirshrestha/vim-lsp' " TODO test
+    " Plug 'mattn/vim-lsp-settings'
+    " Plug 'prabirshrestha/asyncomplete.vim'
+    " Plug 'prabirshrestha/asyncomplete-lsp.vim'
+    " Plug 'thomasfaingnaert/vim-lsp-snippets'
+    " Plug 'thomasfaingnaert/vim-lsp-ultisnips'
+    " Plug 'folke/trouble.nvim'
+    Plug 'neovim/nvim-lspconfig'
+    Plug 'scalameta/nvim-metals'
+      Plug 'nvim-lua/plenary.nvim'
+      Plug 'j-hui/fidget.nvim' " metal dependency for show progress
+      " lua vim.diagnostic.open_float()
+    Plug 'hrsh7th/cmp-nvim-lsp'
+    Plug 'hrsh7th/cmp-buffer'
+    Plug 'hrsh7th/cmp-path'
+    Plug 'hrsh7th/cmp-cmdline'
+    Plug 'hrsh7th/cmp-vsnip'
+    Plug 'petertriho/cmp-git'
+
+    Plug 'hrsh7th/nvim-cmp'
+    " Plug 'SirVer/ultisnips'
+    " Plug 'honza/vim-snippets'  "ultisnips
+    Plug 'hrsh7th/vim-vsnip'
+    Plug 'rafamadriz/friendly-snippets'
+    " TODO
+    " Expand
+    imap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>' # clash with tmux window movements
+    smap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+
+    " Expand or jump
+    imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+    smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+
+    " Jump forward or backward
+    imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+    smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+    imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+    smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+    let g:vsnip_filetypes = {}
+    Plug 'hrsh7th/vim-vsnip-integ'
+
+    let g:lsp_diagnostics_enabled = 0         " disable diagnostics support this is done by ale
+    set foldmethod=expr
+      \ foldexpr=lsp#ui#vim#folding#foldexpr()
+      \ foldtext=lsp#ui#vim#folding#foldtext()
+    inoremap <expr> <C-l>   pumvisible() ? "\<C-n>" : "\<C-l>"
+    " inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+    " inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+
+  " else
+  "   Plug 'Shougo/deoplete.nvim'
+  "   Plug 'roxma/nvim-yarp'
+  "   Plug 'roxma/vim-hug-neovim-rpc'
+  " endif
 "}}}
 "{{{ linting
-  Plug 'w0rp/ale'
+  Plug 'dense-analysis/ale'
+    let g:ale_completion_enabled = 1
+"   Plug 'dense-analysis/neural'
+"   " Configure Neural like so in Vimscript
+    " let g:neural = {
+    " \   'source': {
+    " \       'openai': {
+    " \           'api_key': $OPENAI_API_KEY,
+    " \       },
+    " \   },
+    " \}
+    Plug 'muniftanjim/nui.nvim'
+    Plug 'elpiloto/significant.nvim'
 " Plug 'dojoteef/neomake-autolint' | Plug 'benekastah/neomake'
 " Plug 'autozimu/LanguageClient-neovim', {
 "     \ 'branch': 'master',
@@ -241,15 +325,15 @@ Plug 'ternjs/tern_for_vim', {'do':'npm install'} " javascript tern
 "     \ }
 " }}}
 " {{{ tags
-Plug 'gnattishness/cscope_maps'                        " cscope key  bindings
-Plug 'ludovicchabant/vim-gutentags'
-Plug 'rob-b/gutenhasktags' , {'for': 'haskell'}
+" Plug 'gnattishness/cscope_maps'                        " cscope key  bindings
+" Plug 'ludovicchabant/vim-gutentags'
+" Plug 'rob-b/gutenhasktags' , {'for': 'haskell'}
 " Plug 'mkasa/lushtags'                   , {'for': 'haskell', 'do': 'cabal sandbox init && cabal install'}
 
 " Plug 'xolox/vim-easytags', {'do': 'mkdir ~/.vim/easytags' } | Plug 'xolox/vim-misc'
 " }}}
-" {{{ delimiter plugns
-" Plug 'rstacruz/vim-closer' " does not work whell with indentation and editing existed code
+" {{{ delimiter plugins
+" Plug 'rstacruz/vim-closer' " does not work well with indentation and editing existed code
 " Plug 'Raimondi/delimitMate'
 " Plug 'jiangmiao/auto-pairs'
 " Plug 'Townk/vim-autoclose'
@@ -257,7 +341,7 @@ Plug 'rob-b/gutenhasktags' , {'for': 'haskell'}
 " Plug 'jiangmiao/auto-pairs'  "TODO Try configure
 Plug 'tpope/vim-ragtag'  "<C-X>/ Last HTML tag closed TODO are better plugins
 " Plug 'andymass/vim-matchup'  " try out
-" Plug 'vim-scripts/Highlight-UnMatched-Brackets' # TODO ttry again
+" Plug 'vim-scripts/Highlight-UnMatched-Brackets' # TODO try again
 Plug 'vim-scripts/matchit.zip'
 " Plug 'airblade/vim-matchquote' -- conflict with matchit TODO alternative
 " Plug 'arnar/vim-matchopen'
@@ -274,13 +358,13 @@ endif
 Plug 'svermeulen/vim-yoink'
 " Plug 'maxbrunsfeld/vim-yankstack'
 " Plug 'vim-scripts/YankRing.vim'
-" Plug 'Shougo/neoyank.vim' | Plug 'Shougo/unite.vim' " dont configer correctly
+" Plug 'Shougo/neoyank.vim' | Plug 'Shougo/unite.vim' " don't configure correctly
 " Plug 'svermeulen/vim-easyclip'
 "
-Plug 'timakro/vim-copytoggle' " remove everythin that would make copy pase by select hard (F5)
+Plug 'timakro/vim-copytoggle' " remove everything that would make copy paste by select hard (F5)
 " Plug 'cazador481/fakeclip.neovim'
-" Plug 'tommcdo/vim-exchange' "cx exchange commoad, did not use can be replace
-" with substiut from easyclip
+" Plug 'tommcdo/vim-exchange' "cx exchange command, did not use can be replace
+" with substitute from easyclip
 "}}}
 "{{{ theming
 Plug 'itchyny/vim-cursorword' " underline word under cursor
@@ -288,32 +372,37 @@ Plug 'itchyny/vim-cursorword' " underline word under cursor
 " Plug 'vim-bufferline'
 Plug 'bling/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'kshenoy/vim-signature' " displayes marks do not use fair much
+Plug 'kshenoy/vim-signature' " displays marks do not use fair much
+" Plug 'kosayoda/nvim-lightbulb'
+
 
 Plug 'luochen1990/rainbow'
 " Plug 'kien/rainbow_parentheses.vim'
 
 " Plug 'sjl/badwolf'
 " Plug 'chriskempson/base16-vim'
-Plug 'lifepillar/vim-solarized8'
-Plug 'altercation/vim-colors-solarized'
-" Plug 'mhinz/vim-janah' " colorscheme
+" Plug 'lifepillar/vim-solarized8'
+" Plug 'altercation/vim-colors-solarized'
+
+Plug 'overcache/NeoSolarized'
+let g:neosolarized_contrast = "high"
+
 if &term =~# '^linux'
 else
-    " Plug 'nathanaelkane/vim-indent-guides' " show bars to hint indetation level
+    " Plug 'nathanaelkane/vim-indent-guides' " show bars to hint indentation level
     Plug 'Yggdroot/indentLine'
 endif
 "}}}
 
 " Plug 'machakann'/vim-columnmove " TODO have to try??
-" Plug 'rickhowe/diffdchar.vim' " this plugin uses deault mapping
+" Plug 'rickhowe/diffdchar.vim' " this plugin uses default mapping
 
 " Plug 'jszakmeister/vim-togglecursor'
 " Plug 'xolox/vim-reload' | Plug 'xolox/vim-misc'
-Plug 'kana/vim-niceblock' " enable IA.. in other visual mode then blcok
+Plug 'kana/vim-niceblock' " enable IA.. in other visual mode then block
 " Plug 'troydm/zoomwintab.vim/'
-" Plug 'tommcdo/vim-lion' "map  gl<region><pattern> to alliment
-Plug 'kg8m/vim-simple-align' " aligin <inrange> SimpleAlign delimiter
+" Plug 'tommcdo/vim-lion' "map  gl<region><pattern> to aliment
+Plug 'kg8m/vim-simple-align' " align <inrange> SimpleAlign delimiter
 " Plug 'godlygeek/tabular'
 " Plug 'junegunn/vim-easy-align'
 Plug 'tomtom/tcomment_vim' "add comments gc TODO some conflicet with textObjectcomment
@@ -324,7 +413,7 @@ Plug 'tomtom/tcomment_vim' "add comments gc TODO some conflicet with textObjectc
 
 Plug 'kopischke/vim-fetch' " you can open file specific line :e file:line:colom
 
-"Plug 'jceb/vim-editqf' " eddit quickfix is not realy stable consider remove
+"Plug 'jceb/vim-editqf' " edit quickfix is not really stable consider remove
 
 " Plug 'zirrostig/vim-schlepp' " drag with visual cursor
 Plug 'tpope/vim-eunuch' " unix helpers sudowrite,..
@@ -359,31 +448,109 @@ Plug 'chrisbra/Recover.vim' "does not work well with neovim
 
 
 
-" Plug 'terryma/vim-multiple-cursors' " not stable, does not work currust rest exit, can be have unexpected
+" Plug 'terryma/vim-multiple-cursors' " not stable, does not work
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'mileszs/ack.vim' |  Plug 'tpope/vim-dispatch'
-Plug 'tpope/vim-abolish' " to snake casae crs camelcase crc
-" Plug 'pseewald/vim-anyfold' " TODO not used but devince folding based on indentation
-" Plug 'norcalli/nvim-colorizer.lua' lua require 'colorizer'.setup()
-" Plug 'chrisbra/Colorizer' " highlighting colorcodes
+" Plug 'tpope/vim-abolish' " to snake case crs camelcase crc.removed overwrites c, and did never use
+" Plug 'pseewald/vim-anyfold' " TODO not used but provides folding based on indentation
+" Plug 'norcalli/nvim-colorizer.lua' lua require 'colorized'.setup()
+" Plug 'chrisbra/Colorizer' " highlighting color codes
 call plug#end()
+
+if has('nvim')
+lua <<EOF
+  -- Set up nvim-cmp.
+  local cmp = require'cmp'
+
+  cmp.setup({
+    snippet = {
+      -- REQUIRED - you must specify a snippet engine
+      expand = function(args)
+        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+        -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+        -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
+        -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+        -- vim.snippet.expand(args.body) -- For native neovim snippets (Neovim v0.10+)
+      end,
+    },
+    window = {
+      -- completion = cmp.config.window.bordered(),
+      -- documentation = cmp.config.window.bordered(),
+    },
+    mapping = cmp.mapping.preset.insert({
+      ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-Space>'] = cmp.mapping.complete(),
+      ['<C-e>'] = cmp.mapping.abort(),
+      ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+    }),
+    sources = cmp.config.sources({
+      { name = 'nvim_lsp' },
+      { name = 'vsnip' }, -- For vsnip users.
+      -- { name = 'luasnip' }, -- For luasnip users.
+      -- { name = 'ultisnips' }, -- For ultisnips users.
+      -- { name = 'snippy' }, -- For snippy users.
+    }, {
+      { name = 'buffer' },
+    })
+  })
+  -- To use git you need to install the plugin petertriho/cmp-git and uncomment lines below
+  -- Set configuration for specific filetype.
+  -- [[ cmp.setup.filetype('gitcommit', {
+  --     sources = cmp.config.sources({
+  --     { name = 'git' },
+  --     }, {
+  --         { name = 'buffer' },
+  --     })
+  --    })
+  --  require("cmp_git").setup() ]]
+
+  -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline({ '/', '?' }, {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = {
+      { name = 'buffer' }
+    }
+  })
+
+  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline(':', {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = cmp.config.sources({
+      { name = 'path' }
+    }, {
+      { name = 'cmdline' }
+    }),
+    matching = { disallow_symbol_nonprefix_matching = false }
+  })
+
+  -- Set up lspconfig.
+  local capabilities = require('cmp_nvim_lsp').default_capabilities()
+  -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
+  -- require('lspconfig')['<YOUR_LSP_SERVER>'].setup {
+  --   capabilities = capabilities
+  -- }
+EOF
+endif
 endif  " end UID >= 1000
 " end Plugins }}}
 
 " {{{ true colors " not fully enabled
-
-let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-if exists('+termguicolors')
-  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-  " set termguicolors " does not work well
-endif
+set termguicolors
+colorscheme mycolors
+" let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+" if exists('+termguicolors')
+"   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+"   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+"   " set termguicolors " does not work well
+" endif
 " }}}
 
 " {{{ highlighting
 
    augroup synHiglight
      autocmd!
-     autocmd BufWinEnter,Syntax * syntax sync fromstart " this can be slow on large files, fromstart can be replaced for a speedup
+     autocmd BufWinEnter,Syntax * syntax sync fromstart " this can be slow on large files, from start can be replaced for a speedup
 
 "    autocmd BufWinEnter,Syntax * syn sync minlines=500 maxlines=500
    augroup END
@@ -394,7 +561,7 @@ endif
   let g:solarized_termtrans = 1
   " let g:solarized_termcolors=256
   " let g:solarized_termcolors=16
-  if empty($backgroun)
+  if empty($background)
       set background=dark
   else
       execute 'set background='.$background
@@ -404,7 +571,7 @@ endif
 " }}}
 "
     " highlight SyntasticError ctermbg=0
-    "  color colum for where the line is to long
+    "  color column for where the line is to long
     " highlight ColorColumn ctermbg=10
 
     augroup vimrc_todo " TODO Cleanup
@@ -412,7 +579,7 @@ endif
         au Syntax * syn match MyTodo /\v<(FIXME|NOTE|TODO|OPTIMIZE|XXX)/
               \ containedin=.*Comment,vimCommentTitle
     augroup END
-    call matchadd('ToLong', '\%82v', 100) "longer then 80 is to long, so 81 should be colord, but i have end of line char that get collerd when the line is 80 long, so 82
+    call matchadd('ToLong', '\%82v', 100) "longer then 80 is to long, so 81 should be colored, but i have end of line char that get colored when the line is 80 long, so 82
 " rainbow {{{
 " luochen1990/rainbow {{{
 let g:rainbow_active = 1
@@ -446,27 +613,27 @@ let g:rainbow_conf = {
 " }}}
 
 " highlightyank {{{
-        " if ! has('nvim')
-        "     map y <Plug>(highlightedyank)
-        " end
+      " if ! has('nvim')
+      "     map y <Plug>(highlightedyank)
+      " end
   " }}}
-"}}}
+" }}}
 " general settings {{{
   set nojoinspaces " TODO explain
 
-" if has('gui_running')
-if ! has('nvim')
-    set ballooneval
-    set mousemodel=popup
-    set balloonevalterm
-endif
+    " if has('gui_running')
+    if ! has('nvim')
+        set ballooneval
+        set mousemodel=popup
+        set balloonevalterm
+    endif
 
 set path+=**
 set viewdir=$HOME/.vim/view
 set directory=.,~/.vim/swap
 
-autocmd FileType * setlocal  formatoptions-=o " dont insert comment when you oO from within comment
-autocmd BufEnter * if &filetype == "" | setlocal filetype=text | endif " when no filetype detect make it text
+autocmd FileType * setlocal  formatoptions-=o " don't insert comment when you oO from within comment
+autocmd BufEnter * if &filetype == "" | setlocal filetype=text | endif " when no file type detect make it text
 autocmd WinEnter * if winnr('$') == 1 && getbufvar(winbufnr(winnr()), '&buftype') == "quickfix"|quit|endif " quit if only quickfix open
 autocmd BufNewFile,BufRead,BufEnter /home/rens/.ssh/config.d/*.conf setlocal syntax=sshconfig
 
@@ -475,17 +642,18 @@ if ! has('nvim')
     set viminfo+=n~/.vim/viminfo
 endif
 
-"undo {{{
+"""}}}
+" undo {{{
 " undotree {{{
     let g:undotree_WindowLayout=2
     "}}}
     " persistent  undo {{{
-    set undofile                " Save undo's after file closes
+    set undofile                " Save undoes after file closes
     set undodir=$HOME/.vim/undo// " where to save undo histories
-    set undolevels=1000         " How many undos
+    set undolevels=1000         " How many undoes
     set undoreload=10000        " number of lines to save for undo TODO check
     "}}}}
-"}}}
+" }}}
 " fold {{{
     " set foldmethod=syntax
     set foldlevelstart=0 "default all folds closed
@@ -567,7 +735,7 @@ endif
     let g:markdown_syntax_conceal=0
     let g:vim_json_conceal=0
 
-    set timeoutlen=4000 ttimeoutlen=0 " solves delay escp
+    set timeoutlen=4000 ttimeoutlen=0 " solves delay escape
 
     " tab en indent {{{
     set smarttab
@@ -580,12 +748,12 @@ endif
     set viewoptions=cursor,slash,unix,folds
     set commentstring=#\ %s
     "autocmd! CursorHoldI * stopinsert " leave insert after interactive
-    "autocmd! InsertLeave * call cursor([getpos('.')[1], getpos('.')[2]+1]) " dont move curror on exit
+    "autocmd! InsertLeave * call cursor([getpos('.')[1], getpos('.')[2]+1]) " don't move cursor on exit
 
     set virtualedit=block,onemore
     " set lazyredraw "TODO test if this helps
     set ttyfast
-    " set splitright " TODO dont konw if i still like this
+    " set splitright " TODO don't know if i still like this
     " set splitbelow
     set wildmenu
     set wildmode=list,full
@@ -605,9 +773,9 @@ endif
     " autocmd WinLeave *(on-disk version) setlocal nohidden
     set confirm  " ask if you want to save
 
-    set backspace=indent,eol,start "indent  allow backspacing over autoindent eol allow backspacing over line breaks (join lines)
+    set backspace=indent,eol,start "indent  allow backspacing over auto indent eol allow backspacing over line breaks (join lines)
     "start   allow backspacing over the start of insert; CTRL-W and CTRL-U stop once at the start of insert
-    " set whichwrap=<,>,[,] " allow cursor key to move past end of aline to the next line TODO
+    " set whichwrap=<,>,[,] " allow cursor key to move past end of align to the next line TODO
 
     set showmatch
 " wrap  {{{
@@ -619,53 +787,54 @@ endif
     set spellcapcheck = ""
     set spelllang=en,nl
 
-"{{{ vim-you-autocorrect
-highlight AutocorrectGood ctermfg=Red guifg=Red gui=undercurl
-augroup ILoveCorrections
-  autocmd!
-  "autocmd FileType text EnableAutocorrect
-  "autocmd FileType text imap <c-U> <C-O><Plug>VimyouautocorrectUndo
-augroup END
-" Languagetool install global {{{
-if &runtimepath =~ 'vim-Languagetool'
-    " let g:grammarous#languagetool_cmd = '/usr/share/java/languagetool/languagetool-commandline.jar'
-    let g:languagetool_jar='/usr/share/java/languagetool/languagetool-commandline.jar' "}}}
-endif
-"}}}
-"}}}
+    "{{{ vim-you-autocorrect
+    highlight AutocorrectGood ctermfg=Red guifg=Red gui=undercurl
+    augroup ILoveCorrections
+      autocmd!
+      "autocmd FileType text EnableAutocorrect
+      "autocmd FileType text imap <c-U> <C-O><Plug>VimyouautocorrectUndo
+    augroup END
+    " Languagetool install global {{{
+    if &runtimepath =~ 'vim-Languagetool'
+        " let g:grammarous#languagetool_cmd = '/usr/share/java/languagetool/languagetool-commandline.jar'
+        let g:languagetool_jar='/usr/share/java/languagetool/languagetool-commandline.jar' "}}}
+    endif
+    " }}}
+" }}}
 " mappings {{{
-    let g:mapleader = ' '
-    let g:mapleader="\<SPACE>"
-    inoremap <C-w> <C-\><C-o>dB
+  let g:mapleader = ' '
+  " let g:mapleader="\<SPACE>"
+  inoremap <C-w> <C-\><C-o>dB
 
-    inoremap <C-h> <C-\><C-o>db
-    inoremap <C-BS> <C-\><C-o>db
-    " inoremap jj <Esc> " TODO does this work for me ?
-    " inoremap l; <Esc>
-    " inoremap ;l <Esc>
+  inoremap <C-h> <C-\><C-o>db
+  inoremap <C-BS> <C-\><C-o>db
+  " inoremap jj <Esc> " TODO does this work for me ?
+  " inoremap l; <Esc>
+  " inoremap ;l <Esc>
   " nnoremap _ <C-x>
   " nnoremap + <C-a>
+" }}}
 " zoomwintab {{{
   let g:zoomwintab_remap=0
 
   map <C-W>z <C-W>o
   " map <C-W>z :ZoomWinTabToggle<CR>
-"}}}
+" }}}
 " EasyAlign {{{
-    " " Start interactive EasyAlign in visual mode (e.g. vipga)
+    " Start interactive EasyAlign in visual mode (e.g. vipga)
     " xmap ga <Plug>(EasyAlign)
     "
     " " Start interactive EasyAlign for a motion/text object (e.g. gaip)
     " nmap ga <Plug>(EasyAlign)
 " }}}
 " CamelCaseMotion {{{
-     call camelcasemotion#CreateMotionMappings(',')
+"     call camelcasemotion#CreateMotionMappings(',')
 "}}}
 
 " disable mappings {{{
 
     " nnoremap Z <nop>
-    nnoremap K <nop>
+    " nnoremap K <nop>
     nnoremap Q <nop>
    " nnoremap '' <nop>
 
@@ -681,11 +850,11 @@ endif
     nnoremap <2-LeftMouse> :exe "tag ". expand("<cword>")<CR>
 "}}}
 
-    " noremap <leader>r :source$MYVIMRC<CR>
+    noremap <leader>r :source $MYVIMRC<CR>
 
-"reloud vim plugin{{{
+"reload vim plugin{{{
     let g:reload_on_write = 0
-    noremap <leader>r :source$MYVIMRC<CR>:ReloadScript<CR>
+    noremap <leader>r :source$MYVIMRC<CR>
 "}}}
 
     nnoremap <C-S> :update<CR>
@@ -695,7 +864,7 @@ endif
     nnoremap <S-k> i<CR><Esc>== " TODO  can better
 
     " highlight last inserted text
-    " doesn`t work
+    " does not work
     " nnoremap gV `[v`]
 
 " Yank {{{
@@ -719,17 +888,18 @@ endif
 "
 "     let g:yankstack_yank_keys = ['c', 'C', 'd', 'D', 'x', 'X', 'y', 'Y']
 "     call yankstack#setup()
-"  " try https://github.com/maxbrunsfeld/vim-yankstack/issues/39
-    " nmap s <Plug>Sneak_s
-    " nmap S <Plug>Sneak_S
+"  try https://github.com/maxbrunsfeld/vim-yankstack/issues/39
+    nmap s <Plug>Sneak_s
+    nmap S <Plug>Sneak_S
     " xmap s <Plug>Sneak_s
     " xmap S <Plug>Sneak_S
 "     nmap <M-n> <Plug>yankstack_substitute_newer_paste
 "     nmap <A-p> <Plug>yankstack_substitute_older_paste
 "     nmap <A-n> <Plug>yankstack_substitute_newer_paste
-"     "hasyato be before remaps yank and past
-"     " }}}
+"     "has to be before remaps yank and past
+"     }}}
     nnoremap Y y$
+
     set clipboard=unnamedplus
 
     " easy-clip {{{
@@ -759,8 +929,10 @@ endif
     command! Wq wq
     command! W w
 
+    " map ctr-A to start of line just like bash"
+    cmap <c-A> <c-B>
     cmap W!! SudoWrite
-    cmap w!! SudoWrite
+    cmap w!! SudoWrit
     " cmap w!! w !sudo tee > /dev/null %
     " cmap w!! execute ':silent w !sudo tee %  > /dev/null'
 "}}}
@@ -777,7 +949,7 @@ endif
     " nnoremap <C-i>   <Esc>:tabnext<CR> " <C-i> == tab
     " noremap <C-t>    <Esc>:tabnew<CR>
 
-" emac compatable mappings {{{
+" Emacs compatible mappings {{{
     noremap <C-a>     <Esc>^
     inoremap <C-a>     <Esc>I
     noremap <C-e>     <Esc>g_
@@ -786,7 +958,7 @@ endif
 " Toggles {{{
     imap              <F1>  <NOP>
     inoremap          <F2>  <NOP>
-    inoremap <silent> <F3>  <C-o>:Tagbar<CR>
+    inoremap <silent> <F3>  <C-o>:Vista!!<CR>
 
     inoremap          <F4>  <NOP>
     inoremap          <F7>  <NOP>
@@ -798,41 +970,17 @@ endif
 
     nmap            <F1>  <NOP>
     noremap <silent><F2>  :UndotreeToggle<CR>
-    noremap <silent><F3>  :Tagbar<CR>
+    " noremap <silent><F3>  :Tagbar<CR>
+    noremap <silent><F3>  :Vista!!<CR>
     set pastetoggle=<F4>
 
     nmap <F5> <Plug>copytoggle
     " noremap <silent> <F5> :YRShow<CR> -- was part of yankring
     noremap <silent> <F8> :set spell!<Cr>
 
-" multicusor " {{{
-   let g:ctrlp_map = '<F12>'
-   "
-   let g:multi_cursor_use_default_mapping=0
-   let g:multi_cursor_start_word_key='<F6>'
-   let g:multi_cursor_next_key='<C-n>'
-   let g:multi_cursor_prev_key='<C-p>'
-   let g:multi_cursor_skip_key='<C-x>'
-   let g:multi_cursor_quit_key='<Esc>'
-
-   " " Called once right before you start selecting multiple cursors
-   " function! Multiple_cursors_before()
-   "   if exists(':NeoCompleteLock')==2
-   "     exe 'NeoCompleteLock'
-   "   endif
-   " endfunction
-   "
-   " " Called once only when the multiple selection is canceled (default <Esc>)
-   " function! Multiple_cursors_after()
-   "   if exists(':NeoCompleteUnlock')==2
-   "     exe 'NeoCompleteUnlock'
-   "   endif
-   " endfunction
 "}}}
 
-"}}}
-
-"Better window navigation
+    " Better window navigation
     " replaced with tmux plugin
     " nnoremap <C-j> <C-w>j
     " nnoremap <C-k> <C-w>k
@@ -852,7 +1000,7 @@ endif
 " edditqf {{{
      " au BufReadPost quickfix nnoremap <buffer>  dd idd:w<CR>:copen<CR> " delete quickfix item
 " }}}
-" change cursor shape in insertmode {{{
+" change cursor shape in insert mode {{{
 
 set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
 if has('nvim')
@@ -898,44 +1046,43 @@ let g:ale_echo_msg_format = '%linter%: %s'
   "}}}
 " completion {{{
 
-set completeopt=longest,menuone
+set completeopt=menu,menuone,preview,noselect,noinsert
 " if has('nvim')
-
-  " Use deoplete. {{{
-  inoremap <silent><expr> <C-l>
-        \ pumvisible() ? "\<C-n>" :
-        \ <SID>check_back_space() ? "\<TAB>" :
-        \ deoplete#manual_complete()
-  function! s:check_back_space() abort "{{{
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~ '\s'
-  endfunction"}}}
-    " call deoplete#enable_logging('DEBUG', 'deoplete.log')
-
-    let g:deoplete#enable_at_startup = 1
-    " if !exists('g:deoplete#omni#input_patterns')
-    "   let g:deoplete#omni#input_patterns = {}
-    " endif
-
-    " add completion ALE completion
-    let g:tmuxcomplete#trigger = ''
-    let g:ale_completion_enabled = 1
-    call deoplete#custom#var('omni', 'functions', {
-    \ 'sh': ['zsh_completion#Complete']
-    \})
-
-    call deoplete#custom#var('omni', 'input_patterns', {
-    \ 'sh': '.*',
-    \})
-    call deoplete#custom#option('sources', {
-    \ 'sh': ['ale','tmux-complete','file','omni','zsh'],
-    \ 'zsh': ['ale','tmux-complete','file','omni','zsh'],
-    \ 'python': ['jedi'],
-    \})
-
-    " \ '_': ['ale','omni','tmux-complete','file','zsh'],
-    " \ 'python': ['ale','tmux-complete','file','omni','jedi'],
-  " }}}
+  " " Use deoplete. {{{
+  " inoremap <silent><expr> <C-l>
+  "       \ pumvisible() ? "\<C-n>" :
+  "       \ <SID>check_back_space() ? "\<TAB>" :
+  "       \ deoplete#manual_complete()
+  " function! s:check_back_space() abort "{{{
+  "   let col = col('.') - 1
+  "   return !col || getline('.')[col - 1]  =~ '\s'
+  " endfunction"}}}
+  "   " call deoplete#enable_logging('DEBUG', 'deoplete.log')
+  "
+  "   let g:deoplete#enable_at_startup = 1
+  "   " if !exists('g:deoplete#omni#input_patterns')
+  "   "   let g:deoplete#omni#input_patterns = {}
+  "   " endif
+  "
+  "   " add completion ALE completion
+  "   let g:tmuxcomplete#trigger = ''
+  "   let g:ale_completion_enabled = 1
+  "   call deoplete#custom#var('omni', 'functions', {
+  "   \ 'sh': ['zsh_completion#Complete']
+  "   \})
+  "
+  "   call deoplete#custom#var('omni', 'input_patterns', {
+  "   \ 'sh': '.*',
+  "   \})
+  "   call deoplete#custom#option('sources', {
+  "   \ 'sh': ['ale','tmux-complete','file','omni','zsh'],
+  "   \ 'zsh': ['ale','tmux-complete','file','omni','zsh'],
+  "   \ 'python': ['jedi'],
+  "   \})
+  "
+  "   " \ '_': ['ale','omni','tmux-complete','file','zsh'],
+  "   " \ 'python': ['ale','tmux-complete','file','omni','jedi'],
+  " " }}}
 
   " ultisnips {{{
   " let g:UltiSnipsExpandTrigger='<C-l>'
@@ -949,10 +1096,10 @@ set completeopt=longest,menuone
   set hlsearch
   set incsearch
 
- "This unsets the "last search pattern" register by hitting return
-  " nnoremap <silent><CR> :noh<CR><CR>
+ "This unset the "last search pattern" register by hitting return
+  " nnoremap <silent><CR> :nohighlight<CR><CR>
 "
-"" auto stop search highlighting and move to next serach result with tab {{{
+"" auto stop search highlighting and move to next search result with tab {{{
 "  let g:incsearch#auto_nohlsearch = 1
 "  map /  <Plug>(incsearch-forward)
 "  map ?  <Plug>(incsearch-backward)
@@ -986,6 +1133,7 @@ set completeopt=longest,menuone
 " }}}
 " airline {{{
   set laststatus=2
+  let g:airline#extensions#ale#enabled = 1
   " let g:airline#extensions#tabline#enabled = 1
   let g:airline_powerline_fonts = 0
   let g:airline_symbols_ascii = 1
@@ -1014,9 +1162,9 @@ set completeopt=longest,menuone
   let g:airline_symbols.whitespace = 'Ξ'
 " }}}
 " nerdtree {{{
-"close vim if only nerdtre open
+"close vim if only nerdtree open
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-" user nurdtree on directory
+" user nerdtree on directory
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
 " }}}
@@ -1060,10 +1208,6 @@ autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in
     endfunction
 "}}}
 
-"fugative {{{
-  " !command Gl Glog --oneline --graph --decorate=short
-  " !command Gll Gllog --oneline --graph --decorate=short
-"}}}
 " }}}
 " ack.vim {{{
   if executable('ag')

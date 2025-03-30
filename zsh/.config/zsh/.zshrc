@@ -3,7 +3,7 @@ ZDOTDIR=${ZDOTDIR:-$HOME/.zsh}
 
 fpath=("$ZDOTDIR"/completion  "$ZDOTDIR"/gencomplete/ "$ZDOTDIR/updatedComplete"  $fpath)
 autoload -U colors && colors
-eval $(dircolors)
+eval $(dircolors --sh)
 
 HISTFILE=${HISTFILE:=~/.histfile}
 [ -f "$HISTFILE" ] || mkdir -p $(dirname "$HISTFILE")
@@ -17,7 +17,15 @@ HISTFILE=${HISTFILE:=~/.histfile}
 export SAVEHIST=1000000
 export HISTFILESIZE=1000000000
 export HISTSIZE=1000000000
-setopt APPEND_HISTORY AUTOCD BEEP NOTIFY SHARE_HISTORY INCAPPENDHISTORY
+setopt APPEND_HISTORY AUTOCD BEEP NOTIFY INCAPPENDHISTORY
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_SPACE         # Do not record an event starting with a space.
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_REDUCE_BLANKS
+setopt inc_append_history
+
+# setopt PUSHDIGNOREdUPS         # and don't duplicate them
+
 bindkey -e
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
@@ -35,6 +43,9 @@ zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %
 zstyle ':completion:*' squeeze-slashes true
 zstyle ':completion:*' use-compctl false
 zstyle ':completion:*' verbose true
+zstyle ':completion:*' file-sort modification # TODO test
+
+
 # zstyle :compinstall filename '/home/rens/.zshrc'
 
 
@@ -61,15 +72,12 @@ bindkey ${terminfo[kRIT]:-'\e[1;2C'} forward-word #shift-right
 
 # setop EXTENDEDGLOB
 setopt PROMPT_SUBST
-setopt HIST_IGNORE_ALL_DUPS
-setopt HIST_REDUCE_BLANKS
 setopt NO_LIST_BEEP
 setopt CORRECT
 # setopt auto_menu
 #setopt CORRECTALL
 setopt GLOBDOTS
 setopt AUTOPUSHD               # automatically append dirs to the push/pop list
-setopt PUSHDIGNOREdUPS         # and don't duplicate them
 
 setopt PRINT_EXIT_VALUE
 # Say how long a command took, if it took more than 30 seconds
@@ -95,7 +103,7 @@ compinit -d $XDG_CACHE_HOME/zsh/dump
 bashcompinit
 
 export GOPATH=$HOME/.local/godir
-PATH=$HOME/scripts:$HOME/.local/bin:$PATH
+PATH=$HOME/scripts:$HOME/.local/bin:$HOME/.config/composer/vendor/bin:$PATH
 export PATH=$GOROOT/bin:$GOPATH/bin:$PATH
 if sway_pid=$(pgrep -x sway); then
     export SWAYSOCK=/run/user/$(id -u)/sway-ipc.$(id -u)."$sway_pid".sock
@@ -120,10 +128,10 @@ export SYSTEMD_EDITOR="nvim"
 KEYTIMEOUT=1
 # alias -r pandoc='pandoc --lua-filter=/home/rens/scripts/task-list.lua'
 
-alias -g wlan=$(basename -a /sys/class/net/w* |head  -n1)
-alias -g eth=$(basename -a /sys/class/net/e* |head -n1 )
-test -n "$TMUX" && alias ssh='TERM=screen ssh'
-alias -r x='startx "$XINITRC"'
+# alias -g wlan=$(basename -a /sys/class/net/w* |head  -n1)
+# alias -g eth=$(basename -a /sys/class/net/e* |head -n1 )
+#test -n "$TMUX" && alias ssh='TERM=screen ssh'
+# alias -r x='startx "$XINITRC"'
 alias -r info='info --vi-keys'
 alias -r rm='rm -i'
 alias -r mv='mv -i'
@@ -141,7 +149,7 @@ alias octave="octave -q"
 alias o="xdg-open"
 alias gdb="gdb -q"
 alias -r glog='git log --oneline --graph --decorate=short'
-alias -r gcloud="LOGNAME=r_sikma gcloud"
+alias -r gcloud="LOGNAME=r_sikma CLOUDSDK_PYTHON_SITEPACKAGES=1 gcloud"
 # if which HsColour > /dev/null
 # then
 #     alias ghci='ghci 2>&1 | HsColour -tty'
@@ -169,6 +177,7 @@ include () {
 }
 
 #include /usr/share/autojump/autojump.zsh
+export _ZO_ECHO=1 # echo dir before z 
 eval "$(zoxide init zsh)"
 include /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 include /usr/share/doc/pkgfile/command-not-found.zsh
@@ -240,12 +249,18 @@ include /usr/bin/aws_zsh_completer.sh
     { which stack    && test ! $(find _stack    -mtime -20) } &> /dev/null && stack --bash-completion-script stack > _stack
     { which kubectl  && test ! $(find _kubectl  -mtime -20) } &> /dev/null && kubectl completion zsh > _kubectl
     { which minikube && test ! $(find _minikube -mtime -20) } &> /dev/null && minikube completion zsh > _minikube
+    # { which gitdoc && test ! $(find _gitdoc -mtime -20) } &> /dev/null && register-python-argcomplete  gitdoc > _gitdoc
 )
 include $ZDOTDIR/git-extras-completion.zsh
 include /opt/azure-cli/az.completion
 
 include /usr/share/undistract-me/long-running.bash notify_when_long_running_commands_finish_install
+# eval "$(register-python-argcomplete gitdoc)"
 
+export PYTHONPYCACHEPREFIX="$HOME/.cache/cpython/"
+mkdir -p "${PYTHONPYCACHEPREFIX}"
+
+include '/usr/share/nvm/init-nvm.sh'
 
 #auto_pip_venv (){
 #

@@ -4,7 +4,7 @@ if exists('syntax_on')
 endif
 
 " runtime colors/solarized8.vim
-runtime colors/solarized.vim
+runtime colors/NeoSolarized.vim
 " runtime colors/base16-default.vim
 let g:solarized_diffmode='high'
 let g:colors_name = 'mycolors'
