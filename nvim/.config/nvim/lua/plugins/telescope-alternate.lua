@@ -1,5 +1,6 @@
 return {
     'otavioschwanck/telescope-alternate.nvim',
+    enabled = false, -- i am trying to replaced it by Other
     keys = {
         { mode = 'n', '<leader>a', '<cmd>Telescope telescope-alternate alternate_file<cr>', desc = 'Alternate file' }
     },

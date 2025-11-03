@@ -1,21 +1,45 @@
-vim.g.loaded_node_provider = 0 -- don't want to use plugins written in node 
+vim.g.loaded_node_provider = 0 -- don't want to use plugins written in node
 vim.g.loaded_perl_provider = 0 -- don't want to use plugins written in perl
 vim.g.loaded_python3_provider = 0 -- don't want to use plugins written in python
-
+vim.g.loaded_ruby_provider = 0-- don't want to use plugins written in ruby
 vim.opt.secure  = true
 -- don't fix end of file without enter.
 vim.opt.fixendofline = false
---
+
+vim.o.winborder = "single"
 -- show line number
 vim.wo.number = true
 -- merged signs and line numbers
 -- vim.opt.signcolumn= "number"
 vim.opt.mouse = "a"
 vim.o.mousemoveevent = true
--- TODO how to get mouse click to select spell correction
-vim.api.nvim_set_keymap('n', '<LeftMouse>', '<LeftMouse><cmd>lua vim.lsp.buf.hover({border = "single"})<CR>', { noremap=true, silent=true })
+-- TODO: how to get mouse click to select spell correction
 
-vim.api.nvim_set_keymap('n', '<RightMouse>', '<LeftMouse><cmd>lua vim.lsp.buf.definition()<CR>', { noremap=true, silent=true })
+-- Don't mark URL-like things as spelling errors
+-- vim.cmd.syntax.([ syn match UrlNoSpell '\w\+:\/\/[^[:space:]]\+' contains=@NoSpell ])
+-- "vim.cmd [==[
+-- "  syn match UrlNoSpell "\w\+:\/\/[^[:space:]]\+" contains=@NoSpell
+-- "]==]
+
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('my.lsp', {}),
+  callback = function(args)
+    -- vim.lsp.inlay_hint.enable()
+  end
+})
+vim.api.nvim_set_keymap(
+  'n',
+  '<LeftMouse>',
+  '<LeftMouse><cmd>lua vim.lsp.buf.hover({border = "single"})<CR>',
+  { noremap=true, silent=true }
+)
+
+vim.api.nvim_set_keymap(
+  'n',
+  '<RightMouse>',
+  '<LeftMouse><cmd>lua vim.lsp.buf.definition()<CR>',
+  { noremap=true, silent=true }
+)
 
 -- max height completion menu
 vim.opt.pumheight = 6 -- TODO more completion option
@@ -25,6 +49,8 @@ vim.opt.pumheight = 6 -- TODO more completion option
 -- search
 vim.opt.hlsearch = true
 vim.opt.incsearch = true
+vim.o.ignorecase = true
+vim.o.smartcase = true
 -- show white space characters
 vim.opt.list = true
 vim.opt.listchars = {
@@ -95,7 +121,8 @@ vim.opt.spelloptions="camel"
 vim.api.nvim_set_hl(0,'SpellBad',{undercurl=true, sp='red'})
 
 -- TODO window zoom in
-vim.opt.iskeyword:remove("_") -- don't move over camel case
+
+-- vim.opt.iskeyword:remove("_") -- don't move over camel case
 -- what to store re restore from session
 vim.o.sessionoptions="blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 
@@ -121,7 +148,7 @@ vim.diagnostic.config{
             [vim.diagnostic.severity.HINT]  = "",
         },
         linehl = {
-            [vim.diagnostic.severity.ERROR] = 'ErrorMsg',
+            -- [vim.diagnostic.severity.ERROR] = 'ErrorMsg',
         },
         numhl = {
             [vim.diagnostic.severity.WARN] = 'WarningMsg',
@@ -162,59 +189,26 @@ vim.filetype.add({
     ["helmfile.*%.ya?ml"] = "helm",
   },
 })
+-- vscode settings.json can contain comments
+vim.filetype.add({
+  filename = {
+    ['settings.json'] = 'jsonc'
+  },
+  pattern = {
+    [".*/.vscode/.*.json"] = "jsonc",
+    [".*/waybar/config"] = "jsonc",
+  }
+})
+
+vim.filetype.add({
+  pattern = {
+    [".*.container"] = "systemd",
+  }
+})
 --- move to different file
 -------------------------
 -- Diff with last save --
 -------------------------
-vim.api.nvim_create_user_command('DiffWithSaved', function()
-  -- Get current buffer info
-  local cur_buf = vim.api.nvim_get_current_buf()
-  local filename = vim.api.nvim_buf_get_name(cur_buf)
-
-  -- Check if file exists on disk
-  if filename == '' or not vim.fn.filereadable(filename) then
-    vim.notify('File not saved on disk!', vim.log.levels.ERROR)
-    return
-  end
-
-  local ft = vim.bo.filetype
-  local cur_lines = vim.api.nvim_buf_get_lines(cur_buf, 0, -1, false)
-  local saved_lines = vim.fn.readfile(filename)
-
-  -- Create new tab
-  vim.cmd 'tabnew'
-
-  -- Function to create and setup a scratch buffer
-  local function create_scratch_buffer(lines, title)
-    local buf = vim.api.nvim_create_buf(false, true)
-    vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-    vim.api.nvim_set_option_value('filetype', ft, { buf = buf })
-    vim.api.nvim_set_option_value('buftype', 'nofile', { buf = buf })
-    vim.api.nvim_set_current_buf(buf)
-    vim.api.nvim_set_option_value('winbar', title, { scope = 'local' })
-    return buf
-  end
-
-  -- Create first scratch buffer with current content
-  local buf1 = create_scratch_buffer(cur_lines, 'Unsaved changes')
-
-  -- Create vertical split
-  vim.cmd 'vsplit'
-
-  -- Create second scratch buffer with saved content
-  local buf2 = create_scratch_buffer(saved_lines, 'File on disk')
-
-  -- Enable diff mode for both windows
-  vim.cmd 'windo diffthis'
-
-  -- Add keymapping to close diff view
-  local function close_diff()
-    vim.cmd 'tabclose'
-  end
-
-  vim.keymap.set('n', 'q', close_diff, { buffer = buf1, silent = true })
-  vim.keymap.set('n', 'q', close_diff, { buffer = buf2, silent = true })
-end, {})
 -- for some reason does not work if not done in autocmd
 vim.api.nvim_create_autocmd("BufEnter", {
   buffer = 0,

@@ -3,5 +3,6 @@ timeout 650 swaylock
 timeout 600 'swaymsg "output * power off"' resume  'swaymsg "output * power on"'
 
 timeout 600  'hyprctl dispatch dpms off || true' resume 'hyprctl dispatch dpms on || true'
-
+timeout 601 'niri msg action power-off-monitors'
+timeout 600 swaylock
 before-sleep 600 swaylock

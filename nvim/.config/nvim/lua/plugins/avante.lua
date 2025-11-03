@@ -4,31 +4,39 @@ return {
   "yetone/avante.nvim",
   -- event = "VeryLazy",
   cmd = "AvanteAsk",
-  -- lazy = false,
-  version = false, -- Set this to "*" to always pull the latest release version, or set it to false to update to the latest code changes.
-  rag_service = {
-    enabled = true, -- Enables the RAG service
-    host_mount = os.getenv("HOME"), -- Host mount path for the rag service
-    provider = "ollama", -- The provider to use for RAG service (e.g. openai or ollama)
-    llm_model = "", -- The LLM model to use for RAG service
-    embed_model = "", -- The embedding model to use for RAG service
-    endpoint = "http://localhost:11434", -- The API endpoint for RAG service
+  keys =  {
+    "<leader>a"
   },
+  version = false, -- Set this to "*" to always pull the latest release version, or set it to false to update to the latest code changes.
+  enabled = false,
   opts = {
+    -- debug = true,
+    selector = {
+      provider = "telescope",
+    },
+    rag_service = {
+      enabled = true, -- Enables the RAG service
+      host_mount = os.getenv("HOME"), -- Host mount path for the rag service
+      provider = "ollama", -- The provider to use for RAG service (e.g. openai or ollama)
+      llm_model = "", -- The LLM model to use for RAG service
+      embed_model = "", -- The embedding model to use for RAG service
+      endpoint = "http://localhost:11434", -- The API endpoint for RAG service
+    },
     -- provider = "ollama",
     -- -@type AvanteProvider
     -- use_absolute_path = true,
     -- add any opts here
     -- for example
 
+    provider = "ollama",
     -- provider = "lmstudio",
-    provider = "claude",
+    -- provider = "claude",
     claude = {
         api_key_name = "cmd:secret-tool lookup password antropic",
     },
     ollama = {
       endpoint = "http://127.0.0.1:11434", -- Note that there is no /v1 at the end.
-      model = "qwq:32b",
+      model = "qwen:7b",
     },
     vendors = {
       lmstudio = {

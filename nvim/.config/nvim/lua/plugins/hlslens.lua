@@ -1,9 +1,9 @@
 return {
-    -- disable hightlith after some time
-    -- virtaul text when search
+    -- disable highlight after some time
+    -- virtual text when search
     -- TODO do i want this?
     'kevinhwang91/nvim-hlslens',
-    -- enabled = false,
+    enabled = false,
     opts = {
         calm_down = true,
         nearest_only = true,
@@ -22,6 +22,6 @@ return {
         vim.api.nvim_set_keymap('n', 'g*', [[g*<Cmd>lua require('hlslens').start()<CR>]], kopts)
         vim.api.nvim_set_keymap('n', 'g#', [[g#<Cmd>lua require('hlslens').start()<CR>]], kopts)
 
-        vim.api.nvim_set_keymap('n', '<Leader>l', '<Cmd>noh<CR>', kopts)
+        -- vim.api.nvim_set_keymap('n', '<Leader>l', '<Cmd>noh<CR>', kopts) -- don't needed if search highly is not permanent
     end
 }

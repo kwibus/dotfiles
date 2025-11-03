@@ -16,14 +16,16 @@ return {
     end,
     opts = {
         formatters_by_ft = {
+
+            lua= { "stylua" },
             go = { "goimports", "gofmt"},
-            php = { "phcbf"},
+            php = { "phpcbf"},
             python = {"isort","trim_whitespace"},
-            json = {"prettier"},
+            json = {"prettier", "jq"},
             yaml = {"prettier" },
             terraform= {"terraform_fmt"},
-            -- Use the "*" filetype to run formatters on all fletypes.
-            ["*"] = { "codespell" },
+            -- Use the "*" filetype to run formatters on all filetypes.
+            -- ["*"] = { "codespell" },
             -- Use the "_" filetype to run formatters on filetypes that don't
             --
             -- have other formatters configured.

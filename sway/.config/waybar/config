@@ -5,14 +5,50 @@
     // "width": 1280, // Waybar width
     "spacing": 4, // Gaps between modules (4px)
     // Choose the order of the modules
-    "modules-left": ["sway/workspaces", "sway/mode", "wlr/taskbar"],
+    // "modules-left": ["sway/workspaces", "sway/mode", "wlr/taskbar"],
+    "modules-left": ["sway/workspaces","niri/workspaces", "sway/mode", "wlr/taskbar"],
     "modules-center": ["sway/window"],
-    "modules-right": ["idle_inhibitor", "pulseaudio","backlight", "temperature", "battery", "battery#bat2","custom/playerctl", "tray",  "clock","custom/notification","custom/power" ],
+    "modules-right": ["privacy","idle_inhibitor", "pulseaudio","backlight", "temperature", "battery", "battery#bat2","custom/playerctl", "tray",  "clock","custom/notification","custom/power" ],
 
     "disable-scroll": true,
+    "privacy": {
+        "icon-spacing": 4,
+        "icon-size": 16,
+        "transition-duration": 250,
+        "modules": [
+            {
+                "type": "screenshare",
+                "tooltip": true,
+                "tooltip-icon-size": 24
+            },
+            {
+                "type": "audio-out",
+                "tooltip": true,
+                "tooltip-icon-size": 24
+            },
+            {
+                "type": "audio-in",
+                "tooltip": true,
+                "tooltip-icon-size": 24
+            }
+        ]
+    },
+    "niri/workspaces": {
+        "format": "{icon}",
+        "format-icons": {
+            // Named workspaces
+            // (you need to configure them in niri)
+            // "browser": "",
+            // "discord": "",
+            // "chat": "<b></b>",
+            // // Icons by state
+            // "active": "",
+            // "default": ""
+        }
+    },
     "wlr/workspaces":{
         "disable-scroll": true,
-        "all-outputs": false,
+        "all-outputs": false
     },
     "sway/mode": {
         "format": "<span style=\"italic\">{}</span>"
@@ -153,6 +189,7 @@
         "tooltip-format": "{title}",
         "on-click": "minimize-raise",
         "on-click-middle": "close",
+        // "active-first": true,
         "all-outputs": false
     },
     "custom/notification": {
@@ -185,6 +222,6 @@
              "reboot": "reboot",
              "suspend": "systemctl suspend",
              "hibernate": "systemctl hibernate"
-        },
-    },
+        }
+    }
 }

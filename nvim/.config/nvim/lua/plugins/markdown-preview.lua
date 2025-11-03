@@ -8,4 +8,9 @@ return {
         end,
         ft = { "markdown" },
     },
+    -- For `plugins/markview.lua` users.
+   -- {
+   --      "OXY2DEV/markview.nvim",
+   --      lazy = false,
+   --  };
 }

@@ -106,12 +106,21 @@ export GOPATH=$HOME/.local/godir
 PATH=$HOME/scripts:$HOME/.local/bin:$HOME/.config/composer/vendor/bin:$PATH
 export PATH=$GOROOT/bin:$GOPATH/bin:$PATH
 if sway_pid=$(pgrep -x sway); then
-    export SWAYSOCK=/run/user/$(id -u)/sway-ipc.$(id -u)."$sway_pid".sock
+
+    export SWAYSOCK=/run/user/${UID}/sway-ipc.${UID}."$sway_pid".sock
     unset sway_pid
 else
     unset SWAYSOCK
 fi
+if niri_pid=$(pgrep -x niri); then
+    export NIRI_SOCKET="/run/user/${UID}/niri.${WAYLAND_DISPLAY}."$niri_pid".sock"
+    unset niri_pid
+else
+    unset NIRI_SOCKET
+fi
 HYPRLAND_INSTANCE_SIGNATURE="$(ls -1t /tmp/hypr |tail -1)"  2>/dev/null
+# Force podman container instead of docker
+# export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/podman/podman.sock
 export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
 # export SSH_AUTH_SOCK=/run/user/1000/gnupg/S.gpg-agent.ssh  # TODO test
 export SUDO_ASKPASS=/usr/lib/ssh/ssh-askpass
@@ -144,9 +153,10 @@ alias -r grep='grep --color=auto'
 alias -r ls='ls --color=auto -h'
 alias  dirs='dirs -v'
 alias -r less='less -r'
-alias -r myLimit='ulimit  -Sc unlimited -Sv $((1024*1024))'
-alias octave="octave -q"
+# alias -r myLimit='ulimit  -Sc unlimited -Sv $((1024*1024))'
+# alias octave="octave -q"
 alias o="xdg-open"
+alias yay="yay --sudoloop"
 alias gdb="gdb -q"
 alias -r glog='git log --oneline --graph --decorate=short'
 alias -r gcloud="LOGNAME=r_sikma CLOUDSDK_PYTHON_SITEPACKAGES=1 gcloud"
@@ -211,7 +221,7 @@ export RPS1='$_project $($cabal_pr) $($git_pr)'
 fuction precmd_reset()
 {
     stty sane
-    tput cnorm   # set currsor visable normal
+    tput cnorm   # set cursor visible normal
 }
 autoload -U add-zsh-hook
 add-zsh-hook precmd precmd_reset
@@ -260,7 +270,7 @@ include /usr/share/undistract-me/long-running.bash notify_when_long_running_comm
 export PYTHONPYCACHEPREFIX="$HOME/.cache/cpython/"
 mkdir -p "${PYTHONPYCACHEPREFIX}"
 
-include '/usr/share/nvm/init-nvm.sh'
+# include '/usr/share/nvm/init-nvm.sh'
 
 #auto_pip_venv (){
 #

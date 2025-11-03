@@ -1,12 +1,19 @@
 return {
     "mfussenegger/nvim-lint",
+    event = {"VeryLazy"},
     config = function ()
         local lint = require("lint")
+
+        -- ignore unknown globals like `vim` in lua files
+        local luacheck = lint.linters.luacheck
+        luacheck.args = { '--formatter', 'plain', '--codes', '--ranges', '-g', '-' }
+
         lint.linters_by_ft = {
             javascript = { "eslint_d" },
+            lua = {"luacheck"},
             sh = {"shellcheck"},
             dockerfile = {"hadolint"},
-            python = { "ruff", "dmypy",},
+            python = { "ruff", "mypy",},
             php = {"phpcs"}, -- "phpmd"}
             yaml = {"yamllint"},
             rst = {"rstcheck"},
@@ -26,8 +33,13 @@ return {
         vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
             group = lint_augroup,
             callback = function()
-                lint.try_lint()
-                lint.try_lint('codespell')
+
+                if vim.bo.filetype == "trouble" then
+                    return
+                else
+                    lint.try_lint()
+                    lint.try_lint('codespell')
+                end
             end,
         })
         ---- Show linters for the current buffer's file type 

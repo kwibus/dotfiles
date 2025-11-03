@@ -19,7 +19,7 @@ return {
         {"<a-n>", "<Plug>(YankyNextEntry)"},
         {"p", "<Plug>(YankyPutAfter)"},
         {"P", "<Plug>(YankyPutBefore)"},
-        {"gp", "<Plug>(YankyGPutAfter)"},
-        {"gP", "Plug>(YankyGPutBefore)"},
+        -- {"gp", "<Plug>(YankyGPutAfter)"}, -- conflicts code companion
+        -- {"gP", "Plug>(YankyGPutBefore)"},
     }
 }

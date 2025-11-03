@@ -8,11 +8,13 @@
 	tool = difftastic
 	algorithm = histogram
 	submodule = log
+	dstPrefix = "DST: "
+	srcPrefix = "SRC: "
 [difftool]
 	prompt = true
 [alias]
 	d = difftool
-	graph = log --graph --oneline --all --pretty=format:\"%C(yellow)%h %ar %C(auto)%d %Creset %s , %Cblue%cn\"
+	graph = log --graph --oneline --all --pretty=format:'"%C(yellow)%h %ar %C(auto)%d %Creset %s , %Cblue%cn"'
 [push]
 	default = simple
 [core]
@@ -20,23 +22,24 @@
 	whitespace = blank-at-eol,space-before-tab
 	excludesfile = ~/.config/git/ignore
 	trustctime = false
+	; pager = delta
 [rerere]
 	enabled = true
-[merge]
-	conflictstyle = diff3
 [init]
 	templatedir = ~/.config/git/templates
 	defaultBranch = main
 
 [merge]
   tool = nvim
+  conflictstyle = zdiff3
+
 [mergetool]
   prompt = true
 [mergetool "nvim"]
   cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
 
 [merge] tool = mymeld
-    conflictstyle = diff3
+    conflictstyle = zdiff3
 [mergetool "mymeld"] cmd = meld $LOCAL $BASE $REMOTE --output $MERGED
 [pull]
 	ff = only
@@ -61,3 +64,11 @@
 	sort = -committerdate
 [gpg "ssh"]
 	allowedSignersFile = /home/rens/.config/git/allowed_signers
+[interactive]
+	diffFilter = delta --color-only
+; [delta]
+; 	navigate = true
+; 	line-numbers = true
+; 	hyperlinks = true
+; 	side-by-side = true
+

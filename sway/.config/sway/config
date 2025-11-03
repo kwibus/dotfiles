@@ -1,6 +1,6 @@
 ### Variables
 #
-set $lock  swaylock # configerd with $XDG_CONFIG_HOME/swaylock/config
+set $lock swaylock # configured with $XDG_CONFIG_HOME/swaylock/config
 set $mod Mod4
 # Home row direction keys, like vim
 set $left h
@@ -17,7 +17,6 @@ set $term kitty /home/rens/scripts/tmx.sh
 
 # set $menu dmenu_run
 # set $menu albert toggle #dmenu_run
-# set $menu ulauncher-toggle
 set $menu wofi --show drun --allow-images --insensitive   --columns 4 --no-actions
 
 
@@ -107,7 +106,7 @@ mouse_warping output
     # bindsym $mod+c exec ydotool click 0xC0 -r 100 -D 200
     # bindsym --release $mod+c  exec  pkill -x ydotool
 
-    bindsym $mod+z [urgent=latest] focus # consider swayr
+    # bindsym $mod+z [urgent="latest"] focus # consider swayr
 
     bindsym $mod+b border toggle
 
@@ -119,7 +118,7 @@ mouse_warping output
     #bindsym Alt+l exec
 
     # start your launcher
-    bindsym $mod+o exec $menu
+    bindsym  $mod+o exec $menu
     #bindsym $mod+p exec $menu
 
     # Drag floating windows by holding down $mod and left mouse button.
@@ -132,8 +131,6 @@ mouse_warping output
     # reload the configuration file
     bindsym $mod+Shift+r reload
 
-    # # restart sway inplace (preserves your layout/session, can be used to upgrade sway)
-    # bindsym $mod+Alt+r restart # does not work
 
     # exit sway (logs you out of your wayland session)
     bindsym $mod+Shift+q exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
@@ -149,6 +146,7 @@ mouse_warping output
     bindsym $mod+x+Left exec variety --previous
     bindsym $mod+x+Down exec variety --move-to-favorites
     bindsym $mod+x+UP exec variety --trash
+
     # Move your focus around with $mod+[h|j|k|l], like vim
     bindsym $mod+h focus left
     bindsym $mod+j focus down
@@ -180,15 +178,6 @@ mouse_warping output
 # Workspaces:
 #
     # switch to workspace
-    bindsym $mod+Shift+1 move window to workspace number 1
-    bindsym $mod+Shift+2 move window to workspace number 2
-    bindsym $mod+Shift+3 move window to workspace number 3
-    bindsym $mod+Shift+4 move window to workspace number 4
-    bindsym $mod+Shift+5 move window to workspace number 5
-    bindsym $mod+Shift+6 move window to workspace number 6
-    bindsym $mod+Shift+7 move window to workspace number 7
-    bindsym $mod+Shift+8 move window to workspace number 8
-    bindsym $mod+Shift+9 move window to workspace number 9
 
     bindsym $mod+1 workspace number 1
     bindsym $mod+2 workspace number 2
@@ -199,6 +188,19 @@ mouse_warping output
     bindsym $mod+7 workspace number 7
     bindsym $mod+8 workspace number 8
     bindsym $mod+9 workspace number 9
+    bindsym $mod+0 workspace number 10
+
+    # Move focused container to workspace
+    bindsym $mod+Shift+1 move container to workspace number 1
+    bindsym $mod+Shift+2 move container to workspace number 2
+    bindsym $mod+Shift+3 move container to workspace number 3
+    bindsym $mod+Shift+4 move container to workspace number 4
+    bindsym $mod+Shift+5 move container to workspace number 5
+    bindsym $mod+Shift+6 move container to workspace number 6
+    bindsym $mod+Shift+7 move container to workspace number 7
+    bindsym $mod+Shift+8 move container to workspace number 8
+    bindsym $mod+Shift+9 move container to workspace number 9
+    bindsym $mod+Shift+0 move container to workspace number 10
 
     bindsym $mod+v split t
 
@@ -208,13 +210,16 @@ mouse_warping output
     bindsym $mod+Up layout tabbed
     bindsym $mod+w layout tabbed
     bindsym $mod+e layout toggle split
+
     # Make the current focus fullscreen
     bindsym $mod+f fullscreen
 
     # Toggle the current focus between tiling and floating mode
+    bindsym $mod+Shift+space floating toggle
     bindsym $mod+g floating toggle
 
     # Swap focus between the tiling area and the floating area
+    bindsym $mod+space focus mode_toggle
     bindsym $mod+shift+g focus mode_toggle
 
     # stick floating window
@@ -229,8 +234,8 @@ mouse_warping output
 
     bindsym $mod+comma  mark --toggle master
 
-    bindsym $mod+space [workspace="__focused__" con_mark="master"] focus
-    bindsym $mod+Shift+space swap container  with mark master; mark --add master
+    # bindsym $mod+space [workspace="__focused__" con_mark="master"] focus
+    # bindsym $mod+Shift+space swap container  with mark master; mark --add master
 
 #bindsym $mod+Shift+space [con_mark="slave"] focus;swap container  with mark master ; [con_mark=master] mark slave ; mark --add master
 
@@ -238,9 +243,10 @@ mouse_warping output
     bindsym $mod+n exec swaync-client --toggle-panel
     bindsym $mod+shift+n exec swaync-client --close-all
 
-    bindsym  $mod+Alt+equal scale 1
-    bindsym  $mod+Alt+plus exec /home/rens/scripts/sway-scale.sh +0.2
-    bindsym  $mod+Alt+minus exec /home/rens/scripts/sway-scale.sh -0.2
+    bindsym $mod+Alt+equal scale 1
+    bindsym $mod+Alt+plus exec /home/rens/scripts/sway-scale.sh +0.2
+    bindsym $mod+Alt+minus exec /home/rens/scripts/sway-scale.sh -0.2
+    bindsym $mod+z exec voxd --trigger-record
 #
 # Scratchpad:
 #
@@ -328,10 +334,7 @@ bindsym --locked XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@
 bindsym --locked XF86MonBrightnessDown exec brightnessctl set -- -10%
 bindsym --locked XF86MonBrightnessUp exec brightnessctl set -- +10%
 
-# bindsym --locked XF86KbdBrightnessDown exec light -s sysfs/leds/tpacpi::kbd_backlight -U 50
-# bindsym --locked XF86KbdBrightnessUp exec light -s sysfs/leds/tpacpi::kbd_backlight -A 50
-
-bindsym --release Print exec grim -g \"$(slurp)\"  /home/rens/screenshot_$(date +%F+%T).png
+bindsym Print exec grim -g \"$(slurp)\"  /home/rens/screenshot_$(date +%F+%T).png
 bindsym $mod+Print exec flameshot gui
 
 bindsym --release $mod+Shift+Print exec  wf-recorder -g "$(slurp)" -f /home/rens/screenrecoding_$(date +%F+%T).mp4
@@ -342,7 +345,7 @@ bindsym Ctrl+Alt+l exec $lock
 no_focus [title="im-emoji-picker"]
 
 
-for_window [title="^Syncthing Tray( \(.*\))?$"] floating enable, border none, resize set 450 400, move position cursor, move down 24px
+# for_window [title="^Syncthing Tray( \(.*\))?$"] floating enable, border none, resize set 450 400, move position cursor, move down 24px
 for_window [shell=".*"] title_format "%title :: %shell"
 for_window [app_id="lxqt-policykit-agent"] floating enable
 for_window [title="^CopyQ"] floating enable, border none, resize set 450 320, move position 1500 0,focus prev
@@ -356,6 +359,19 @@ for_window [title="^popup_"] floating enable, border none,  sticky enable
 for_window [app_id="^popup_"] floating enable, border none, sticky enable
 
 for_window [app_id="(?i)thunar"] floating enable
+
+for_window [app_id="firefox" title="^Picture-in-Picture$"] {
+    floating enable
+    resize set 540 300
+    move position 1400 750
+    sticky enable
+}
+for_window [app_id="google-chrome" title="^Meet.*$"] {
+    floating enable
+    resize set 540 300
+    move position 1400 750
+    sticky enable
+}
 for_window [window_role="GtkFileChooserDialog"] {
     resize set 800 600
     move position center
@@ -373,7 +389,6 @@ bar {
 #         background #323232
 #         inactive_workspace #32323200 #32323200 #5c5c5c
 #     }
-#     #tray_output primary LVDS
 # }
 }
 #exec copyq
@@ -398,7 +413,7 @@ exec swayidle
 # exec mkfifo $SWAYSOCK.wob && tail -f $SWAYSOCK.wob | wob
 #exec /usr/lib/xdg-desktop-portal-wlr -l INFO -r
 exec gammastep-indicator  -m wayland -c ~/.config/redshift.conf -v
-# dont know if this is redundant
+# don`t know if this is redundant
 exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 # exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY DISPLAY SWAYSOCK
 include /etc/sway/config.d/*
@@ -408,13 +423,10 @@ exec systemctl start --user xdg-desktop-portal
 #exec /var/lib/portmaster/updates/linux_amd64/notifier/portmaster-notifier_v0-2-3
 
 exec_always syncthingtray-qt6 --replace --wait
-# exec sleep 10 && syncthingtray --wait
-exec_always sleep 5 && /usr/lib/kdeconnectd -platform offscreen --replace
-exec_always  sleep 10 && kdeconnect-indicator
-#exec sleep 10 && indicator-kdeconnect
-# exec sleep 10 && /usr/bin/kdeconnect-indicator
+exec_always kdeconnectd -platform wayland --replace
+exec_always kdeconnect-indicator
 exec usbguard-qt
 exec variety
 exec keepassxc
+exec opensnitch-ui --background
 #exec_always /usr/lib/fcitx5-wayland-launcher
-

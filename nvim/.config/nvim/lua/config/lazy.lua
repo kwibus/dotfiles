@@ -27,6 +27,9 @@ require("lazy").setup({
         -- import your plugins
         { import = "plugins" },
     },
+    default = {
+        lazy = true,
+    },
     performance = {
         rtp = {}
     },
@@ -35,13 +38,9 @@ require("lazy").setup({
         notify = false,
     },
 
-    -- Configure any other settings here. See the documentation for more details.
-    -- colorscheme that will be used when installing plugins.
-    -- install = { colorscheme = { "solarized-osaka" } },
-    -- don't automatically check for plugin updates
     checker = { enabled = false },
     ui = {
-        -- make full size, dont like floating, inside vim
+        -- make full size, don't like floating, inside vim
         -- size =  {width = 01, height = 1 },
         title = "Lazy",
         border = 'single'

@@ -5,19 +5,19 @@ return {
         dependencies = {
             'nvim-tree/nvim-web-devicons',
             'linrongbin16/lsp-progress.nvim',
+            'franco-ruggeri/codecompanion-lualine.nvim',
         },
         opts = {
             theme = 'auto',
             extensions = { 'quickfix', 'lazy', 'trouble', 'nvim-dap-ui' },
             options = {
-                -- TODO does not seem to work
-                -- disabled_buftypes = { 'quickfix', 'prompt' }, -- Hide a window if its buffer's type is disabled
                 icons_enabled = true,
             },
             sections = {
-                lualine_a = { 'mode', },
+                lualine_a = { 'mode',},
                 lualine_b = { 'branch', 'diff', },
-                lualine_c = { 'filename',
+                lualine_c = { 
+                    {'filename', path=1},
                     function()
                         return require('lsp-progress').progress()
                     end,
@@ -37,7 +37,14 @@ return {
                     --     return symbols.get()
                     -- end,
                 },
-                lualine_x = { 'searchcount', 'encoding', 'fileformat', 'filetype' },
+                lualine_x = {
+                    'searchcount',
+                    'encoding',
+                    'fileformat',
+                    'filetype',
+                    'codecompanion',
+                    -- {require('mcphub.extensions.lualine')},
+                },
                 lualine_y = { 'diagnostics', 'progress' },
                 lualine_z = { 'location' }
             },

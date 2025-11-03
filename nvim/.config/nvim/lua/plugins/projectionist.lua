@@ -1,5 +1,6 @@
 return {
   "tpope/vim-projectionist",
+  enabled = false,
   config = function()
     vim.g.projectionist_heuristics = {
       ["*"] = {

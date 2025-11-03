@@ -1,3 +1,0 @@
-nvim 
-
-my name is
