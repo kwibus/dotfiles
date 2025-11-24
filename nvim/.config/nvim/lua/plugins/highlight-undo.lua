@@ -2,7 +2,6 @@ return {
   {
     -- 'y3owk1nr/undo-glow.nvim',
     'tzachar/highlight-undo.nvim',
-  --   -- enabled = false,
     opts = {
         hlgroup = "HighlightUndo",
         duration = 500,

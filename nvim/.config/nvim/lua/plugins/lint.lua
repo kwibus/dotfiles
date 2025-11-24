@@ -20,8 +20,10 @@ return {
             ansible = {"ansible_lint"}, -- ansible-language-server is better
             terraform = {"tflint"},
         }
+        local shellcheck = lint.linters.shellcheck
+        table.insert(shellcheck.args,"-x")
+
         local rstcheck = lint.linters.rstcheck
-        -- rstcheck.cmd = "rstcheck"
         rstcheck.args = {
             '--ignore-messages', 'is not referenced',
             '--ignore-substitutions', "notes, slide",

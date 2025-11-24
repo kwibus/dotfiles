@@ -1,7 +1,7 @@
 return {
   {
     'tamago324/cmp-zsh',
-    -- ft = {"sh", "bash", "zsh"},
+    ft = {"sh", "bash", "zsh"},
     opts = {
       -- zshrc = true,
     }
@@ -14,7 +14,6 @@ return {
     cond = function ()
       return not vim.g.vscode
     end, -- don`t run in vscode
-    -- enabled = true,
     -- make sure to set opts so that lazy.nvim calls blink.compat's setup
     opts = {
       -- impersonate_nvim_cmp = true,
@@ -83,7 +82,7 @@ return {
         sources = {
           'buffer',
           'cmdline',
-          'path',
+          -- 'path',
           -- 'zsh',
           'tmux',
           -- 'supermaven',

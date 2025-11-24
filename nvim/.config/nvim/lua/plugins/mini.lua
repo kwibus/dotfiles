@@ -1,7 +1,8 @@
 return {
     'nvim-mini/mini.nvim',
     version = false,
-    init = function ()
+    event = {"VeryLazy"},
+    config = function ()
         -- require('mini.pick').setup() -- file picker use telescope
         require('mini.ai').setup() -- add text object argument a, function a
         require('mini.move').setup() -- move blocks with alt - <h, j, k, l>

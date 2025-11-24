@@ -217,7 +217,7 @@ Plug 'hari-rangarajan/CCTree' " c call graph
 " Plug 'Rip-Rip/clang_complete' , {'for': ['c', 'cpp']} "need some special action with new ncurses hat to patch
 " Plug 'xavierd/clang_complete' , {'for': ['c', 'cpp']} "need some special action with new ncurses hat to patch
 
-Plug 'peterhoeg/vim-qml' , {'for': 'qml'}
+"Plug 'peterhoeg/vim-qml' , {'for': 'qml'}
 
 
 " Plug 'gu-fan/InstantRst' " preview rst InstantRst!
