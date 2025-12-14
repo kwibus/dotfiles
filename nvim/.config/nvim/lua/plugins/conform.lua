@@ -1,5 +1,5 @@
 return {
-    'stevearc/conform.nvim',
+    "stevearc/conform.nvim",
     config = function(_, opts)
         require("conform").setup(opts)
         vim.api.nvim_create_user_command("Format", function(args)
@@ -15,15 +15,22 @@ return {
         end, { range = true })
     end,
     opts = {
-        formatters_by_ft = {
 
-            lua= { "stylua" },
-            go = { "goimports", "gofmt"},
-            php = { "phpcbf"},
-            python = {"isort","trim_whitespace"},
-            json = {"prettier", "jq"},
-            yaml = {"prettier" },
-            terraform= {"terraform_fmt"},
+        formatters = {
+            stylua = {
+                inherit = true,
+                prepend_args = { "--indent-type", "Spaces" },
+            },
+        },
+        formatters_by_ft = {
+            rust = { "rustfmt", lsp_format = "fallback" },
+            lua = { "stylua" },
+            go = { "goimports", "gofmt" },
+            php = { "phpcbf" },
+            python = { "isort", "trim_whitespace" },
+            json = { "prettier", "jq" },
+            yaml = { "prettier" },
+            terraform = { "terraform_fmt" },
             -- Use the "*" filetype to run formatters on all filetypes.
             -- ["*"] = { "codespell" },
             -- Use the "_" filetype to run formatters on filetypes that don't

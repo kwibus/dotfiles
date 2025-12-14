@@ -1,8 +1,9 @@
 return {
   {
-    -- "olimorris/codecompanion.nvim",
+    "olimorris/codecompanion.nvim",
+    -- version = '17.*',
     -- "kwibus/codecompanion.nvim",
-    dir = "~/projects/codecompanion.nvim",
+    -- dir = "~/projects/codecompanion.nvim",
     event = {"VeryLazy"},
     dependencies = {
       "nvim-lua/plenary.nvim",
@@ -21,7 +22,7 @@ return {
       end
     },
       "HakonHarnes/img-clip.nvim",
-      "Davidyz/VectorCode",
+      -- "Davidyz/VectorCode",
       "ravitemer/codecompanion-history.nvim",
       "franco-ruggeri/codecompanion-spinner.nvim",
       -- "mimikun/codecompanion-reasoning.nvim",
@@ -99,27 +100,28 @@ return {
           icons = {
             chat_context = "📎️", -- You can also apply an icon to the fold
           },
+          -- show_header_separator = true,
           -- show_settings = true, -- Show LLM settings at the top of the chat buffer?
           show_tools_processing = true,
           fold_context = true,
         }
       },
-      strategies = {
+      interactions = {
         chat = {
           adapter = "gemini",
           opts = {
             ---@param ctx CodeCompanion.SystemPrompt.Context
             ---@return string
             system_prompt = function(ctx)
-              -- print(vim.inspect(ctx))
-              return ctx.default_system_prompt
-              .. string.format(
+              return ctx.default_system_prompt .. string.format(
                 [[ The current date is %s.
 The user is working on a %s machine. Please respond with system specific commands if applicable.
-cwD is %s ]],
+Your current working directory is: %s
+This project root is: %s ]],
                 ctx.date,
                 ctx.os,
-                ctx.cwd
+                ctx.cwd,
+                ctx.project_root
               )
             end,
             },
@@ -139,6 +141,8 @@ cwD is %s ]],
                 "fetch_webpage",
                 "search_web",
                 "web_search",
+                "web_fetch",
+                "code_execution",
                 -- "vectorcode_toolbox",
                 -- "next_edit_suggestion",
                 "list_code_usages",
@@ -151,7 +155,7 @@ cwD is %s ]],
           slash_commands = {
             ["file"] = {
               -- Location to the slash command in CodeCompanion
-              callback = "strategies.chat.slash_commands.file",
+              callback = "interactions.chat.slash_commands.builtin.file",
               description = "Select a file using Snack",
               opts = {
                 provider = "snacks", -- Can be "default", "telescope", "fzf_lua", "mini_pick" or "snacks"
@@ -165,9 +169,12 @@ cwD is %s ]],
         },
         cmd = {
           adapter = "gemini",
+        },
+        background = {
+          adapter = "gemini",
         }
       },
-      memory = {
+      rules = {
         opts = {
           chat = {
             enabled = true,
@@ -177,6 +184,7 @@ cwD is %s ]],
       adapters = {
         http = {
           opts = {
+            show_presets = false,
             show_model_choices = true,
             -- allow_insecure = true,
             -- proxy = "http://127.0.0.1:8080",
@@ -277,7 +285,8 @@ cwD is %s ]],
                 include_references = true, -- include slash command content
                 include_tool_outputs = true, -- include tool execution results
                 system_prompt = nil, -- custom system prompt (string or function)
-                format_summary = nil, -- custom function to format generated summary e.g to remove <think/> tags from summary
+                -- custom function to format generated summary e.g to remove <think/> tags from summary
+                format_summary = nil,
                     },
                 },
 
@@ -300,13 +309,13 @@ cwD is %s ]],
                 },
           }
         },
-        vectorcode = {
-          opts = {
-            add_tool = true,
-            add_slash_command = true,
-            tool_opts = {}
-          },
-        },
+        -- TODO enable again when it support code 1.18
+        -- vectorcode = {
+        --   opts = {
+        --     add_tool = true,
+        --     add_slash_command = true,
+        --   },
+        -- },
         mcphub = {
           callback = "mcphub.extensions.codecompanion",
           opts = {
@@ -319,40 +328,40 @@ cwD is %s ]],
     },
   },{
     "Davidyz/VectorCode",
-    version = "*",
-    enabled = true, -- i use mcp hub now
+    -- version = "*",
+    enabled = false , -- TODO enable again when it support code 1.18
     build = "uv tool upgrade vectorcode",
     dependencies = { "nvim-lua/plenary.nvim" },
     cmd = {
       "VectorCode",
     },
-    -- config = function()
-    --   require("vectorcode").setup({
-    --     cli_cmds = {
-    --       vectorcode = "vectorcode",
-    --     },
-    --     ---@type VectorCode.RegisterOpts
-    --     async_opts = {
-    --       debounce = 10,
-    --       events = { "BufWritePost", "InsertEnter", "BufReadPost" },
-    --       exclude_this = true,
-    --       n_query = 1,
-    --       notify = false,
-    --       query_cb = require("vectorcode.utils").make_surrounding_lines_cb(-1),
-    --       run_on_register = true ,
-    --     },
-    --     async_backend = "lsp",--- "default", -- or "lsp"
-    --     exclude_this = true,
-    --     n_query = 1,
-    --     notify = true,
-    --     timeout_ms = 5000,
-    --     on_setup = {
-    --       update = true, -- set to true to enable update when `setup` is called.
-    --       lsp = false,
-    --     },
-    --     sync_log_env_var = false
-    --   })
-    --   end
+    config = function()
+      require("vectorcode").setup({
+        cli_cmds = {
+          vectorcode = "vectorcode",
+        },
+        ---@type VectorCode.RegisterOpts
+        async_opts = {
+          debounce = 10,
+          events = { "BufWritePost", "InsertEnter", "BufReadPost" },
+          exclude_this = true,
+          n_query = 1,
+          notify = false,
+          query_cb = require("vectorcode.utils").make_surrounding_lines_cb(-1),
+          run_on_register = true ,
+        },
+        async_backend = "lsp",--- "default", -- or "lsp"
+        exclude_this = true,
+        n_query = 1,
+        notify = true,
+        timeout_ms = 5000,
+        on_setup = {
+          update = true, -- set to true to enable update when `setup` is called.
+          lsp = false,
+        },
+        sync_log_env_var = false
+      })
+      end
   }, {
     -- Make sure to set this up properly if you have lazy=true
     'MeanderingProgrammer/render-markdown.nvim',

@@ -11,13 +11,21 @@ vim.api.nvim_create_user_command('SudoWrite', [[ execute ':silent w !sudo tee %'
 vim.keymap.set('n', '<C-a>', "<Esc>^", { desc = 'To start Normal' })
 vim.keymap.set('i', '<C-a>', "<Esc>I", { desc = 'To start Insert' })
 vim.keymap.set('c', '<C-a>', "<Home>", { desc = 'To start Insert' })
---
+
+vim.keymap.set('c', '<M-b>', "<C-Left>", { desc = 'Move Word Back' })
+vim.keymap.set('c', '<M-f>', "<C-Right>", { desc = 'Move Word Forward' })
+-- vim.keymap.set('c', '<C-k>', "<C-O>D", { desc = 'Kill after cursor' })
+
 vim.keymap.set('n', '<C-e>', "<Esc>g_", { desc = 'To end Normal' })
 vim.keymap.set('i', '<C-e>', "<Esc>g_a", { desc = 'To end Insert' })
 
+
+-- vim.keymap.set('c', '<M-f>', "<C-Right>", { desc = 'Move Word Forward' })
 vim.keymap.set("i", "<C-BS>", "<C-w>")
 vim.keymap.set("c", "<C-BS>", "<C-w>")
-vim.keymap.set("i", "<C-H>", "<C-w>") -- using Ctrl+Backspace delete a word. ref:https://www.reddit.com/r/neovim/comments/prp8zw/using_ctrlbackspace_in_neovim/
+-- Using Ctrl+Backspace delete a word.
+--  ref:https://www.reddit.com/r/neovim/comments/prp8zw/using_ctrlbackspace_in_neovim/
+vim.keymap.set("i", "<C-H>", "<C-w>")
 vim.keymap.set("c", "<C-H>", "<C-w>")
 
 vim.keymap.set('n','<C-TAB>', '<cmd>:tabnext<CR>', {desc = 'Next tab'}) -- does only work with some help in kitty
@@ -35,7 +43,8 @@ vim.keymap.set('n', 'k', 'gk', {silent = true})
 vim.api.nvim_set_keymap("n", "s", "<Nop>", { noremap = true, silent = true })
 --
 -- alternative for https://github.com/dhruvasagar/vim-zoom
-vim.keymap.set('n', '<C-w>z', ":tab split<CR>", { desc = 'zoomin with tab' })
+-- vim.keymap.set('n', '<C-w>z', ":tab split<CR>", { desc = 'zoomin with tab' })
+vim.keymap.set('n', '<C-w>z', '<cmd>lua require("snacks").zen.zoom()<CR>', { desc = 'zoomin with tab' })
 
 -- Quickfix list
 vim.keymap.set('n', '[q', vim.cmd.cprev, { desc = 'Previous quickfix item' })
@@ -64,3 +73,11 @@ vim.keymap.set(
 
 -- vim.keymap.set({'i','n','v'}, '<ScrollWheelUp>','<C-u>', {desc= 'Scroll Up'} )
 -- vim.keymap.set({'i','n','v'}, '<ScrollWheelDown>','<C-d>', {desc= 'Scroll Down'} )
+
+vim.keymap.set('x', 'ao', function()
+  vim.lsp.buf.selection_range('outer')
+end, { desc = "vim.lsp.buf.selection_range('outer')" })
+
+vim.keymap.set('x', 'io', function()
+  vim.lsp.buf.selection_range('inner')
+end, { desc = "vim.lsp.buf.selection_range('inner')" })

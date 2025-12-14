@@ -8,12 +8,12 @@ return {
   }, {
     'saghen/blink.compat',
     -- use the latest release, via version = '*', if you also use the latest release for blink.cmp
-    version = '2.*',
+    -- version = '2.*',
     -- lazy.nvim will automatically load the plugin when it's required by blink.cmp
     lazy = true,
-    cond = function ()
-      return not vim.g.vscode
-    end, -- don`t run in vscode
+    -- cond = function ()
+    --   return not vim.g.vscode and vim.bo.filetype ~= 'dap-repl'
+    -- end, -- don`t run in vscode
     -- make sure to set opts so that lazy.nvim calls blink.compat's setup
     opts = {
       -- impersonate_nvim_cmp = true,
@@ -22,7 +22,8 @@ return {
   },{
     'saghen/blink.cmp',
     cond = function ()
-      return not vim.g.vscode
+      return not vim.g.vscode and vim.bo.filetype ~= 'dap-repl'
+      -- return not vim.g.vscode
     end, -- don`t run in vscode
     dependencies = {
       'L3MON4D3/LuaSnip',
@@ -33,6 +34,7 @@ return {
       'nvim-lua/plenary.nvim',
       'saghen/blink.compat',
       'andersevenrud/cmp-tmux',
+      'ribru17/blink-cmp-spell',
       -- { "marcoSven/blink-cmp-yanky", },
       -- 'Kaiser-Yang/blink-cmp-avante',
       -- "huijiro/blink-cmp-supermaven",
@@ -44,7 +46,7 @@ return {
       --   }
       -- },
     },
-    version = '*',
+    -- version = '*',
     build = 'cargo build --release',
     ---@module 'blink.cmp'
     ---@type blink.cmp.Config
@@ -80,11 +82,11 @@ return {
           ['<tab>'] = { 'select_next', 'fallback_to_mappings' },
         }, -- Inherits from top level `keymap` config when not set
         sources = {
-          'buffer',
+          -- 'buffer',
           'cmdline',
           -- 'path',
           -- 'zsh',
-          'tmux',
+          -- 'tmux',
           -- 'supermaven',
         },
         completion = {
@@ -134,6 +136,7 @@ return {
           "lazydev",
           -- "yank",
           -- "avante",
+          "spell",
         },
         per_filetype = {
           codecompanion = { inherit_defaults = true, "codecompanion" },
@@ -210,6 +213,31 @@ return {
             async = true,
             opts = {}
           },
+          spell = {
+            name = 'Spell',
+            module = 'blink-cmp-spell',
+            opts = {
+              -- EXAMPLE: Only enable source in `@spell` captures, and disable it
+              -- in `@nospell` captures.
+              enable_in_context = function()
+                local curpos = vim.api.nvim_win_get_cursor(0)
+                local captures = vim.treesitter.get_captures_at_pos(
+                  0,
+                  curpos[1] - 1,
+                  curpos[2] - 1
+                )
+                local in_spell_capture = false
+                for _, cap in ipairs(captures) do
+                  if cap.capture == 'spell' then
+                    in_spell_capture = true
+                  elseif cap.capture == 'nospell' then
+                    return false
+                  end
+                end
+                return in_spell_capture
+              end,
+            },
+          },
           -- env = {
           --   name = "Env",
           --   module = "blink-cmp-env",
@@ -265,7 +293,21 @@ return {
       -- when the Rust fuzzy matcher is not available, by using `implementation = "prefer_rust"`
       --
       -- See the fuzzy documentation for more information
-      fuzzy = { implementation = "prefer_rust_with_warning" },
+      fuzzy = {
+        implementation = "prefer_rust_with_warning",
+        sorts = {
+          function(a, b)
+            local sort = require('blink.cmp.fuzzy.sort')
+            if a.source_id == 'spell' and b.source_id == 'spell' then
+              return sort.label(a, b)
+            end
+          end,
+          -- This is the normal default order, which we fall back to
+          'score',
+          'kind',
+          'label',
+        }
+      },
 
       -- Experimental signature help support
       signature = {
@@ -296,7 +338,7 @@ return {
   {
     "L3MON4D3/LuaSnip",
     -- follow latest release.
-    version = "v2.*",   -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+    -- version = "v2.*",   -- Replace <CurrentMajor> by the latest released major (first number of latest release)
     -- install jsregexp (optional!).
     build = "make install_jsregexp"
     -- TODO configure key map next field

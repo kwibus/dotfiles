@@ -2,18 +2,19 @@ return {
   "folke/snacks.nvim",
   priority = 1000,
   lazy = false,
-  ---@type snacks.Config
   -- enabled = false,
+  ---@type snacks.Config
   opts = {
     input = {},
-    -- image= {},
+    image= {},
     picker = {},
+    zen = {}, -- used for zoom
     notifier = {
           enabled = true,
           -- Optional: Configure the notifier further
           timeout = 3000, -- Messages disappear after 3 seconds by default
           style = "compact", -- Or "compact", "minimal"
-          -- level = vim.log.levels.INFO, -- Minimum log level to display
+          level = vim.log.levels.TRACE, -- Minimum log level to display
           -- keep = function(notif) return vim.fn.getcmdpos() > 0 end, -- Example
     },
     -- ---@class snacks.words.Config
@@ -31,18 +32,21 @@ return {
     -- },
     ---@class snacks.statuscolumn.Config
     ---@field enabled? boolean
-    statuscolumn = {
-      left = { "mark", "sign" }, -- priority of signs on the left (high to low)
-      right = { "fold", "git" }, -- priority of signs on the right (high to low)
-      folds = {
-        open = false, -- show open fold icons
-        git_hl = false, -- use Git Signs hl for fold icons
-      },
-      git = {
-        -- patterns to match Git signs
-        patterns = { "GitSign", "MiniDiffSign" },
-      },
-      refresh = 50, -- refresh at most every 50ms
-    }
-  }
+    -- statuscolumn = {
+    --   left = { "mark", "sign","fold", "git" }, -- priority of signs on the left (high to low)
+    --   right = {  }, -- priority of signs on the right (high to low)
+    --   folds = {
+    --     open = true, -- show open fold icons
+    --     git_hl = true, -- use Git Signs hl for fold icons
+    --   },
+    --   git = {
+    --     -- patterns to match Git signs
+    --     patterns = { "GitSign", "MiniDiffSign" },
+    --   },
+    --   refresh = 50, -- refresh at most every 50ms
+    -- }
+  },
+  init = function()
+    vim.api.nvim_create_user_command('Messages', require("snacks.notifier").show_history, {desc = "Snack messages" })
+  end
 }

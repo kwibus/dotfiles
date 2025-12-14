@@ -7,23 +7,25 @@ return {
         require('mini.ai').setup() -- add text object argument a, function a
         require('mini.move').setup() -- move blocks with alt - <h, j, k, l>
         require('mini.align').setup()     -- align text with ga, gA
-        -- require('mini.animate').setup({
-        --     scroll = {
-        --         enable = false
-        --     },
-        --     resize = {
-        --         enable = false
-        --     },
-        --     open = {
-        --         enable = false
-        --     },
-        --     close= {
-        --         enable = false
-        --     }
-        -- })   -- animated mouse movement
+        require('mini.animate').setup({
+            scroll = {
+                enable = true
+            },
+            resize = {
+                enable = false
+            },
+            open = {
+                enable = false
+            },
+            close= {
+                enable = false
+            }
+        })   -- animated mouse movement
         require('mini.cursorword').setup() -- works better https://github.com/ya2s/nvim-cursorline
         require('mini.splitjoin').setup() -- enable split join Toggle gS
+
         require('mini.surround').setup() -- surround add, sa, replace sr, delete sd highlight sh
+        -- require('mini.pairs').setup()
         require('mini.operators').setup({
             replace = {
                 prefix = 'gR', -- gr already used default neovim

@@ -66,7 +66,12 @@ return {
                 return get_root
             end
             local lspconfig = require("lspconfig")
-            local capabilities = require('blink.cmp').get_lsp_capabilities()
+            local ok, blink = pcall(require, 'blink.cmp' )
+            local capabilities = {}
+            if ok then
+                capabilities = blink.get_lsp_capabilities()
+            end
+
             -- local capabilities = require('cmp_nvim_lsp').default_capabilities()
             capabilities.workspace = { didChangeWatchedFiles = { dynamicRegistration = true } }
             -- Add blink.cmp capabilities settings to lspconfig
@@ -103,7 +108,7 @@ return {
                     }
                 }
             })
-            vim.lsp.enable("lua_ls")
+            -- vim.lsp.enable("lua_ls")
             vim.lsp.enable("intelephense")
             -- lspconfig.phpcs.setup {}
                 -- root_dir = function ()
@@ -114,8 +119,8 @@ return {
             vim.lsp.enable("ansiblels")
             vim.lsp.enable("bashls")
             vim.lsp.enable("vimls")
-            vim.lsp.enable("rust_analyzer")
-
+            -- vim.lsp.enable("rust_analyzer") -- replaced by rustaceanvim
+            vim.lsp.enable('gopls')
             vim.lsp.config("esbonio",{
                 cmd = {'esbonio'},
                 filetypes = { 'rst' }, -- or 'markdown' if you use MyST
@@ -175,9 +180,14 @@ return {
             --     }
             -- }
             vim.lsp.enable({ "ts_ls", }) -- "eslint" "ts_lint",
+            vim.lsp.enable("hls")
             vim.lsp.enable("jsonls")
             vim.lsp.enable("yamlls")
-            vim.lsp.enable({'pyright', 'pyrefly', 'ruff'})
+            vim.lsp.enable({
+                'pyright',
+                'pyrefly',
+                'ruff'
+            })
         end
     },
     {

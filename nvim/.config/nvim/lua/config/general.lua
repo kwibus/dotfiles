@@ -1,3 +1,6 @@
+
+
+
 vim.g.loaded_node_provider = 0 -- don't want to use plugins written in node
 vim.g.loaded_perl_provider = 0 -- don't want to use plugins written in perl
 vim.g.loaded_python3_provider = 0 -- don't want to use plugins written in python
@@ -6,6 +9,9 @@ vim.opt.secure  = true
 -- don't fix end of file without enter.
 vim.opt.fixendofline = false
 
+if vim.fn.has('nvim-0.12') == 1 then
+  vim.o.pumborder = 'single' -- popup menu border # TODO does not work with
+end
 vim.o.winborder = "single"
 -- show line number
 vim.wo.number = true
@@ -24,22 +30,22 @@ vim.o.mousemoveevent = true
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('my.lsp', {}),
   callback = function(args)
-    -- vim.lsp.inlay_hint.enable()
+    vim.lsp.inlay_hint.enable() -- TODO try
   end
 })
-vim.api.nvim_set_keymap(
-  'n',
-  '<LeftMouse>',
-  '<LeftMouse><cmd>lua vim.lsp.buf.hover({border = "single"})<CR>',
-  { noremap=true, silent=true }
-)
+-- vim.api.nvim_set_keymap(
+--   'n',
+--   '<LeftMouse>',
+--   '<LeftMouse><cmd>lua vim.lsp.buf.hover({border = "single"})<CR>',
+--   { noremap=true, silent=true }
+-- )
 
-vim.api.nvim_set_keymap(
-  'n',
-  '<RightMouse>',
-  '<LeftMouse><cmd>lua vim.lsp.buf.definition()<CR>',
-  { noremap=true, silent=true }
-)
+-- vim.api.nvim_set_keymap(
+--   'n',
+--   '<RightMouse>',
+--   '<LeftMouse><cmd>lua vim.lsp.buf.definition()<CR>',
+--   { noremap=true, silent=true }
+-- )
 
 -- max height completion menu
 vim.opt.pumheight = 6 -- TODO more completion option
@@ -87,6 +93,7 @@ vim.opt.softtabstop = 4
 
 vim.o.foldenable = true
 vim.wo.foldmethod = 'expr'
+-- vim.wo.foldexpr =  "v:lua.vim.lsp.foldexpr()" # often not supported
 vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 vim.o.foldtext = ""
 -- vim.opt.foldlevelstart=99
@@ -101,9 +108,12 @@ vim.opt.fillchars = {
   -- msgsep = '‾',
   foldopen = '▾',
   -- foldsep = ' ',
-  foldclose = '▸',
+  foldclose = '▸'
 }
--- vim.opt.foldoptions = 'nodigits'
+
+if vim.fn.has('nvim-0.12') == 1 then
+  vim.opt.fillchars.foldinner = ' '
+end
 --
 -- allow visual block to select as block
 vim.opt.virtualedit={"block","onemore"}
@@ -138,9 +148,13 @@ vim.diagnostic.config{
         prefix = '●',  -- Could be '●', '▎', 'x'
         source = "if_many",
     },
-
+    float = {
+      source = 'always',
+      border = border
+    },
     underline = true,
     signs = {
+
         text = {
             [vim.diagnostic.severity.ERROR] = "",
             [vim.diagnostic.severity.WARN]  = "",
@@ -168,6 +182,8 @@ for type, icon in pairs(signs) do
   local hl = "DiagnosticSign" .. type
   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 end
+
+-- -- jinja support
 -- vim.filetype.add({
 --   extension = {
 --     jinja2 = 'jinja2',

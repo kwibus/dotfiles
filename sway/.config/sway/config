@@ -56,6 +56,7 @@ output 'LG Electronics LG HDR WQHD 0x0000DBEA' {
 bindswitch --reload --locked lid:on exec sway-disable-if.sh  $laptop
 bindswitch --reload --locked lid:off output $laptop enable
 
+
 input "type:keyboard" {
   xkb_layout "us"
  # xkb_variant "intl"
@@ -233,11 +234,12 @@ mouse_warping output
     bindsym $mod+shift+equal opacity plus 0.1
 
     bindsym $mod+comma  mark --toggle master
+    bindsym $mod+Shift+period exec "wl-paste -p | piper-speak"
 
     # bindsym $mod+space [workspace="__focused__" con_mark="master"] focus
     # bindsym $mod+Shift+space swap container  with mark master; mark --add master
 
-#bindsym $mod+Shift+space [con_mark="slave"] focus;swap container  with mark master ; [con_mark=master] mark slave ; mark --add master
+    # bindsym $mod+Shift+space [con_mark="slave"] focus;swap container  with mark master ; [con_mark=master] mark slave ; mark --add master
 
     # bindsym $mod+n exec makoctl dismiss --all
     bindsym $mod+n exec swaync-client --toggle-panel
@@ -338,6 +340,9 @@ bindsym Print exec grim -g \"$(slurp)\"  /home/rens/screenshot_$(date +%F+%T).pn
 bindsym $mod+Print exec flameshot gui
 
 bindsym --release $mod+Shift+Print exec  wf-recorder -g "$(slurp)" -f /home/rens/screenrecoding_$(date +%F+%T).mp4
+
+bindsym  $mod+Shift+b exec bluetoothctl devices | cut -f2 -d' ' | xargs -P10 -n1 timeout 1 bluetoothctl connect
+bindsym  $mod+Ctrl+b exec bluetoothctl devices | cut -f2 -d' ' | xargs -P10 -n1 timeout 1 bluetoothctl disconnect
 
 bindsym Ctrl+Alt+l exec $lock
 #

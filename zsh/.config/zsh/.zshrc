@@ -24,14 +24,16 @@ setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_REDUCE_BLANKS
 setopt inc_append_history
 
-# setopt PUSHDIGNOREdUPS         # and don't duplicate them
+setopt PUSHDIGNOREdUPS         # and don't duplicate them
 
 bindkey -e
+# map shift enter to enter
+bindkey '\e[13;2u' accept-line
+
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
 zstyle ':completion:*' completer _oldlist _expand _complete _ignored _match _correct _approximate _prefix
-zstyle ':completion:*' format 'Completing %d'
-zstyle ':completion:*' format $'\e[00;31m%d \e[0m'
+zstyle ':completion:*' format '%F{red}%d%f'
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*' ignore-parents parent
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
@@ -48,9 +50,8 @@ zstyle ':completion:*' file-sort modification # TODO test
 
 # zstyle :compinstall filename '/home/rens/.zshrc'
 
-
 # End of lines adcomplete
-
+#
 Watch=all
 stty -ixon # disable Ctrl-S  freeze
 
@@ -102,9 +103,23 @@ autoload -Uz compinit bashcompinit
 compinit -d $XDG_CACHE_HOME/zsh/dump
 bashcompinit
 
+# Register az FIRST, then gcloud
+# az break bashcomponit skip this by calling register-python-argcomplete directly
+# include /opt/azure-cli/bin/az.completion.sh
+
+# Load az completion before gcloud to avoid state corruption.
+# Both use python-argcomplete, but az's 'compdef' call resets completion
+# variables (_tags_level, _last_nmatches) that gcloud's bashcompinit needs.
+# Loading az first ensures gcloud inherits correct state.
+eval "$(register-python-argcomplete az)"
+
+source /opt/google-cloud-cli/path.zsh.inc
+source /opt/google-cloud-cli/completion.zsh.inc
+
 export GOPATH=$HOME/.local/godir
 PATH=$HOME/scripts:$HOME/.local/bin:$HOME/.config/composer/vendor/bin:$PATH
 export PATH=$GOROOT/bin:$GOPATH/bin:$PATH
+
 if sway_pid=$(pgrep -x sway); then
 
     export SWAYSOCK=/run/user/${UID}/sway-ipc.${UID}."$sway_pid".sock
@@ -112,15 +127,19 @@ if sway_pid=$(pgrep -x sway); then
 else
     unset SWAYSOCK
 fi
+# export SWAYSOCK=(/run/user/${UID}/sway-ipc.${UID}.*.sock)
 if niri_pid=$(pgrep -x niri); then
     export NIRI_SOCKET="/run/user/${UID}/niri.${WAYLAND_DISPLAY}."$niri_pid".sock"
     unset niri_pid
 else
     unset NIRI_SOCKET
 fi
+# export NIRI_SOCKET=("/run/user/${UID}/niri.${WAYLAND_DISPLAY}.*.sock")
 HYPRLAND_INSTANCE_SIGNATURE="$(ls -1t /tmp/hypr |tail -1)"  2>/dev/null
+
 # Force podman container instead of docker
 # export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/podman/podman.sock
+
 export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
 # export SSH_AUTH_SOCK=/run/user/1000/gnupg/S.gpg-agent.ssh  # TODO test
 export SUDO_ASKPASS=/usr/lib/ssh/ssh-askpass
@@ -186,11 +205,11 @@ include () {
     fi
 }
 
-#include /usr/share/autojump/autojump.zsh
-export _ZO_ECHO=1 # echo dir before z 
+export _ZO_ECHO=1 # echo dir before z
 eval "$(zoxide init zsh)"
-include /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-include /usr/share/doc/pkgfile/command-not-found.zsh
+
+source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /usr/share/doc/pkgfile/command-not-found.zsh
 
 include "$ZDOTDIR"/cabalpromt.zsh 'cabal_pr="sandbox_prompt"'
 include "$ZDOTDIR"/gitpromt.zsh 'git_pr="__git_prompt"'
@@ -229,29 +248,12 @@ help()
 {
     man zshbuiltins | sed -ne "/^       $1 /,/^\$/{s/       //; p}"
 }
-# # Load zsh-autosuggestions.
-# source ~/.zsh/zsh-autosuggestions/autosuggestions.zsh
-# AUTOSUGGESTION_HIGHLIGHT_COLOR=1
-# # Enable autosuggestions automatically.
-# zle-line-init() {
-#     zle autosuggest-start
-# }
-# zle -N zle-line-init
-#
-# ttyctl -f
-#
-# zstyle ':completion:*:manuals'    separate-sections true
-# zstyle ':completion:*:manuals.*'  insert-sections   true
-# zstyle ':completion:*:man:*'      menu yes select
 
 GENCOMPL_FPATH="$ZDOTDIR"/gencomplete
-# GENCOMPL_PY=python3
 include "$ZDOTDIR"/zsh-completion-generator/zsh-completion-generator.plugin.zsh
 
 
-#include ~/Downloads/google-cloud-sdk/completion.zsh.inc
-include /opt/google-cloud-cli/completion.zsh.inc
-include /usr/bin/aws_zsh_completer.sh
+include /usr/bin/aws_zsh_completer.sh  # Temporarily disabled to test
 # eval "$(_MOLECULE_COMPLETE=source molecule)"
 
 ( cd "$ZDOTDIR"/updatedComplete/
@@ -262,37 +264,12 @@ include /usr/bin/aws_zsh_completer.sh
     # { which gitdoc && test ! $(find _gitdoc -mtime -20) } &> /dev/null && register-python-argcomplete  gitdoc > _gitdoc
 )
 include $ZDOTDIR/git-extras-completion.zsh
-include /opt/azure-cli/az.completion
 
 include /usr/share/undistract-me/long-running.bash notify_when_long_running_commands_finish_install
-# eval "$(register-python-argcomplete gitdoc)"
 
 export PYTHONPYCACHEPREFIX="$HOME/.cache/cpython/"
 mkdir -p "${PYTHONPYCACHEPREFIX}"
 
 # include '/usr/share/nvm/init-nvm.sh'
 
-#auto_pip_venv (){
-#
-#  if [[ -f venv/bin/activate ]] ; then
-#    source venv/bin/activate
-#  fi
-#
-#}
-chpwd_functions+=(auto_pip_venv)
 
-# GOPATHSTART="$GOPATH"
-#
-# function chpwd {
-#
-#     local projectroot=$(findProjectRoot.sh)
-#
-#     if ! [ -z $projectroot ]
-#     then
-#         _project="$(basename $projectroot)"
-#         GOPATH="$projectroot:$GOPATHSTART"
-#     else
-#         _project=""
-#     fi
-# }
-# chpwd

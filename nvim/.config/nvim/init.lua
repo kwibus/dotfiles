@@ -7,4 +7,5 @@ end
 require("config.general")
 require("config.mappings")
 require("config.functions")
+require("config.menu")
 

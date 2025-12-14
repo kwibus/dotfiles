@@ -21,6 +21,7 @@ return {
                     function()
                         return require('lsp-progress').progress()
                     end,
+                    -- Context works better
                     -- function()
                     --     local trouble = require("trouble")
                     --     local symbols = trouble.statusline({
@@ -43,6 +44,7 @@ return {
                     'fileformat',
                     'filetype',
                     'codecompanion',
+                    "overseer",
                     -- {require('mcphub.extensions.lualine')},
                 },
                 lualine_y = { 'diagnostics', 'progress' },
