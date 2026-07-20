@@ -1,0 +1,23 @@
+-- cabal-install user config (modern, XDG location: ~/.config/cabal/config).
+-- Minimal: cabal 3.x XDG cache/dir defaults are good; only override what matters.
+
+repository hackage.haskell.org
+  url: https://hackage.haskell.org/
+  secure: True
+
+installdir: /home/rens/.local/bin
+
+-- Arch Linux's system GHC ships only dynamic Haskell libraries (no static .a),
+-- so build everything dynamically by default. As a *global* default these apply
+-- to dependencies too, so no per-project cabal.project is needed.
+library-vanilla: False
+shared: True
+executable-dynamic: True
+
+-- ...and pass -dynamic to every ghc invocation, including haskell-language-server's
+-- repl cradle, so interactive sessions load the dynamic dep libs too. Safe here
+-- because library-vanilla:False means dynamic-only builds (no -dynamic-too conflict).
+program-default-options
+  ghc-options: -dynamic
+
+jobs: $ncpus

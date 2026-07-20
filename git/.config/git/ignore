@@ -7,11 +7,14 @@ old/
 backup/
 unused
 notes
+.archive/
+
 NOTES.md
 # vim
 *.sw[a-z]
 tags
 tags.*
+
 # haskell
 dist/
 cabal.sandbox.config
@@ -32,4 +35,10 @@ venv
 __pycache__
 .dmypy.json
 
+# git
 .gitlab-ci-local
+
+# llm
+**/.claude/settings.local.json
+AGENTS.md
+CLAUDE.md

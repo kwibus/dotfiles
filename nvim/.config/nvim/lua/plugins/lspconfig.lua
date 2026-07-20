@@ -6,43 +6,16 @@ vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"}, {
 vim.api.nvim_create_user_command('PrintProjectRoot', function()
   local clients = vim.lsp.get_clients()
   for _, client in ipairs(clients) do
-  end
     print(client.name .. ": " .. (client.config.root_dir or "no root"))
+  end
 end, {})
 
-
-function scroll_view(event)
-  for _, client in ipairs(vim.lsp.get_clients()) do
-      if client.name == "esbonio" then
-          local view = vim.fn.winsaveview()
-
-          local params = { uri = vim.uri_from_bufnr(0),  line = view.topline }
-          client.notify('view/scroll', params)
-        end
-  end
-end
-function preview_file()
-    local params = {
-        command = 'esbonio.server.previewFile',
-        arguments = {
-            { uri = vim.uri_from_bufnr(0) },
-        },
-    }
-
-    local clients = vim.lsp.get_clients()
-    for _, client in ipairs(clients) do
-        client.request('workspace/executeCommand', params, nil, 0)
-    end
-
-    local augroup = vim.api.nvim_create_augroup("EsbonioSyncScroll", { clear = true })
-    vim.api.nvim_create_autocmd({"WinScrolled"}, {
-        callback = scroll_view, group = augroup, buffer = 0
-    })
-end
+-- NOTE: esbonio (Sphinx/reStructuredText LSP) is configured in ftplugin/rst.lua
 return {
     {
         "neovim/nvim-lspconfig",
         event = { "BufReadPre", "BufNewFile" },
+        -- enabled = false,
         cond = function ()
           return not vim.g.vscode
         end, -- don`t run in vscode
@@ -83,84 +56,77 @@ return {
                 capabilities
             )
             vim.lsp.enable("clangd")
-            vim.lsp.config('lua_ls',{
+            vim.lsp.enable('lua_ls')
+            -- vim.lsp.config('lua_ls',{
+            --     settings = {
+            --         Lua = {
+            --             runtime = {
+            --                 -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+            --                 version = "LuaJIT",
+            --             },
+            --             diagnostics = {
+            --                 -- Get the language server to recognize the `vim` global
+            --                 globals = { 'vim' },
+            --             },
+            --             workspace = {
+            --                 -- Make the server aware of Neovim runtime files
+            --                 -- Makes it slow
+            --                 -- library = vim.api.nvim_get_runtime_file("", true),
+            --                 checkThirdParty = false,
+            --
+            --             },
+            --             -- Do not send telemetry data containing a randomized but unique identifier
+            --             telemetry = {
+            --                 enable = false,
+            --             },
+            --         }
+            --     }
+            -- })
+            -- vim.lsp.enable("lua_ls")
+            vim.lsp.config("intelephense",{
                 settings = {
-                    Lua = {
-                        runtime = {
-                            -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-                            version = "LuaJIT",
+                    intelephense = {
+                        environment = {
+                            -- Replace this with the actual path to your Moodle root
+                            includePaths = {"/home/rens/werk/lab-tools/moodle-dev/moodle_data"}
                         },
-                        diagnostics = {
-                            -- Get the language server to recognize the `vim` global
-                            globals = { 'vim' },
-                        },
-                        workspace = {
-                            -- Make the server aware of Neovim runtime files
-                            -- Makes it slow
-                            -- library = vim.api.nvim_get_runtime_file("", true),
-                            checkThirdParty = false,
-
-                        },
-                        -- Do not send telemetry data containing a randomized but unique identifier
-                        telemetry = {
-                            enable = false,
-                        },
+                        files = {
+                            maxSize = 5000000; -- Moodle is huge, sometimes you need to bump this
+                        }
                     }
                 }
             })
-            -- vim.lsp.enable("lua_ls")
             vim.lsp.enable("intelephense")
             -- lspconfig.phpcs.setup {}
                 -- root_dir = function ()
                 --     return vim.loop.cwd()
                 -- end,
+
+            vim.lsp.config("ltex_plus", {
+                settings ={
+                    ltex = {
+                        language = "auto",
+                        -- completionEnabled = true,
+                        -- additionalRules = {
+                        --     motherTongue = "nl",
+                        -- },
+                        dictionary = {
+                            -- Pass the list of words to the LSP
+                            ["en-US"] = ":" .. vim.fn.stdpath("config") .. "/spell/en.utf-8.add",
+                            ["nl"]    = ":" .. vim.fn.stdpath("config") .. "/spell/nl.utf-8.add",
+                        },
+                    },
+                }
+            })
+            vim.lsp.enable("ltex_plus")
             vim.lsp.enable("marksman")
-            vim.lsp.enable('systemd_ls')
+            vim.lsp.enable('systemd_lsp')
             vim.lsp.enable("ansiblels")
             vim.lsp.enable("bashls")
             vim.lsp.enable("vimls")
             -- vim.lsp.enable("rust_analyzer") -- replaced by rustaceanvim
             vim.lsp.enable('gopls')
-            vim.lsp.config("esbonio",{
-                cmd = {'esbonio'},
-                filetypes = { 'rst' }, -- or 'markdown' if you use MyST
-                root_markers = { '.git' },
-                settings = {
-                    esbonio = {
-                        sphinx = {
-                            buildCommand = {'sphinx-build', '-M', 'dirhtml', '.', '${defaultBuildDir}'},
-                            pythonCommand = {'/home/rens/.local/share/uv/tools/esbonio/bin/python'},
-                        }
-                    },
-                },
-            })
-            vim.lsp.enable("esbonio")
-            -- {
-            --     cmd = { 'esbonio' },
-            --     init_options = {
-            --         server = {
-            --             logLevel = "debug",
-            --             enableLivePreview = true,
-            --             python_command = {"/bin/python3"},
-            --             preview = {
-            --                 port = 12345
-            --             }
-            --         },
-            --         sphinx = {
-            --             builderName = "html",
-            --             enableDevTools = false,
-            --             -- confDir = "/path/to/docs",
-            --             -- srcDir = "${confDir}/../docs-src"
-            --         }
-            --     },
-            --     root_dir = add_git_parent_detection('esbonio'),
-            --     commands = {
-            --         EsbonioPreviewFile = {
-            --             preview_file,
-            --             description = 'Preview Current File',
-            --         },
-            --     }
-            -- })
+            -- esbonio (rst) is configured in ftplugin/rst.lua
 
             -- vim.lsp.enable('codebook')
             -- FIXME: re enable
@@ -184,7 +150,8 @@ return {
             vim.lsp.enable("jsonls")
             vim.lsp.enable("yamlls")
             vim.lsp.enable({
-                'pyright',
+                -- 'pyright',
+                'ty',
                 'pyrefly',
                 'ruff'
             })

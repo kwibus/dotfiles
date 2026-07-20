@@ -1,4 +1,3 @@
-print("test")
 local dap = require("dap")
 
 dap.adapters.codelldb = {

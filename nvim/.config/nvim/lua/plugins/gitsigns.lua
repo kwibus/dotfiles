@@ -60,9 +60,10 @@ return {
             map('n', '<leader>hq', gitsigns.setqflist)
 
             -- Toggles
-            map('n', '<leader>tb', gitsigns.toggle_current_line_blame)
-            map('n', '<leader>td', gitsigns.toggle_deleted)
-            map('n', '<leader>tw', gitsigns.toggle_word_diff)
+            map('n', '<F2>gb', gitsigns.toggle_current_line_blame, {desc = "Toggle git line blame"})
+            map('n', '<F2>gd', gitsigns.preview_hunk_inline, {desc = "Toggle git hunk inline "})
+            map('n', '<F2>gw', gitsigns.toggle_word_diff, {desc = "Toggle git word diff"})
+            map('n', '<F2>gn', gitsigns.toggle_numhl, {desc = "Toggle git line number highlight"})
 
             -- Text object
             map({'o', 'x'}, 'ih', gitsigns.select_hunk)

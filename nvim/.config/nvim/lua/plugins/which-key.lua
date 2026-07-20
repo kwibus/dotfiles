@@ -8,6 +8,10 @@ return {
     -- or leave it empty to use the default settings
     -- refer to the configuration section below
   delay = function(ctx)
+      -- If the key is ' or ` (the Mark triggers), use 800ms
+      if ctx.keys == "'" or ctx.keys == "`" then
+        return 800
+      end
     return ctx.plugin and 0 or 800
   end,
   },

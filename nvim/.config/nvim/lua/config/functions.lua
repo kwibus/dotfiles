@@ -1,3 +1,10 @@
+vim.api.nvim_create_user_command('LspInfo', function()
+  vim.cmd([[checkhealth vim.lsp]])
+end, {})
+vim.api.nvim_create_user_command('LspLog', function()
+  vim.cmd.edit(vim.lsp.log.get_filename())
+end, {})
+
 vim.api.nvim_create_user_command('DiffSaved', function()
   -- Get current buffer info
   local cur_buf = vim.api.nvim_get_current_buf()

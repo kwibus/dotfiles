@@ -1,0 +1,11 @@
+[Unit]
+Description=Apply ryzenadj power profile
+After=multi-user.target systemd-suspend.service systemd-hibernate.service systemd-hybrid-sleep.service systemd-suspend-then-hibernate.service
+
+[Service]
+Type=oneshot
+ExecStartPre=/usr/bin/modprobe ryzen_smu
+ExecStart=/usr/bin/ryzenadj --stapm-limit=12000 --fast-limit=40000 --slow-limit=12000
+
+[Install]
+WantedBy=multi-user.target systemd-suspend.service systemd-hibernate.service systemd-hybrid-sleep.service systemd-suspend-then-hibernate.service

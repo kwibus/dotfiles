@@ -9,14 +9,21 @@ return {
         },
         opts = {
             theme = 'auto',
-            extensions = { 'quickfix', 'lazy', 'trouble', 'nvim-dap-ui' },
+            extensions = {
+                'quickfix',
+                'lazy',
+                'trouble',
+                -- 'nvim-dap-ui',
+                'overseer',
+                'oil'
+            },
             options = {
                 icons_enabled = true,
             },
             sections = {
                 lualine_a = { 'mode',},
                 lualine_b = { 'branch', 'diff', },
-                lualine_c = { 
+                lualine_c = {
                     {'filename', path=1},
                     function()
                         return require('lsp-progress').progress()

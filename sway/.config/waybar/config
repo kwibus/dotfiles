@@ -8,7 +8,7 @@
     // "modules-left": ["sway/workspaces", "sway/mode", "wlr/taskbar"],
     "modules-left": ["sway/workspaces","niri/workspaces", "sway/mode", "wlr/taskbar"],
     "modules-center": ["sway/window"],
-    "modules-right": ["privacy","idle_inhibitor", "pulseaudio","backlight", "temperature", "battery", "battery#bat2","custom/playerctl", "tray",  "clock","custom/notification","custom/power" ],
+    "modules-right": ["privacy","idle_inhibitor", "pulseaudio","backlight", "temperature", "battery","custom/playerctl", "tray",  "clock","custom/notification","custom/power" ],
 
     "disable-scroll": true,
     "privacy": {

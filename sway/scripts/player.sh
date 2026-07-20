@@ -1,5 +1,4 @@
 #! /bin/sh
-
 command=$1
 
 tmpfile=/tmp/player.sh_lastPlayer # dont know a cleaner solution for this, but its unlikely this will clash with other programs

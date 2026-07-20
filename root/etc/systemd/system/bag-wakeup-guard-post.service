@@ -1,0 +1,10 @@
+[Unit]
+Description=Restore USB wakeups after resume from sleep
+After=systemd-suspend.service systemd-hibernate.service systemd-hybrid-sleep.service systemd-suspend-then-hibernate.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/bag-wakeup-guard post suspend
+
+[Install]
+WantedBy=systemd-suspend.service systemd-hibernate.service systemd-hybrid-sleep.service systemd-suspend-then-hibernate.service

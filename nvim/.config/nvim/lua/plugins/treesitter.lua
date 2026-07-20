@@ -4,16 +4,18 @@ return {
       lazy = false,
       branch = 'main',
       build = ':TSUpdate',
-      init = function()
+      init = function(_, opts)
           local treesitter = require('nvim-treesitter')
+          treesitter.setup {
+            install_dir = "/home/rens/.local/share/nvim/site/"
+          }
           local filetypes = {
                 "c",
                 "cmake",
                 "comment",
                 "cpp",
-                "css,",
+                "css",
                 "csv",
-                "dap_repl",
                 "desktop",
                 "dockerfile",
                 "dot",
@@ -31,16 +33,16 @@ return {
                 "json5",
                 "latex",
                 "lua",
-                "lua_patters",
+                -- "lua_patters",
                 "luadoc",
                 "make",
                 "markdown",
                 "mermaid",
-                "norg",
+                -- "norg",
                 "ocaml",
                 "perl",
                 "php",
-                "php_doc",
+                -- "php_doc",
                 "python",
                 "query",
                 "regex",

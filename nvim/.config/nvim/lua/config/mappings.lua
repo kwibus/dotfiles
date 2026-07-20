@@ -1,3 +1,22 @@
+-- disable annoying
+vim.keymap.set({ 'n', 'i', 'v' }, '<F1>', '<nop>', { noremap = true, silent = true })
+
+-- Toggles
+vim.keymap.set('n', '<F2>h', function()
+    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+end, { desc = 'Toggle Inlay Hints' })
+vim.keymap.set('n', '<F2>o',"<cmd>OverseerToggle<CR>", { desc = 'Toggle Overseer ' })
+vim.keymap.set('n', '<F2>u',"<cmd>Atone toggle<CR>", { desc = 'Toggle Undo (Atone)' })
+vim.keymap.set('n', '<F2>d', function()
+    vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+end, { desc = 'Toggle Diagnostics' })
+vim.keymap.set('n', '<F2>t', function()
+    vim.diagnostic.config({ virtual_text = not vim.diagnostic.config().virtual_text })
+end, { desc = "Toggle Virtual Text" })
+vim.keymap.set('n', '<F2>s',
+    function() vim.opt.spell = not vim.opt.spell:get()
+end, { desc = "Toggle Spellcheck" })
+vim.keymap.set('n', '<F2>v', "<cmd>Vista!!<CR>", { desc = "Toggle Vista" })
 -- commands
 -- common typos
 vim.api.nvim_create_user_command('Q','q',{})

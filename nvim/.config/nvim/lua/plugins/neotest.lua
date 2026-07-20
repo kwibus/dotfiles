@@ -20,13 +20,29 @@ return {
       {
         "<leader>tt",
         function()
-          local others = require("other-nvim").findOther(vim.fn.expand("%"), "test")
+          local neotest = require("neotest")
           local test_file = vim.fn.expand("%")
-          if next(others) ~= nil then
-             test_file = others[1].filename
-             print("Use: " .. test_file)
+          -- check if current file has test
+          local has_tests = false
+          for _, adapter_id in ipairs(neotest.state.adapter_ids()) do
+           local positions = neotest.state.positions(adapter_id, { buffer =  vim.api.nvim_get_current_buf()})
+           if positions and #positions:children() > 0 then
+             has_tests = true
+             break
+           end
+         end
+
+         -- if neotest.run.get_tree_from_args(test_file,true) then
+         if has_tests  then
+           neotest.run.run(test_file)
+         else
+            local others = require("other-nvim").findOther(vim.fn.expand("%"), "test")
+            if next(others) ~= nil then
+               test_file = others[1].filename
+               vim.notify("Use: " .. test_file, vim.log.levels.INFO)
+               neotest.run.run(test_file)
+            end
           end
-          require("neotest").run.run(test_file)
         end,
         desc = "Run test",
       },
@@ -135,13 +151,13 @@ return {
     end,
   },
   {
-      'nvim-neotest/neotest',
-      ft = "haskell",
-      dependencies = {
-        -- ...,
-        'mrcjkb/neotest-haskell',
-        'nvim-lua/plenary.nvim',
-      }
+    'mrcjkb/neotest-haskell',
+    ft = "haskell",
+    dependencies = { "nvim-neotest/neotest" },
+    config = function()
+      -- default frameworks: tasty, hspec, sydtest (auto-detected via cabal/stack)
+      table.insert(require("neotest.config").adapters, require("neotest-haskell"))
+    end,
   },
   {
     'rcasia/neotest-bash',

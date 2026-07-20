@@ -1,0 +1,93 @@
+#!/bin/bash
+# NetworkManager dispatcher hook: kill TCP sockets bound to an interface's
+# IPv4/IPv6 addresses when the interface goes down, so applications aren't
+# stranded waiting for tcp_retries2 (~13 min default) to expire.
+#
+# Triggered events:
+#   up / dhcp4-change / dhcp6-change  -> snapshot live addresses to /run cache
+#   pre-down / down / vpn-down        -> kill sockets bound to (env or cached) addrs
+#
+# Logs via syslog as tag "nm-kill-sockets"; check with: journalctl -t nm-kill-sockets
+
+set -u
+
+IFACE="${1:-}"
+ACTION="${2:-}"
+
+[ -z "$IFACE" ] && exit 0
+[ "$IFACE" = "lo" ] && exit 0
+
+STATE_DIR=/run/nm-kill-sockets
+STATE_FILE="$STATE_DIR/$IFACE"
+
+# Debug: log every invocation so we can audit which NM actions trigger us
+logger -t nm-kill-sockets "entry: iface=$IFACE action=$ACTION pid=$$"
+
+collect_env_addrs() {
+    local fam i var val
+    for fam in 4 6; do
+        i=0
+        while :; do
+            var="IP${fam}_ADDRESS_$i"
+            val="${!var:-}"
+            [ -n "$val" ] || break
+            # strip /prefix, skip IPv6 link-local
+            val="${val%%/*}"
+            case "$val" in
+                fe80:*|fe80::*) ;;
+                *) echo "$val" ;;
+            esac
+            i=$((i+1))
+        done
+    done
+}
+
+snapshot_addresses() {
+    mkdir -p "$STATE_DIR" 2>/dev/null
+    {
+        collect_env_addrs
+        # also query live state in case env vars are absent on some event types
+        ip -o -4 addr show dev "$IFACE" 2>/dev/null | awk '{print $4}' | cut -d/ -f1
+        ip -o -6 addr show dev "$IFACE" scope global 2>/dev/null | awk '{print $4}' | cut -d/ -f1
+    } | awk 'NF && !seen[$0]++' > "$STATE_FILE.tmp" && mv "$STATE_FILE.tmp" "$STATE_FILE"
+}
+
+kill_addr() {
+    local a="$1"
+    case "$a" in
+        *.*.*.*)
+            ss --tcp --kill src "$a" >/dev/null 2>&1 || true
+            # v4-mapped-v6 sockets (some apps open AF_INET6 then bind v4-mapped)
+            ss --tcp --kill src "[::ffff:$a]" >/dev/null 2>&1 || true
+            ;;
+        *:*)
+            ss --tcp --kill src "[$a]" >/dev/null 2>&1 || true
+            ;;
+    esac
+}
+
+case "$ACTION" in
+    up|dhcp4-change|dhcp6-change)
+        snapshot_addresses
+        logger -t nm-kill-sockets "iface=$IFACE action=$ACTION snapshot=$(tr '\n' ' ' < "$STATE_FILE" 2>/dev/null)"
+        ;;
+    pre-down|down|vpn-down)
+        addrs=$(collect_env_addrs)
+        if [ -z "$addrs" ] && [ -r "$STATE_FILE" ]; then
+            addrs=$(cat "$STATE_FILE")
+        fi
+        if [ -z "$addrs" ]; then
+            logger -t nm-kill-sockets "iface=$IFACE action=$ACTION no-addrs-to-kill"
+            exit 0
+        fi
+        killed_list=""
+        for a in $addrs; do
+            kill_addr "$a"
+            killed_list+="$a "
+        done
+        logger -t nm-kill-sockets "iface=$IFACE action=$ACTION killed-for=[${killed_list% }]"
+        rm -f "$STATE_FILE"
+        ;;
+esac
+
+exit 0

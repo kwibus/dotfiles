@@ -1,0 +1,9 @@
+#!/bin/bash
+# commit-msg hook to validate commit messages.
+# Testing without unsetting GIT_* variables as requested.
+
+if [ -f ".pre-commit-config.yaml" ]; then
+    pre-commit run --hook-stage commit-msg --commit-msg-filename "$1"
+else
+    pre-commit run --config ~/.config/pre-commit/global-master.yaml --hook-stage commit-msg --commit-msg-filename "$1"
+fi

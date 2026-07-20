@@ -1,0 +1,73 @@
+#!/bin/bash
+PROJECT_ROOT=$(git rev-parse --show-toplevel)
+PROJECT_NAME=$(basename "$PROJECT_ROOT")
+SHADOW_DIR="$XDG_CACHE_HOME/git-pre-commit-shadows/$PROJECT_NAME"
+
+mkdir -p "$XDG_CACHE_HOME/git-pre-commit-shadows"
+
+# 1. Create or repair the shadow worktree if it doesn't exist
+# We verify the shadow is a valid worktree by checking for the .git file
+if [ ! -f "$SHADOW_DIR/.git" ]; then
+    echo "🌱 Initializing persistent shadow worktree..."
+    # 1a. Force clean up any stale directory or metadata
+    rm -rf "$SHADOW_DIR"
+    # Remove the worktree from git's perspective to avoid "already exists" errors
+    git worktree remove "$SHADOW_DIR" > /dev/null 2>&1
+    git worktree prune
+
+    # 1b. Create the worktree
+    if ! git rev-parse HEAD >/dev/null 2>&1; then
+        echo "🌱 Creating orphan shadow worktree for initial commit..."
+        # Unset GIT_INDEX_FILE before creating worktree to avoid "Not a directory" error
+        # during worktree initialization
+        (unset GIT_INDEX_FILE; git worktree add --orphan "$SHADOW_DIR") > /tmp/git-hook-error.log 2>&1
+        if [ $? -ne 0 ]; then
+            echo "❌ Failed to create orphan worktree. Error log:"
+            cat /tmp/git-hook-error.log
+            exit 1
+        fi
+    elif ! (unset GIT_INDEX_FILE; git worktree add --detach "$SHADOW_DIR" HEAD) > /dev/null 2>&1; then
+        echo "❌ Failed to create worktree. Trying recovery..."
+        rm -rf "$SHADOW_DIR"
+        (unset GIT_INDEX_FILE; git worktree add --detach "$SHADOW_DIR" HEAD)
+    fi
+fi
+
+# 2. Sync staged changes to the shadow directory
+echo "🔄 Syncing staged changes to shadow..."
+git checkout-index -a --prefix="$SHADOW_DIR/" --force
+
+# 3. Update the shadow's index to match the main repo's index
+# The shadow worktree's index is stored within the main repo's metadata.
+COMMON_DIR=$(git rev-parse --git-common-dir)
+cp "$COMMON_DIR/index" "$COMMON_DIR/worktrees/$PROJECT_NAME/index"
+
+# 4. Run checks in the shadow directory
+cd "$SHADOW_DIR" || exit 1
+
+# THE FIX: When git runs a hook, it sets environment variables like GIT_INDEX_FILE
+# and GIT_DIR to point to the main repository. These variables are inherited by
+# sub-processes. We must unset them so that git commands inside 'pre-commit'
+# (like 'git rev-parse') correctly discover the shadow repository's own state
+# instead of trying to access the locked or incompatible main repository.
+unset GIT_INDEX_FILE
+unset GIT_DIR
+unset GIT_WORK_TREE
+unset GIT_PREFIX
+
+# Clean up any stale files that were deleted in the main repository's index
+# (Since we copied the index, deleted files will appear as untracked in the shadow worktree)
+git clean -fdx > /dev/null 2>&1
+
+# PRE_COMMIT_NO_STASH: prevent pre-commit from stashing unstaged changes.
+# Since we work in a dedicated shadow tree that only contains the staged files
+# (via checkout-index), there are no unstaged changes to stash.
+export PRE_COMMIT_NO_STASH=1
+
+if [ -f ".pre-commit-config.yaml" ]; then
+    # 1. Use the project-specific config if it exists
+    pre-commit run
+else
+    # 2. Force the use of your "Global Master" config
+    pre-commit run --config ~/.config/pre-commit/global-master.yaml
+fi

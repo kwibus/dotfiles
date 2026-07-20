@@ -4,14 +4,14 @@ CLUTTER_BACKEND=wayland
 
 #QT
 #QT_QPA_PLATFORM=wayland-egl
-# QT_QPA_PLATFORM=wayland
+QT_QPA_PLATFORM=wayland
 QT_QPA_PLATFORMTHEME=gtk3
 # QT_STYLE_OVERRIDE=kvantum
 # QT_QPA_PLATFORMTHEME=qt5ct:qt6ct
 # TODO try if this work
 # QT_WAYLAND_FORCE_DPI=physical
-#SDL
-SDL_VIDEODRIVER=wayland # break rimwold
+#SDL # break rimwold
+SDL_VIDEODRIVER=wayland
 
 #Java
 _JAVA_AWT_WM_NONREPARENTING=1
@@ -32,8 +32,14 @@ GTK_IM_MODULE=fcitx
 QT_IM_MODULE=fcitx
 XMODIFIERS=@im=fcitx
 
-
+SSH_AUTH_SOCK=${XDG_RUNTIME_DIR}/ssh-agent.socket
 
 #test vulkan
 WLR_RENDERER=vulkan
+
 #WLR_DRM_NO_ATOMIC=0
+WLR_DRM_DEVICES=/dev/dri/card1
+
+#export __EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/50_mesa.json
+#export VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/radeon_icd.json
+

@@ -2,13 +2,12 @@ return {
     {
         "mfussenegger/nvim-dap",
         dependencies = {
-            "igorlfs/nvim-dap-view",
             "daic0r/dap-helper.nvim", -- primary for persistence breakpoint
-            "theHamsta/nvim-dap-virtual-text",
             "Jorenar/nvim-dap-disasm",
+            -- "theHamsta/nvim-dap-virtual-text",
         },
         lazy = true,
-        commands = {
+        cmd = {
             "DapClearBreakpoints",
             "DapContinue",
             "DapToggleBreak",
@@ -20,7 +19,7 @@ return {
             { mode = "n", "<leader>db", "<cmd>DapToggleBreak<CR>", desc = "Toggle Breakpoint" },
             { mode = "n", "<F9>", "<cmd>DapStepOver<CR>", desc = "Debug Step Over" },
             { mode = "n", "<F10>", "<cmd>DapStepInto<CR>", desc = "Debug Step into" },
-            { mode = "n", "<Shift-F10>", "<cmd>DapStepOut<CR>", desc = "Debug Step out" },
+            { mode = "n", "<S-F10>", "<cmd>DapStepOut<CR>", desc = "Debug Step out" },
             { mode = "n", "<F11>", "<cmd>DapContinue<CR>", desc = "Debug Continue" },
         },
         config = function()
@@ -30,7 +29,6 @@ return {
                 { text = "", texthl = "DapBreakpointColor", linehl = "", numhl = "" }
             )
             require("overseer").enable_dap()
-            -- require("dap.ui.widgets").hover()
             vim.api.nvim_create_user_command("RunScriptWithArgs", function(t)
                 local dap = require("dap")
                 -- :help nvim_create_user_command
@@ -67,7 +65,6 @@ return {
         "daic0r/dap-helper.nvim", -- primary for persistence breakpoint
         lazy = true,
         dependencies = {
-            -- "rcarriga/nvim-dap-ui",
             "mfussenegger/nvim-dap",
         },
         config = function()
@@ -105,8 +102,10 @@ return {
     },
     {
         "Jorenar/nvim-dap-disasm",
+        dependencies = {
+            "igorlfs/nvim-dap-view",
+        },
         lazy = true,
-        dependencies = "igorlfs/nvim-dap-view",
         opts = {
             -- Add disassembly view to elements of nvim-dap-ui
             dapui_register = true,
@@ -120,6 +119,14 @@ return {
         lazy = true,
         ---@module 'dap-view'
         ---@type dapview.Config
+        cmd = {"DapViewOpen", "DapViewShow", "DapViewToggle", "DapViewClose", "DapViewJump" },
+        keys = {
+            { mode = "n", "<leader>dv", "<cmd>DapViewToggle<CR>", desc = "DapView Toggle"  },
+        },
+        dependencies = {
+            "mfussenegger/nvim-dap",
+            "theHamsta/nvim-dap-virtual-text",
+        },
         opts = {
             winbar = {
                 show = true,
@@ -139,46 +146,6 @@ return {
                 default_section = "breakpoints",
                 -- Configure each section individually
                 base_sections = {
-                    breakpoints = {
-                        keymap = "B",
-                        label = "Breakpoints [B]",
-                        short_label = " [B]",
-                    },
-                    scopes = {
-                        keymap = "S",
-                        label = "Scopes [S]",
-                        short_label = "󰂥 [S]",
-                    },
-                    exceptions = {
-                        keymap = "E",
-                        label = "Exceptions [E]",
-                        short_label = "󰢃 [E]",
-                    },
-                    watches = {
-                        keymap = "W",
-                        label = "Watches [W]",
-                        short_label = "󰛐 [W]",
-                    },
-                    threads = {
-                        keymap = "T",
-                        label = "Threads [T]",
-                        short_label = "󱉯 [T]",
-                    },
-                    repl = {
-                        keymap = "R",
-                        label = "REPL [R]",
-                        short_label = "󰯃 [R]",
-                    },
-                    sessions = {
-                        keymap = "K", -- I ran out of mnemonics
-                        label = "Sessions [K]",
-                        short_label = " [K]",
-                    },
-                    console = {
-                        keymap = "C",
-                        label = "Console [C]",
-                        short_label = "󰆍 [C]",
-                    },
                 },
                 -- Add your own sections
                 custom_sections = {},
@@ -199,15 +166,13 @@ return {
                 },
             },
             windows = {
-                height = 0.25,
+                -- height = 0.25,
                 position = "below",
                 terminal = {
-                    width = 0.5,
+                    -- width = 0.5,
                     position = "left",
                     -- List of debug adapters for which the terminal should be ALWAYS hidden
                     hide = {},
-                    -- Hide the terminal when starting a new session
-                    start_hidden = true,
                 },
             },
             icons = {
@@ -285,6 +250,7 @@ return {
         lazy = true,
         init = function()
             require("nvim-dap-repl-highlights").setup()
+            require('nvim-treesitter').install { 'dap_repl' }
         end,
     },
     {

@@ -11,7 +11,12 @@ set $right l
 # set $term termite -t termite -e /home/rens/scripts/tmx.sh
 # set $term alacritty  -e/home/rens/scripts/tmx.sh
 # set $term foot --log-level warning /home/rens/scripts/tmx.sh
-set $term kitty /home/rens/scripts/tmx.sh
+set $script /home/rens/scripts
+set $term kitty $script/tmx.sh
+set $filemanger thunar
+
+set $bgdir /home/rens/Afbeeldingen/background
+set $bgnext awww img "$(find $bgdir -maxdepth 1 -type f -regextype posix-extended -iregex '.*\.(jpg|jpeg|png|webp)' | shuf -n1)"
 
 # Your preferred application launcher
 
@@ -27,12 +32,11 @@ hide_edge_borders smart_no_gaps
 
 gaps inner 4
 gaps outer -4
-
 # TODO test
 focus_wrapping workspace
 focus_on_window_activation urgent
+# focus_on_window_activation none
 force_display_urgency_hint 700
-
 show_marks yes
 
 set $laptop eDP-1
@@ -40,25 +44,33 @@ output $laptop {
     scale 1
     pos 0,0
 
-    bg /home/rens/Afbeeldingen/Wallpapers/background fill
-
     adaptive_sync on
+    render_bit_depth 10
     max_render_time 10
 }
-output HDMI-A-2 {
-    pos 10,10
-    scale 1.5
+# output HDMI-A-2 {
+#     pos 10,10
+#     scale 1.5
+# }
+output 'DP-1' {
+    mode 2560x1080@60Hz
+    # scale 2
 }
-output 'LG Electronics LG HDR WQHD 0x0000DBEA' {
-    scale 2
+# output 'ASUSTek COMPUTER INC PA278CFRV T4LMYX002043' {
+output 'ASUSTek COMPUTER INC PA278CFRV T4LMYX002043' {
+    mode 2560x1440@99.946Hz
+    pos 1920 0
+    adaptive_sync on
+    render_bit_depth 10
+    max_render_time 10
+    subpixel rgb
+    # hdr on
 }
-#bindswitch --reload --locked lid:on output $laptop disable
-bindswitch --reload --locked lid:on exec sway-disable-if.sh  $laptop
-bindswitch --reload --locked lid:off output $laptop enable
-
+bindswitch --locked lid:on output $laptop disable
+bindswitch --locked lid:off output '*' enable
 
 input "type:keyboard" {
-  xkb_layout "us"
+  xkb_layout "eu"
  # xkb_variant "intl"
   xkb_options caps:escape_shifted_capslock,compose:ralt,eurosign:5
 }
@@ -112,7 +124,8 @@ mouse_warping output
     bindsym $mod+b border toggle
 
     # start a terminal
-    bindsym $mod+Return exec /home/rens/scripts/sway-focus-or-exec.sh $term # consider swayr
+    bindsym $mod+q xec echo $script/sway-focus-or-exec.sh $term # consider swayr
+    bindsym $mod+Return exec $script/sway-focus-or-exec.sh $term # consider swayr
     # kill focused window
     bindsym --no-repeat --inhibited $mod+Shift+c kill
 
@@ -121,6 +134,7 @@ mouse_warping output
     # start your launcher
     bindsym  $mod+o exec $menu
     #bindsym $mod+p exec $menu
+    bindsym $mod+i exec /home/rens/scripts/sway-focus-or-exec.sh $filemanger
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -143,10 +157,12 @@ mouse_warping output
     bindsym $mod+Shift+Tab exec sway-next.sh previous
     bindsym Alt+Tab exec sway-next.sh
     bindsym Alt+Shift+Tab exec sway-next.sh previous
-    bindsym $mod+x+Right exec variety --next
-    bindsym $mod+x+Left exec variety --previous
-    bindsym $mod+x+Down exec variety --move-to-favorites
-    bindsym $mod+x+UP exec variety --trash
+    bindsym $mod+x+Right exec $bgnext
+    # $mod+x+Left was variety --previous; awww has no "previous", so re-pick random
+    bindsym $mod+x+Left  exec $bgnext
+    # $mod+x+Down was variety --move-to-favorites; the folder IS the keep pile now
+    # bindsym $mod+x+Down  exec ...
+    bindsym $mod+x+UP    exec gio trash "$(awww query | sed 's/.*image: //;q')" && $bgnext
 
     # Move your focus around with $mod+[h|j|k|l], like vim
     bindsym $mod+h focus left
@@ -165,12 +181,11 @@ mouse_warping output
     bindsym $mod+Shift+k move up
     bindsym $mod+Shift+l move right
 
-    bindsym $mod+Ctrl+h move workspace to left
-    bindsym $mod+Ctrl+j move workspace to down
-    bindsym $mod+Ctrl+k move workspace to up
-    bindsym $mod+Ctrl+l move workspace to right
+    bindsym $mod+Ctrl+h move workspace to output left
+    bindsym $mod+Ctrl+j move workspace to output down
+    bindsym $mod+Ctrl+k move workspace to output up
+    bindsym $mod+Ctrl+l move workspace to output right
 
-# ditto, with arrow keys
     bindsym $mod+Shift+Left move left
     bindsym $mod+Shift+Down move down
     bindsym $mod+Shift+Up move up
@@ -178,7 +193,6 @@ mouse_warping output
 #
 # Workspaces:
 #
-    # switch to workspace
 
     bindsym $mod+1 workspace number 1
     bindsym $mod+2 workspace number 2
@@ -216,22 +230,23 @@ mouse_warping output
     bindsym $mod+f fullscreen
 
     # Toggle the current focus between tiling and floating mode
-    bindsym $mod+Shift+space floating toggle
-    bindsym $mod+g floating toggle
+    bindsym $mod+Shift+space floating toggle; mark --add --toggle 
+    bindsym $mod+g floating toggle; mark --add --toggle 
 
     # Swap focus between the tiling area and the floating area
     bindsym $mod+space focus mode_toggle
     bindsym $mod+shift+g focus mode_toggle
 
     # stick floating window
-    bindsym $mod+Shift+s sticky toggle ;  mark --toggle sticky
+    bindsym $mod+Shift+s sticky toggle; mark --add --toggle 󰐃
 
     # move focus to the parent container
     bindsym $mod+a focus parent
     bindsym $mod+Shift+a focus child
 
-    bindsym $mod+shift+minus opacity minus 0.1
+    bindsym $mod+shift+minus opacity minus 0.1; mark --add 󰂸
     bindsym $mod+shift+equal opacity plus 0.1
+    bindsym $mod+Alt+0 opacity set 1.0; unmark 󰂸
 
     bindsym $mod+comma  mark --toggle master
     bindsym $mod+Shift+period exec "wl-paste -p | piper-speak"
@@ -248,7 +263,8 @@ mouse_warping output
     bindsym $mod+Alt+equal scale 1
     bindsym $mod+Alt+plus exec /home/rens/scripts/sway-scale.sh +0.2
     bindsym $mod+Alt+minus exec /home/rens/scripts/sway-scale.sh -0.2
-    bindsym $mod+z exec voxd --trigger-record
+    # bindsym $mod+z exec voxd --trigger-record
+    bindsym XF86Launch1 exec handy --toggle-transcription --start-hidden
 #
 # Scratchpad:
 #
@@ -286,6 +302,7 @@ mode "resize" {
     bindsym Escape mode "default"
 }
 bindsym $mod+r mode "resize"
+
 mode "present" {
     # command starts mirroring
     bindsym m mode "default"; exec wl-present mirror
@@ -310,21 +327,24 @@ bindsym $mod+t input type:touchpad events toggle enabled disabled
 bindsym XF86TouchpadToggle input type:touchpad events toggle enabled disabled
 
 bindsym  XF86Mail exe thunderbird
-bindsym  XF86Explorer exe thunar
+bindsym  XF86Explorer exe $filemanger
 bindsym  XF86Calculator exec gnome-calculator
 
 bindsym  XF86Display exec wdisplays
 bindsym  $mod+p  exec wdisplays
 
-bindsym --locked XF86AudioPrev exec player.sh prev
-bindsym --locked $mod+Ctrl+Left  exec player.sh prev
+bindsym --locked $mod+Alt+left exec playerctl position 10-
+bindsym --locked $mod+Alt+right exec playerctl position 10+
 
-bindsym --locked XF86AudioNext exec player.sh next
-bindsym --locked $mod+Ctrl+Right exec player.sh next
+bindsym --locked XF86AudioPrev exec $script/player.sh prev
+bindsym --locked $mod+Ctrl+Left  exec $script/player.sh prev
 
-bindsym  --locked XF86AudioStop  exec player.sh toggle
-bindsym  --locked XF86AudioPlay exec player.sh toggle
-bindsym  --locked $mod+Ctrl+Down  exec player.sh toggle
+bindsym --locked XF86AudioNext exec $script/player.sh next
+bindsym --locked $mod+Ctrl+Right exec $script/player.sh next
+
+bindsym  --locked XF86AudioStop  exec $script/player.sh toggle
+bindsym  --locked XF86AudioPlay exec $script/player.sh toggle
+bindsym  --locked $mod+Ctrl+Down  exec $script/player.sh toggle
 
 # bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
 # bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
@@ -335,6 +355,8 @@ bindsym --locked XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@
 
 bindsym --locked XF86MonBrightnessDown exec brightnessctl set -- -10%
 bindsym --locked XF86MonBrightnessUp exec brightnessctl set -- +10%
+bindsym --locked Shift+XF86MonBrightnessDown exec ddcutil --display 1 setvcp 10 - 8
+bindsym --locked Shift+XF86MonBrightnessUp   exec ddcutil --display 1 setvcp 10 + 8
 
 bindsym Print exec grim -g \"$(slurp)\"  /home/rens/screenshot_$(date +%F+%T).png
 bindsym $mod+Print exec flameshot gui
@@ -349,9 +371,37 @@ bindsym Ctrl+Alt+l exec $lock
 # Status Bar:
 no_focus [title="im-emoji-picker"]
 
+font pango:NotoSans Nerd Font 10
+
+for_window [shell="xdg_shell"] title_format "%title"
+for_window [shell="xwayland"] title_format "  %title"
+# for_window [urgent=latest] title_format "<span foreground='red'>󰀦 </span> %title"
+# for_window [inhibit_idle=focus] title_format "󰈈  %title"
+for_window [floating] mark --add 
+
+for_window [app_id="firefox"] title_format "<span foreground='orange'>󰈹 </span> %title"
+for_window [app_id="kitty"] title_format "  %title"
+for_window [app_id="foot"] title_format "  %title"
+for_window [app_id="Alacritty"] title_format "  %title"
+for_window [app_id="google-chrome"] title_format "  %title"
+for_window [app_id="spotify"] title_format "  %title"
+for_window [app_id="org.mozilla.Thunderbird"] title_format "  %title"
+for_window [app_id="org.keepassxc.KeePassXC"] title_format "  %title"
+for_window [app_id="Mattermost"] title_format "󰻞  %title"
+for_window [app_id="(?i)thunar"] {
+    title_format "󰉋  %title";
+    floating enable
+}
+for_window [app_id="org.kde.dolphin"] title_format "󰉋  %title"
+for_window [app_id="org.gnome.Nautilus"] title_format "󰉋  %title"
+for_window [app_id="gnome-calculator"] title_format "󰃬  %title"
+for_window [app_id="pavucontrol"] title_format "󰕾  %title"
+for_window [app_id="blueman-manager"] title_format "󰂯  %title"
+for_window [app_id="org.pwmt.zathura"] title_format "󰈦  %title"
+for_window [app_id="mpv"] title_format "󰐊  %title"
+for_window [con_mark="sticky"] title_format "󰐃 %title"
 
 # for_window [title="^Syncthing Tray( \(.*\))?$"] floating enable, border none, resize set 450 400, move position cursor, move down 24px
-for_window [shell=".*"] title_format "%title :: %shell"
 for_window [app_id="lxqt-policykit-agent"] floating enable
 for_window [title="^CopyQ"] floating enable, border none, resize set 450 320, move position 1500 0,focus prev
 for_window [app_id="gnome-calculator"] floating enable
@@ -362,8 +412,6 @@ for_window [class="Lxappearance"] floating enable
 for_window [app_id="nm-connection-editor"] floating enable
 for_window [title="^popup_"] floating enable, border none,  sticky enable
 for_window [app_id="^popup_"] floating enable, border none, sticky enable
-
-for_window [app_id="(?i)thunar"] floating enable
 
 for_window [app_id="firefox" title="^Picture-in-Picture$"] {
     floating enable
@@ -396,8 +444,6 @@ bar {
 #     }
 # }
 }
-#exec copyq
-
 
 # exec read-gtk3-settings.sh # no longer needed with nwg-look
 
@@ -412,7 +458,7 @@ exec swaync
 exec nm-applet --indicator
 exec blueman-applet
 
-exec swayidle
+exec swayidle -w
   # TODO playerctl pause -a
 
 # exec mkfifo $SWAYSOCK.wob && tail -f $SWAYSOCK.wob | wob
@@ -427,11 +473,14 @@ exec systemctl start --user xdg-desktop-portal
 
 #exec /var/lib/portmaster/updates/linux_amd64/notifier/portmaster-notifier_v0-2-3
 
-exec_always syncthingtray-qt6 --replace --wait
+exec_always syncthingtray --replace --wait
 exec_always kdeconnectd -platform wayland --replace
 exec_always kdeconnect-indicator
 exec usbguard-qt
-exec variety
+#exec variety
+exec awww-daemon
+exec_always $bgnext
 exec keepassxc
 exec opensnitch-ui --background
 #exec_always /usr/lib/fcitx5-wayland-launcher
+# exec swaycons

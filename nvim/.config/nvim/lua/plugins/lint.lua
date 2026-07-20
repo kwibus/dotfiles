@@ -26,8 +26,8 @@ return {
         local rstcheck = lint.linters.rstcheck
         rstcheck.args = {
             '--ignore-messages', 'is not referenced',
-            '--ignore-substitutions', "notes, slide",
-            '--ignore-directives', "exercise"
+            '--ignore-substitutions', "notes,slide,newpage",
+            '--ignore-directives', "exercise,question"
         }
 
         local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })

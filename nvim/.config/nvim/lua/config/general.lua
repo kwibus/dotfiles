@@ -1,6 +1,5 @@
 
 
-
 vim.g.loaded_node_provider = 0 -- don't want to use plugins written in node
 vim.g.loaded_perl_provider = 0 -- don't want to use plugins written in perl
 vim.g.loaded_python3_provider = 0 -- don't want to use plugins written in python
@@ -9,9 +8,9 @@ vim.opt.secure  = true
 -- don't fix end of file without enter.
 vim.opt.fixendofline = false
 
-if vim.fn.has('nvim-0.12') == 1 then
+-- if vim.fn.has('nvim-0.12') == 1 then
   vim.o.pumborder = 'single' -- popup menu border # TODO does not work with
-end
+-- end
 vim.o.winborder = "single"
 -- show line number
 vim.wo.number = true
@@ -30,7 +29,7 @@ vim.o.mousemoveevent = true
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('my.lsp', {}),
   callback = function(args)
-    vim.lsp.inlay_hint.enable() -- TODO try
+    -- vim.lsp.inlay_hint.enable() -- TODO try
   end
 })
 -- vim.api.nvim_set_keymap(
@@ -80,7 +79,17 @@ vim.fn.mkdir(prefix .. "/nvim/undo//", "p")
 vim.opt.undodir = { prefix .. "/nvim/undo//"}
 vim.fn.mkdir(prefix .. "/nvim/backup//", "p")
 vim.opt.backupdir = {prefix .. "/nvim/backup//"}
-
+vim.opt.backup = true
+vim.opt.writebackup = true
+vim.api.nvim_create_autocmd("BufWritePre", {
+    group = vim.api.nvim_create_augroup("TimestampedBackups", { clear = true }),
+    callback = function()
+        -- Format: _260314_16h15
+        -- This ensures only ONE backup per minute.
+        local extension = os.date("_%y%m%d_%Hh%M")
+        vim.opt.backupext = extension
+    end,
+})
 
 -- tab and indent
 vim.opt.smarttab = true
@@ -99,7 +108,7 @@ vim.o.foldtext = ""
 -- vim.opt.foldlevelstart=99
 vim.wo.foldlevel=99
 -- maybe plugin can do this better
-vim.opt.foldcolumn="1"
+vim.opt.foldcolumn = "0"
 vim.opt.fillchars = {
   -- vert = ' ', -- alternatives │
   fold = ' ',
@@ -111,9 +120,13 @@ vim.opt.fillchars = {
   foldclose = '▸'
 }
 
-if vim.fn.has('nvim-0.12') == 1 then
-  vim.opt.fillchars.foldinner = ' '
-end
+-- if vim.fn.has('nvim-0.12') == 1 then
+vim.opt.fillchars.foldinner = ' '
+-- end
+-- vim.opt.signcolumn = "yes:2" -- Allow 2 signs to show at once
+-- vim.opt.statuscolumn = "%s%C%=%l "
+-- vim.opt.statuscolumn = "%s%=%l " -- Signs on left, Number on right
+
 --
 -- allow visual block to select as block
 vim.opt.virtualedit={"block","onemore"}

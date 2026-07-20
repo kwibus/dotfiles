@@ -1,10 +1,19 @@
 return {
     'nvim-mini/mini.nvim',
     version = false,
-    event = {"VeryLazy"},
+    -- event = {"VeryLazy"}, breaks cursor restore
+    event = {"BufReadPost"},
     config = function ()
         -- require('mini.pick').setup() -- file picker use telescope
-        require('mini.ai').setup() -- add text object argument a, function a
+        require('mini.ai').setup({
+            mappings = {
+                -- Remap Next/Last to avoid conflict with Neovim 0.12 'in' and 'an'
+                around_next = 'af', -- 'a'round 'f'orward
+                inside_next = 'if', -- 'i'nside 'f'orward
+                around_last = 'ab', -- 'a'round 'b'ackward
+                inside_last = 'ib', -- 'i'nside 'b'ackward
+            }
+        }) -- add text object argument a, function a
         require('mini.move').setup() -- move blocks with alt - <h, j, k, l>
         require('mini.align').setup()     -- align text with ga, gA
         require('mini.animate').setup({
@@ -65,5 +74,8 @@ return {
         --     -- Disabled by default
         --     source = diff.gen_source.none(),
         -- })
+        local misc = require('mini.misc')
+        misc.setup({}) -- Initialize the module
+        misc.setup_restore_cursor() -- replace https://github.com/farmergreg/vim-lastplace
     end,
 }

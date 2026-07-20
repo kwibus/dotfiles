@@ -1,0 +1,71 @@
+#!/bin/sh
+# Conditionally disable USB wakeup sources when suspending in a likely
+# "bag" scenario (lid closed AND no external display connected).
+# Restore them on resume. Logs decisions, disarm counts, and wake IRQ via
+# journalctl -t bag-wakeup-guard.
+
+set -u
+TAG=bag-wakeup-guard
+STATE_DIR=/run/wakeup-guard
+DISABLED_FILE=$STATE_DIR/disabled
+COUNTS_FILE=$STATE_DIR/counts
+
+log() { logger -t "$TAG" -- "$*"; }
+
+case "$1/$2" in
+  pre/suspend|pre/suspend-then-hibernate|pre/hibernate|pre/hybrid-sleep)
+    lid_file=$(ls /proc/acpi/button/lid/*/state 2>/dev/null | head -1)
+    lid=unknown
+    [ -n "$lid_file" ] && lid=$(awk "{print \$NF}" "$lid_file")
+
+    ext=0
+    for s in /sys/class/drm/card*-*/status; do
+      case "$s" in *-eDP-*) continue;; esac
+      [ "$(cat "$s" 2>/dev/null)" = connected ] && ext=$((ext+1))
+    done
+
+    if [ "$lid" = closed ] && [ "$ext" -eq 0 ]; then
+      log "bag heuristic matched (lid=$lid ext=$ext) — disarming USB wakeups"
+      mkdir -p "$STATE_DIR"
+      : > "$DISABLED_FILE"
+      : > "$COUNTS_FILE"
+      for wf in /sys/bus/usb/devices/*/power/wakeup; do
+        [ -f "$wf" ] || continue
+        [ "$(cat "$wf" 2>/dev/null)" = enabled ] || continue
+        dev=$(dirname "$(dirname "$wf")")
+        name=$(cat "$dev/product" 2>/dev/null || echo "?")
+        pre_cnt=$(cat "$dev/power/wakeup_count" 2>/dev/null || echo 0)
+        printf "%s\n" "$dev" >> "$DISABLED_FILE"
+        printf "%s %s\n" "$dev" "$pre_cnt" >> "$COUNTS_FILE"
+        echo disabled > "$wf"
+        log "  disarmed $(basename "$dev") ($name) — pre-suspend wakeup_count=$pre_cnt"
+      done
+    else
+      log "non-bag scenario (lid=$lid ext=$ext) — leaving wakeups armed"
+    fi
+    ;;
+  post/*)
+    irq=$(cat /sys/power/pm_wakeup_irq 2>/dev/null || true)
+    [ -n "$irq" ] && log "resumed — pm_wakeup_irq=$irq"
+
+    if [ -f "$COUNTS_FILE" ]; then
+      while IFS=" " read -r dev pre_cnt; do
+        [ -n "$dev" ] || continue
+        post_cnt=$(cat "$dev/power/wakeup_count" 2>/dev/null || echo "$pre_cnt")
+        delta=$((post_cnt - pre_cnt))
+        name=$(cat "$dev/product" 2>/dev/null || echo "?")
+        log "  $(basename "$dev") ($name) wakeup_count delta=$delta (pre=$pre_cnt post=$post_cnt)"
+      done < "$COUNTS_FILE"
+    fi
+
+    if [ -f "$DISABLED_FILE" ]; then
+      while IFS= read -r dev; do
+        [ -n "$dev" ] && [ -f "$dev/power/wakeup" ] && echo enabled > "$dev/power/wakeup"
+      done < "$DISABLED_FILE"
+      log "restored wakeups previously disarmed"
+      rm -f "$DISABLED_FILE" "$COUNTS_FILE"
+    fi
+    ;;
+esac
+
+exit 0

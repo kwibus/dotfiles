@@ -32,7 +32,7 @@ return {
         "mrcjkb/rustaceanvim",
         dependencies = { "nvim-neotest/neotest" },
         -- version = "^6", -- Recommended
-        lazy = false, -- This plugin is already lazy
+        lazy = true, -- load neotest otherwis always
         ft = { "rust","toml" },
         config = function(_, opts)
 

@@ -1,7 +1,7 @@
 [user]
 	name = Rens Sikma
 	email = r.sikma@atcomputing.nl
-	signingkey = key::ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDrEtUgNMfM40q2JDC+iwIKoTkcTUWfFBajEEP05brs/
+	signingkey = /home/rens/.ssh/id_ed25519.pub
 [color]
 	ui = auto
 [diff]
@@ -22,7 +22,7 @@
 	whitespace = blank-at-eol,space-before-tab
 	excludesfile = ~/.config/git/ignore
 	trustctime = false
-	; pager = delta
+	;pager = delta
 [rerere]
 	enabled = true
 [init]
@@ -64,11 +64,13 @@
 	sort = -committerdate
 [gpg "ssh"]
 	allowedSignersFile = /home/rens/.config/git/allowed_signers
-[interactive]
-	diffFilter = delta --color-only
-; [delta]
-; 	navigate = true
-; 	line-numbers = true
-; 	hyperlinks = true
-; 	side-by-side = true
+; [interactive]
+; diffFilter = delta --color-only
 
+[delta]
+	side-by-side = true
+	line-numbers = true
+;   navigate = true
+;   line-numbers = true
+;   hyperlinks = true
+;   side-by-side = true

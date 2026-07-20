@@ -3,7 +3,7 @@ return {
         "stevearc/overseer.nvim",
         -- event = {"VeryLazy"},
         opts = {
-            -- dap = false, -- maybe disable for laying loading dab
+            dap = false, -- maybe disable for laying loading dab
         },
         -- lazy = true,
         cmd = {
@@ -31,8 +31,8 @@ return {
             end, {
                 desc = "Run your makeprg as an Overseer task",
                 nargs = "*",
-            })
                 bang = true,
+            })
             vim.api.nvim_create_user_command("Grep", function(params)
                 -- Insert args at the '$*' in the grepprg
                 local cmd, num_subs = vim.o.grepprg:gsub("%$%*", params.args)

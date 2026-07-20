@@ -7,8 +7,12 @@ return {
       library = {
         -- See the configuration section for more details
         -- Load luvit types when the `vim.uv` word is found
+        "LazyVim",
         { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+
       },
+      enabled = true,
+
     },
   },
 }

@@ -3,5 +3,6 @@ return {
     -- enabled=false,
     event = "BufReadPre",
     opts = { -- set to setup table
+        options = {}
     },
 }

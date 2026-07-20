@@ -1,12 +1,16 @@
-timeout 650 swaylock
+# Power off displays after 5 min idle; restore on activity/resume
+timeout 300 'swaymsg "output * power off"' resume 'swaymsg "output * power on"'
+after-resume 'swaymsg "output * power on"'
 
-timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"'
+# Lock after 6 min idle
+timeout 360 'swaylock -f'
 
-after-resume  'swaymsg "output * power on"'
-timeout 600 'hyprctl dispatch dpms off  2>/dev/null || true' resume 'hyprctl dispatch dpms on 2>/dev/null || true'
-after-resume 'hyprctl dispatch dpms on 2>/dev/null || true'
+# Suspend after 10 min idle. swayidle honours Wayland idle-inhibitors
+# (games/video that request "no idle"); logind IdleAction is now off.
+timeout 600 'systemctl suspend'
 
-timeout 600 'niri msg action power-off-monitors 2>/dev/null || true'
-
-lock swaylock
-before-sleep 600 swaylock
+# # Always lock before sleep (guard against stacking a second swaylock)
+# # and when the session is locked (loginctl lock-session).
+# before-sleep 'pgrep -x swaylock >/dev/null || swaylock -f'
+lock 'swaylock -f'
+idlehint 100
